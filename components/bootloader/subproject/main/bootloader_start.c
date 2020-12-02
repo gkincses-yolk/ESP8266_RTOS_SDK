@@ -30,6 +30,8 @@ static int selected_boot_partition(const bootloader_state_t *bs);
 
 void call_start_cpu(void)
 {
+    ESP_LOGF("FUNC", "call_start_cpu");
+
 #ifdef CONFIG_BOOTLOADER_FAST_BOOT
     REG_SET_BIT(DPORT_CTL_REG, DPORT_CTL_DOUBLE_CLK);
 #endif
@@ -56,6 +58,8 @@ void call_start_cpu(void)
 // Selects image to boot
 static esp_err_t select_image (esp_image_metadata_t *image_data)
 {
+    ESP_LOGF("FUNC", "select_image ");
+
     // 1. Load partition table
     bootloader_state_t bs;// = { 0 };
     memset(&bs, 0, sizeof(bootloader_state_t));
@@ -83,6 +87,8 @@ static esp_err_t select_image (esp_image_metadata_t *image_data)
  */
 static int selected_boot_partition(const bootloader_state_t *bs)
 {
+    ESP_LOGF("FUNC", "selected_boot_partition");
+
     int boot_index = bootloader_utility_get_selected_boot_partition(bs);
     if (boot_index == INVALID_INDEX) {
         return boot_index; // Unrecoverable failure (not due to corrupt ota data or bad partition contents)

@@ -117,7 +117,7 @@ void esp_log_write(esp_log_level_t level, const char* tag, const char* format, .
  * @brief Write message into the log at system startup or critical state
  *
  * This function is not intended to be used directly. Instead, use one of
- * ESP_EARLY_LOGE, ESP_EARLY_LOGW, ESP_LEARLY_OGI, ESP_EARLY_LOGD, ESP_EARLY_LOGV macros.
+ * ESP_EARLY_LOGE, ESP_EARLY_LOGW, ESP_LEARLY_OGI, ESP_EARLY_LOGD, ESP_EARLY_LOGV, ESP_EARLY_LOGF macros.
  *
  * This function or these macros can be used from an interrupt or NMI exception.
  */
@@ -248,12 +248,14 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
 #define LOG_COLOR_I       LOG_COLOR(LOG_COLOR_GREEN)
 #define LOG_COLOR_D
 #define LOG_COLOR_V
+#define LOG_COLOR_F       LOG_COLOR(LOG_COLOR_PURPLE)
 #else //CONFIG_LOG_COLORS
 #define LOG_COLOR_E
 #define LOG_COLOR_W
 #define LOG_COLOR_I
 #define LOG_COLOR_D
 #define LOG_COLOR_V
+#define LOG_COLOR_F
 #define LOG_RESET_COLOR
 #endif //CONFIG_LOG_COLORS
 
@@ -269,7 +271,7 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
 #define ESP_EARLY_LOGD( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_DEBUG,   D, ##__VA_ARGS__)
 /// macro to output logs in startup code at ``ESP_LOG_VERBOSE`` level.  @see ``ESP_EARLY_LOGE``,``ESP_LOGE``, ``printf``
 #define ESP_EARLY_LOGV( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_VERBOSE, V, ##__VA_ARGS__)
-/// macro to output logs in startup code at ``ESP_LOG_VERBOSE`` level.  @see ``ESP_EARLY_LOGE``,``ESP_LOGE``, ``printf``
+/// macro to output logs in startup code at ``ESP_LOG_FUNC`` level.  @see ``ESP_EARLY_LOGE``,``ESP_LOGE``, ``printf``
 #define ESP_EARLY_LOGF( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_FUNC,    F, ##__VA_ARGS__)
 
 #define ESP_LOG_EARLY_IMPL(tag, format, log_level, log_tag_letter, ...) do {                         \
@@ -318,8 +320,8 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_WARN )      { esp_log_write(ESP_LOG_WARN,       tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_DEBUG )     { esp_log_write(ESP_LOG_DEBUG,      tag, format, ##__VA_ARGS__); } \
-        else if (level==ESP_LOG_FUNC )      { esp_log_write(ESP_LOG_FUNC,       tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_VERBOSE )   { esp_log_write(ESP_LOG_VERBOSE,    tag, format, ##__VA_ARGS__); } \
+        else if (level==ESP_LOG_FUNC )      { esp_log_write(ESP_LOG_FUNC,       tag, format, ##__VA_ARGS__); } \
         else                                { esp_log_write(ESP_LOG_INFO,       tag, format, ##__VA_ARGS__); } \
     } while(0)
 

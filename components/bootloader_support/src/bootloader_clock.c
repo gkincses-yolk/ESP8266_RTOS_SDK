@@ -26,7 +26,7 @@
 
 void bootloader_clock_configure()
 {
-    //ESP_LOGF("FUNC", "bootloader_clock_configure");
+    ESP_LOGF("FUNC", "bootloader_clock_configure");
 
     // ROM bootloader may have put a lot of text into UART0 FIFO.
     // Wait for it to be printed.
