@@ -43,7 +43,7 @@ static esp_err_t encrypt_partition(int index, const esp_partition_info_t *partit
 
 esp_err_t esp_flash_encrypt_check_and_update(void)
 {
-    printf("FUNC=esp_flash_encrypt_check_and_update");
+    //ESP_LOGF("FUNC", "esp_flash_encrypt_check_and_update");
 
     uint32_t efuse_blk0 = REG_READ(EFUSE_BLK0_RDATA0_REG);
     ESP_LOGV(TAG, "efuse_blk0 raw value %08x", efuse_blk0);
@@ -68,7 +68,7 @@ esp_err_t esp_flash_encrypt_check_and_update(void)
 
 static esp_err_t initialise_flash_encryption(void)
 {
-    printf("FUNC=initialise_flash_encryption");
+    //ESP_LOGF("FUNC", "initialise_flash_encryption");
 
     /* Before first flash encryption pass, need to initialise key & crypto config */
 
@@ -165,7 +165,7 @@ static esp_err_t initialise_flash_encryption(void)
 /* Encrypt all flash data that should be encrypted */
 static esp_err_t encrypt_flash_contents(uint32_t flash_crypt_cnt, bool flash_crypt_wr_dis)
 {
-    printf("FUNC=encrypt_flash_contents");
+    //ESP_LOGF("FUNC", "encrypt_flash_contents");
 
     esp_err_t err;
     esp_partition_info_t partition_table[ESP_PARTITION_TABLE_MAX_ENTRIES];
@@ -224,7 +224,7 @@ static esp_err_t encrypt_flash_contents(uint32_t flash_crypt_cnt, bool flash_cry
 
 static esp_err_t encrypt_bootloader()
 {
-    printf("FUNC=encrypt_bootloader");
+    //ESP_LOGF("FUNC", "encrypt_bootloader");
 
     esp_err_t err;
     uint32_t image_length;
@@ -259,7 +259,7 @@ static esp_err_t encrypt_bootloader()
 
 static esp_err_t encrypt_and_load_partition_table(esp_partition_info_t *partition_table, int *num_partitions)
 {
-    printf("FUNC=encrypt_and_load_partition_table");
+    //ESP_LOGF("FUNC", "encrypt_and_load_partition_table");
 
     esp_err_t err;
     /* Check for plaintext partition table */
@@ -289,7 +289,7 @@ static esp_err_t encrypt_and_load_partition_table(esp_partition_info_t *partitio
 
 static esp_err_t encrypt_partition(int index, const esp_partition_info_t *partition)
 {
-    printf("FUNC=encrypt_partition");
+    //ESP_LOGF("FUNC", "encrypt_partition");
 
     esp_err_t err;
     bool should_encrypt = (partition->flags & PART_FLAG_ENCRYPTED);
@@ -324,7 +324,7 @@ static esp_err_t encrypt_partition(int index, const esp_partition_info_t *partit
 
 esp_err_t esp_flash_encrypt_region(uint32_t src_addr, size_t data_length)
 {
-    printf("FUNC=esp_flash_encrypt_region");
+    //ESP_LOGF("FUNC", "esp_flash_encrypt_region");
 
     esp_err_t err;
     uint32_t buf[FLASH_SECTOR_SIZE / sizeof(uint32_t)];

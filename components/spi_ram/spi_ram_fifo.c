@@ -47,7 +47,7 @@ typedef struct {
 
 esp_err_t spi_ram_fifo_write(spi_ram_fifo_handle_t handle, uint8_t *data, int len, uint32_t timeout_ticks)
 {
-    printf("FUNC=spi_ram_fifo_write");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_write");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     int n;
@@ -97,7 +97,7 @@ esp_err_t spi_ram_fifo_write(spi_ram_fifo_handle_t handle, uint8_t *data, int le
 
 esp_err_t spi_ram_fifo_read(spi_ram_fifo_handle_t handle, uint8_t *data, int len, uint32_t timeout_ticks)
 {
-    printf("FUNC=spi_ram_fifo_read");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_read");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     int n;
@@ -147,7 +147,7 @@ esp_err_t spi_ram_fifo_read(spi_ram_fifo_handle_t handle, uint8_t *data, int len
 
 esp_err_t spi_ram_fifo_get_fill(spi_ram_fifo_handle_t handle, uint32_t *len)
 {
-    printf("FUNC=spi_ram_fifo_get_fill");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_get_fill");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -160,7 +160,7 @@ esp_err_t spi_ram_fifo_get_fill(spi_ram_fifo_handle_t handle, uint32_t *len)
 
 esp_err_t spi_ram_fifo_get_free(spi_ram_fifo_handle_t handle, uint32_t *len)
 {
-    printf("FUNC=spi_ram_fifo_get_free");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_get_free");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -173,7 +173,7 @@ esp_err_t spi_ram_fifo_get_free(spi_ram_fifo_handle_t handle, uint32_t *len)
 
 esp_err_t spi_ram_fifo_get_total(spi_ram_fifo_handle_t handle, uint32_t *len)
 {
-    printf("FUNC=spi_ram_fifo_get_total");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_get_total");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -186,7 +186,7 @@ esp_err_t spi_ram_fifo_get_total(spi_ram_fifo_handle_t handle, uint32_t *len)
 
 esp_err_t spi_ram_fifo_get_overflow(spi_ram_fifo_handle_t handle, uint32_t *num)
 {
-    printf("FUNC=spi_ram_fifo_get_overflow");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_get_overflow");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -199,7 +199,7 @@ esp_err_t spi_ram_fifo_get_overflow(spi_ram_fifo_handle_t handle, uint32_t *num)
 
 esp_err_t spi_ram_fifo_get_underrun(spi_ram_fifo_handle_t handle, uint32_t *num)
 {
-    printf("FUNC=spi_ram_fifo_get_underrun");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_get_underrun");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -212,7 +212,7 @@ esp_err_t spi_ram_fifo_get_underrun(spi_ram_fifo_handle_t handle, uint32_t *num)
 
 esp_err_t spi_ram_fifo_delete(spi_ram_fifo_handle_t handle)
 {
-    printf("FUNC=spi_ram_fifo_delete");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_delete");
 
     spi_ram_fifo_obj_t *obj = (spi_ram_fifo_obj_t *)handle;
     SPI_RAM_FIFO_CHECK(handle, "spi ram fifo not created yet", ESP_FAIL);
@@ -230,7 +230,7 @@ esp_err_t spi_ram_fifo_delete(spi_ram_fifo_handle_t handle)
 
 spi_ram_fifo_handle_t spi_ram_fifo_create(spi_ram_fifo_config_t *config)
 {
-    printf("FUNC=spi_ram_fifo_create");
+    //ESP_LOGF("FUNC", "spi_ram_fifo_create");
 
     spi_ram_fifo_obj_t *obj = NULL;
 

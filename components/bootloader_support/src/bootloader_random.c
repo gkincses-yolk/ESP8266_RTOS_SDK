@@ -32,7 +32,7 @@
 
 void bootloader_fill_random(void *buffer, size_t length)
 {
-    printf("FUNC=bootloader_fill_random");
+    //ESP_LOGF("FUNC", "bootloader_fill_random");
 
     uint8_t *buffer_bytes = (uint8_t *)buffer;
     uint32_t random;
@@ -67,7 +67,7 @@ void bootloader_fill_random(void *buffer, size_t length)
 
 void bootloader_random_enable(void)
 {
-    printf("FUNC=bootloader_random_enable");
+    //ESP_LOGF("FUNC", "bootloader_random_enable");
 
     /* Ensure the hardware RNG is enabled following a soft reset.  This should always be the case already (this clock is
        never disabled while the CPU is running), this is a "belts and braces" type check.
@@ -121,7 +121,7 @@ void bootloader_random_enable(void)
 
 void bootloader_random_disable(void)
 {
-    printf("FUNC=bootloader_random_disable");
+    //ESP_LOGF("FUNC", "bootloader_random_disable");
 
     /* Disable i2s clock */
     DPORT_CLEAR_PERI_REG_MASK(DPORT_PERIP_CLK_EN_REG, DPORT_I2S0_CLK_EN);

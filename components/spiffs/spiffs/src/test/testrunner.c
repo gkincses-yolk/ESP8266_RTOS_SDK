@@ -34,7 +34,7 @@ static struct {
 
 void test_init(void (*on_stop)(test *t))
 {
-    printf("FUNC=test_init");
+    //ESP_LOGF("FUNC", "test_init");
 
   test_main.on_stop = on_stop;
 }
@@ -44,7 +44,7 @@ static int error_count = 0;
 
 static char check_spec(char *name)
 {
-    printf("FUNC=check_spec");
+    //ESP_LOGF("FUNC", "check_spec");
 
   if (test_main.spec) {
     fseek(test_main.spec, 0, SEEK_SET);
@@ -66,7 +66,7 @@ static char check_spec(char *name)
 
 static char check_incl_filter(char *name)
 {
-    printf("FUNC=check_incl_filter");
+    //ESP_LOGF("FUNC", "check_incl_filter");
 
   if (strlen(test_main.incl_filter)== 0) return 1;
   return strstr(name, test_main.incl_filter) == 0 ? 0 : 2;
@@ -74,7 +74,7 @@ static char check_incl_filter(char *name)
 
 static char check_excl_filter(char *name)
 {
-    printf("FUNC=check_excl_filter");
+    //ESP_LOGF("FUNC", "check_excl_filter");
 
   if (strlen(test_main.excl_filter)== 0) return 1;
   return strstr(name, test_main.excl_filter) == 0 ? 1 : 0;
@@ -82,7 +82,7 @@ static char check_excl_filter(char *name)
 
 void _add_test(test_f f, char *name, void (*setup)(test *t), void (*teardown)(test *t), int non_default)
 {
-    printf("FUNC=add_test");
+    //ESP_LOGF("FUNC", "add_test");
 
   if (f == 0) return;
   if (!check_spec(name)) return;
@@ -106,7 +106,7 @@ void _add_test(test_f f, char *name, void (*setup)(test *t), void (*teardown)(te
 
 static void add_res(test *t, test_res **head, test_res **last)
 {
-    printf("FUNC=add_res");
+    //ESP_LOGF("FUNC", "add_res");
 
   test_res *tr = malloc(sizeof(test_res));
   memset(tr,0,sizeof(test_res));
@@ -121,7 +121,7 @@ static void add_res(test *t, test_res **head, test_res **last)
 
 static void dump_res(test_res **head)
 {
-    printf("FUNC=dump_res");
+    //ESP_LOGF("FUNC", "dump_res");
 
   test_res *tr = (*head);
   while (tr) {
@@ -134,21 +134,21 @@ static void dump_res(test_res **head)
 
 int get_error_count(void)
 {
-    printf("FUNC=get_error_count");
+    //ESP_LOGF("FUNC", "get_error_count");
 
   return error_count;
 }
 
 void inc_error_count(void)
 {
-    printf("FUNC=inc_error_count");
+    //ESP_LOGF("FUNC", "inc_error_count");
 
   error_count++;
 }
 
 int set_abort_on_error(int val)
 {
-    printf("FUNC=set_abort_on_error");
+    //ESP_LOGF("FUNC", "set_abort_on_error");
 
   int old_val = abort_on_error;
   abort_on_error = val;
@@ -158,14 +158,14 @@ int set_abort_on_error(int val)
 
 int get_abort_on_error(void)
 {
-    printf("FUNC=get_abort_on_error");
+    //ESP_LOGF("FUNC", "get_abort_on_error");
 
   return abort_on_error;
 }
 
 int run_tests(int argc, char **args)
 {
-    printf("FUNC=run_tests");
+    //ESP_LOGF("FUNC", "run_tests");
 
   memset(&test_main, 0, sizeof(test_main));
   int arg;

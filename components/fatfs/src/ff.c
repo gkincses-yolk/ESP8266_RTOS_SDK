@@ -579,7 +579,7 @@ static const BYTE DbcTbl[] = MKCVTBL(TBL_DC, FF_CODE_PAGE);
 
 static WORD ld_word (const BYTE* ptr)	/*	 Load a 2-byte little-endian word */
 {
-    printf("FUNC=ld_word");
+    //ESP_LOGF("FUNC", "ld_word");
 
 	WORD rv;
 
@@ -590,7 +590,7 @@ static WORD ld_word (const BYTE* ptr)	/*	 Load a 2-byte little-endian word */
 
 static DWORD ld_dword (const BYTE* ptr)	/* Load a 4-byte little-endian word */
 {
-    printf("FUNC=ld_dword");
+    //ESP_LOGF("FUNC", "ld_dword");
 
 	DWORD rv;
 
@@ -604,7 +604,7 @@ static DWORD ld_dword (const BYTE* ptr)	/* Load a 4-byte little-endian word */
 #if FF_FS_EXFAT
 static QWORD ld_qword (const BYTE* ptr)	/* Load an 8-byte little-endian word */
 {
-    printf("FUNC=ld_qword");
+    //ESP_LOGF("FUNC", "ld_qword");
 
 	QWORD rv;
 
@@ -623,7 +623,7 @@ static QWORD ld_qword (const BYTE* ptr)	/* Load an 8-byte little-endian word */
 #if !FF_FS_READONLY
 static void st_word (BYTE* ptr, WORD val)	/* Store a 2-byte word in little-endian */
 {
-    printf("FUNC=st_word");
+    //ESP_LOGF("FUNC", "st_word");
 
 	*ptr++ = (BYTE)val; val >>= 8;
 	*ptr++ = (BYTE)val;
@@ -631,7 +631,7 @@ static void st_word (BYTE* ptr, WORD val)	/* Store a 2-byte word in little-endia
 
 static void st_dword (BYTE* ptr, DWORD val)	/* Store a 4-byte word in little-endian */
 {
-    printf("FUNC=st_dword");
+    //ESP_LOGF("FUNC", "st_dword");
 
 	*ptr++ = (BYTE)val; val >>= 8;
 	*ptr++ = (BYTE)val; val >>= 8;
@@ -642,7 +642,7 @@ static void st_dword (BYTE* ptr, DWORD val)	/* Store a 4-byte word in little-end
 #if FF_FS_EXFAT
 static void st_qword (BYTE* ptr, QWORD val)	/* Store an 8-byte word in little-endian */
 {
-    printf("FUNC=st_qword");
+    //ESP_LOGF("FUNC", "st_qword");
 
 	*ptr++ = (BYTE)val; val >>= 8;
 	*ptr++ = (BYTE)val; val >>= 8;
@@ -665,7 +665,7 @@ static void st_qword (BYTE* ptr, QWORD val)	/* Store an 8-byte word in little-en
 /* Copy memory to memory */
 static void mem_cpy (void* dst, const void* src, UINT cnt)
 {
-    printf("FUNC=mem_cpy");
+    //ESP_LOGF("FUNC", "mem_cpy");
 
 	BYTE *d = (BYTE*)dst;
 	const BYTE *s = (const BYTE*)src;
@@ -681,7 +681,7 @@ static void mem_cpy (void* dst, const void* src, UINT cnt)
 /* Fill memory block */
 static void mem_set (void* dst, int val, UINT cnt)
 {
-    printf("FUNC=mem_set");
+    //ESP_LOGF("FUNC", "mem_set");
 
 	BYTE *d = (BYTE*)dst;
 
@@ -694,7 +694,7 @@ static void mem_set (void* dst, int val, UINT cnt)
 /* Compare memory block */
 static int mem_cmp (const void* dst, const void* src, UINT cnt)	/* ZR:same, NZ:different */
 {
-    printf("FUNC=mem_cmp");
+    //ESP_LOGF("FUNC", "mem_cmp");
 
 	const BYTE *d = (const BYTE *)dst, *s = (const BYTE *)src;
 	int r = 0;
@@ -710,7 +710,7 @@ static int mem_cmp (const void* dst, const void* src, UINT cnt)	/* ZR:same, NZ:d
 /* Check if chr is contained in the string */
 static int chk_chr (const char* str, int chr)	/* NZ:contained, ZR:not contained */
 {
-    printf("FUNC=chk_chr");
+    //ESP_LOGF("FUNC", "chk_chr");
 
 	while (*str && *str != chr) str++;
 	return *str;
@@ -720,7 +720,7 @@ static int chk_chr (const char* str, int chr)	/* NZ:contained, ZR:not contained 
 /* Test if the character is DBC 1st byte */
 static int dbc_1st (BYTE c)
 {
-    printf("FUNC=dbc_1st");
+    //ESP_LOGF("FUNC", "dbc_1st");
 
 #if FF_CODE_PAGE == 0		/* Variable code page */
 	if (DbcTbl && c >= DbcTbl[0]) {
@@ -742,7 +742,7 @@ static int dbc_1st (BYTE c)
 /* Test if the character is DBC 2nd byte */
 static int dbc_2nd (BYTE c)
 {
-    printf("FUNC=dbc_2nd");
+    //ESP_LOGF("FUNC", "dbc_2nd");
 
 #if FF_CODE_PAGE == 0		/* Variable code page */
 	if (DbcTbl && c >= DbcTbl[4]) {
@@ -847,7 +847,7 @@ static BYTE put_utf (	/* Returns number of encoding units written (0:buffer over
 	UINT szb	/* Size of the buffer */
 )
 {
-    printf("FUNC=put_utf");
+    //ESP_LOGF("FUNC", "put_utf");
 
 #if FF_LFN_UNICODE == 1	/* UTF-16 output */
 	WCHAR hs, wc;
@@ -936,7 +936,7 @@ static int lock_fs (		/* 1:Ok, 0:timeout */
 	FATFS* fs		/* Filesystem object */
 )
 {
-    printf("FUNC=lock_fs");
+    //ESP_LOGF("FUNC", "lock_fs");
 
 	return ff_req_grant(fs->sobj);
 }
@@ -947,7 +947,7 @@ static void unlock_fs (
 	FRESULT res		/* Result code to be returned */
 )
 {
-    printf("FUNC=unlock_fs");
+    //ESP_LOGF("FUNC", "unlock_fs");
 
 	if (fs && res != FR_NOT_ENABLED && res != FR_INVALID_DRIVE && res != FR_TIMEOUT) {
 		ff_rel_grant(fs->sobj);
@@ -968,7 +968,7 @@ static FRESULT chk_lock (	/* Check if the file can be accessed */
 	int acc			/* Desired access type (0:Read mode open, 1:Write mode open, 2:Delete or rename) */
 )
 {
-    printf("FUNC=chk_lock");
+    //ESP_LOGF("FUNC", "chk_lock");
 
 	UINT i, be;
 
@@ -994,7 +994,7 @@ static FRESULT chk_lock (	/* Check if the file can be accessed */
 
 static int enq_lock (void)	/* Check if an entry is available for a new object */
 {
-    printf("FUNC=enq_lock");
+    //ESP_LOGF("FUNC", "enq_lock");
 
 	UINT i;
 
@@ -1008,7 +1008,7 @@ static UINT inc_lock (	/* Increment object open counter and returns its index (0
 	int acc		/* Desired access (0:Read, 1:Write, 2:Delete/Rename) */
 )
 {
-    printf("FUNC=inc_lock");
+    //ESP_LOGF("FUNC", "inc_lock");
 
 	UINT i;
 
@@ -1040,7 +1040,7 @@ static FRESULT dec_lock (	/* Decrement object open counter */
 	UINT i			/* Semaphore index (1..) */
 )
 {
-    printf("FUNC=dec_lock");
+    //ESP_LOGF("FUNC", "dec_lock");
 
 	WORD n;
 	FRESULT res;
@@ -1064,7 +1064,7 @@ static void clear_lock (	/* Clear lock entries of the volume */
 	FATFS *fs
 )
 {
-    printf("FUNC=clear_lock");
+    //ESP_LOGF("FUNC", "clear_lock");
 
 	UINT i;
 
@@ -1085,7 +1085,7 @@ static FRESULT sync_window (	/* Returns FR_OK or FR_DISK_ERR */
 	FATFS* fs			/* Filesystem object */
 )
 {
-    printf("FUNC=sync_window");
+    //ESP_LOGF("FUNC", "sync_window");
 
 	FRESULT res = FR_OK;
 
@@ -1110,7 +1110,7 @@ static FRESULT move_window (	/* Returns FR_OK or FR_DISK_ERR */
 	DWORD sector		/* Sector number to make appearance in the fs->win[] */
 )
 {
-    printf("FUNC=move_window");
+    //ESP_LOGF("FUNC", "move_window");
 
 	FRESULT res = FR_OK;
 
@@ -1142,7 +1142,7 @@ static FRESULT sync_fs (	/* Returns FR_OK or FR_DISK_ERR */
 	FATFS* fs		/* Filesystem object */
 )
 {
-    printf("FUNC=sync_fs");
+    //ESP_LOGF("FUNC", "sync_fs");
 
 	FRESULT res;
 
@@ -1182,7 +1182,7 @@ static DWORD clst2sect (	/* !=0:Sector number, 0:Failed (invalid cluster#) */
 	DWORD clst		/* Cluster# to be converted */
 )
 {
-    printf("FUNC=clst2sect");
+    //ESP_LOGF("FUNC", "clst2sect");
 
 	clst -= 2;		/* Cluster number is origin from 2 */
 	if (clst >= fs->n_fatent - 2) return 0;		/* Is it invalid cluster number? */
@@ -1201,7 +1201,7 @@ static DWORD get_fat (		/* 0xFFFFFFFF:Disk error, 1:Internal error, 2..0x7FFFFFF
 	DWORD clst		/* Cluster number to get the value */
 )
 {
-    printf("FUNC=get_fat");
+    //ESP_LOGF("FUNC", "get_fat");
 
 	UINT wc, bc;
 	DWORD val;
@@ -1281,7 +1281,7 @@ static FRESULT put_fat (	/* FR_OK(0):succeeded, !=0:error */
 	DWORD val		/* New value to be set to the entry */
 )
 {
-    printf("FUNC=put_fat");
+    //ESP_LOGF("FUNC", "put_fat");
 
 	UINT bc;
 	BYTE *p;
@@ -1348,7 +1348,7 @@ static DWORD find_bitmap (	/* 0:Not found, 2..:Cluster block found, 0xFFFFFFFF:D
 	DWORD ncl	/* Number of contiguous clusters to find (1..) */
 )
 {
-    printf("FUNC=find_bitmap");
+    //ESP_LOGF("FUNC", "find_bitmap");
 
 	BYTE bm, bv;
 	UINT i;
@@ -1391,7 +1391,7 @@ static FRESULT change_bitmap (
 	int bv		/* bit value to be set (0 or 1) */
 )
 {
-    printf("FUNC=change_bitmap");
+    //ESP_LOGF("FUNC", "change_bitmap");
 
 	BYTE bm;
 	UINT i;
@@ -1426,7 +1426,7 @@ static FRESULT fill_first_frag (
 	FFOBJID* obj	/* Pointer to the corresponding object */
 )
 {
-    printf("FUNC=fill_first_frag");
+    //ESP_LOGF("FUNC", "fill_first_frag");
 
 	FRESULT res;
 	DWORD cl, n;
@@ -1453,7 +1453,7 @@ static FRESULT fill_last_frag (
 	DWORD term		/* Value to set the last FAT entry */
 )
 { 
-    printf("FUNC=fill_last_frag");
+    //ESP_LOGF("FUNC", "fill_last_frag");
 
 	FRESULT res;
 
@@ -1481,7 +1481,7 @@ static FRESULT remove_chain (	/* FR_OK(0):succeeded, !=0:error */
 	DWORD pclst			/* Previous cluster of clst (0 if entire chain) */
 )
 {
-    printf("FUNC=remove_chain");
+    //ESP_LOGF("FUNC", "remove_chain");
 
 	FRESULT res = FR_OK;
 	DWORD nxt;
@@ -1577,7 +1577,7 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 	DWORD clst			/* Cluster# to stretch, 0:Create a new chain */
 )
 {
-    printf("FUNC=create_chain");
+    //ESP_LOGF("FUNC", "create_chain");
 
 	DWORD cs, ncl, scl;
 	FRESULT res;
@@ -1682,7 +1682,7 @@ static DWORD clmt_clust (	/* <2:Error, >=2:Cluster number */
 	FSIZE_t ofs		/* File offset to be converted to cluster# */
 )
 {
-    printf("FUNC=clmt_clust");
+    //ESP_LOGF("FUNC", "clmt_clust");
 
 	DWORD cl, ncl, *tbl;
 	FATFS *fs = fp->obj.fs;
@@ -1714,7 +1714,7 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 	DWORD clst		/* Directory table to clear */
 )
 {
-    printf("FUNC=dir_clear");
+    //ESP_LOGF("FUNC", "dir_clear");
 
 	DWORD sect;
 	UINT n, szb;
@@ -1755,7 +1755,7 @@ static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 	DWORD ofs		/* Offset of directory table */
 )
 {
-    printf("FUNC=dir_sdi");
+    //ESP_LOGF("FUNC", "dir_sdi");
 
 	DWORD csz, clst;
 	FATFS *fs = dp->obj.fs;
@@ -1805,7 +1805,7 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 	int stretch				/* 0: Do not stretch table, 1: Stretch table if needed */
 )
 {
-    printf("FUNC=dir_next");
+    //ESP_LOGF("FUNC", "dir_next");
 
 	DWORD ofs, clst;
 	FATFS *fs = dp->obj.fs;
@@ -1868,7 +1868,7 @@ static FRESULT dir_alloc (	/* FR_OK(0):succeeded, !=0:error */
 	UINT nent				/* Number of contiguous entries to allocate */
 )
 {
-    printf("FUNC=dir_alloc");
+    //ESP_LOGF("FUNC", "dir_alloc");
 
 	FRESULT res;
 	UINT n;
@@ -1912,7 +1912,7 @@ static DWORD ld_clust (	/* Returns the top cluster value of the SFN entry */
 	const BYTE* dir		/* Pointer to the key entry */
 )
 {
-    printf("FUNC=ld_clust");
+    //ESP_LOGF("FUNC", "ld_clust");
 
 	DWORD cl;
 
@@ -1932,7 +1932,7 @@ static void st_clust (
 	DWORD cl	/* Value to be set */
 )
 {
-    printf("FUNC=st_clust");
+    //ESP_LOGF("FUNC", "st_clust");
 
 	st_word(dir + DIR_FstClusLO, (WORD)cl);
 	if (fs->fs_type == FS_FAT32) {
@@ -1953,7 +1953,7 @@ static int cmp_lfn (		/* 1:matched, 0:not matched */
 	BYTE* dir				/* Pointer to the directory entry containing the part of LFN */
 )
 {
-    printf("FUNC=cmp_lfn");
+    //ESP_LOGF("FUNC", "cmp_lfn");
 
 	UINT i, s;
 	WCHAR wc, uc;
@@ -1991,7 +1991,7 @@ static int pick_lfn (	/* 1:succeeded, 0:buffer overflow or invalid LFN entry */
 	BYTE* dir			/* Pointer to the LFN entry */
 )
 {
-    printf("FUNC=pick_lfn");
+    //ESP_LOGF("FUNC", "pick_lfn");
 
 	UINT i, s;
 	WCHAR wc, uc;
@@ -2033,7 +2033,7 @@ static void put_lfn (
 	BYTE sum			/* Checksum of the corresponding SFN */
 )
 {
-    printf("FUNC=put_lfn");
+    //ESP_LOGF("FUNC", "put_lfn");
 
 	UINT i, s;
 	WCHAR wc;
@@ -2072,7 +2072,7 @@ static void gen_numname (
 	UINT seq			/* Sequence number */
 )
 {
-    printf("FUNC=gen_numname");
+    //ESP_LOGF("FUNC", "gen_numname");
 
 	BYTE ns[8], c;
 	UINT i, j;
@@ -2129,7 +2129,7 @@ static BYTE sum_sfn (
 	const BYTE* dir		/* Pointer to the SFN entry */
 )
 {
-    printf("FUNC=sum_sfn");
+    //ESP_LOGF("FUNC", "sum_sfn");
 
 	BYTE sum = 0;
 	UINT n = 11;
@@ -2153,7 +2153,7 @@ static WORD xdir_sum (	/* Get checksum of the directoly entry block */
 	const BYTE* dir		/* Directory entry block to be calculated */
 )
 {
-    printf("FUNC=xdir_sum");
+    //ESP_LOGF("FUNC", "xdir_sum");
 
 	UINT i, szblk;
 	WORD sum;
@@ -2176,7 +2176,7 @@ static WORD xname_sum (	/* Get check sum (to be used as hash) of the file name *
 	const WCHAR* name	/* File name to be calculated */
 )
 {
-    printf("FUNC=xname_sum");
+    //ESP_LOGF("FUNC", "xname_sum");
 
 	WCHAR chr;
 	WORD sum = 0;
@@ -2197,7 +2197,7 @@ static DWORD xsum32 (	/* Returns 32-bit checksum */
 	DWORD sum			/* Previous sum value */
 )
 {
-    printf("FUNC=xsum32");
+    //ESP_LOGF("FUNC", "xsum32");
 
 	sum = ((sum & 1) ? 0x80000000 : 0) + (sum >> 1) + dat;
 	return sum;
@@ -2215,7 +2215,7 @@ static void get_xfileinfo (
 	FILINFO* fno		/* Buffer to store the extracted file information */
 )
 {
-    printf("FUNC=get_xfileinfo");
+    //ESP_LOGF("FUNC", "get_xfileinfo");
 
 	WCHAR wc, hs;
 	UINT di, si, nc;
@@ -2257,7 +2257,7 @@ static FRESULT load_xdir (	/* FR_INT_ERR: invalid entry block */
 	FF_DIR* dp					/* Reading direcotry object pointing top of the entry block to load */
 )
 {
-    printf("FUNC=load_xdir");
+    //ESP_LOGF("FUNC", "load_xdir");
 
 	FRESULT res;
 	UINT i, sz_ent;
@@ -2311,7 +2311,7 @@ static void init_alloc_info (
 	FFOBJID* obj	/* Object allocation information to be initialized */
 )
 {
-    printf("FUNC=init_alloc_info");
+    //ESP_LOGF("FUNC", "init_alloc_info");
 
 	obj->sclust = ld_dword(fs->dirbuf + XDIR_FstClus);		/* Start cluster */
 	obj->objsize = ld_qword(fs->dirbuf + XDIR_FileSize);	/* Size */
@@ -2331,7 +2331,7 @@ static FRESULT load_obj_xdir (
 	const FFOBJID* obj	/* Object with its containing directory information */
 )
 {
-    printf("FUNC=load_obj_xdir");
+    //ESP_LOGF("FUNC", "load_obj_xdir");
 
 	FRESULT res;
 
@@ -2361,7 +2361,7 @@ static FRESULT store_xdir (
 	FF_DIR* dp				/* Pointer to the direcotry object */
 )
 {
-    printf("FUNC=store_xdir");
+    //ESP_LOGF("FUNC", "store_xdir");
 
 	FRESULT res;
 	UINT nent;
@@ -2396,7 +2396,7 @@ static void create_xdir (
 	const WCHAR* lfn	/* Pointer to the object name */
 )
 {
-    printf("FUNC=create_xdir");
+    //ESP_LOGF("FUNC", "create_xdir");
 
 	UINT i;
 	BYTE nc1, nlen;
@@ -2444,7 +2444,7 @@ static FRESULT dir_read (
 	int vol			/* Filtered by 0:file/directory or 1:volume label */
 )
 {
-    printf("FUNC=dir_read");
+    //ESP_LOGF("FUNC", "dir_read");
 
 	FRESULT res = FR_NO_FILE;
 	FATFS *fs = dp->obj.fs;
@@ -2523,7 +2523,7 @@ static FRESULT dir_find (	/* FR_OK(0):succeeded, !=0:error */
 	FF_DIR* dp					/* Pointer to the directory object with the file name */
 )
 {
-    printf("FUNC=dir_find");
+    //ESP_LOGF("FUNC", "dir_find");
 
 	FRESULT res;
 	FATFS *fs = dp->obj.fs;
@@ -2606,7 +2606,7 @@ static FRESULT dir_register (	/* FR_OK:succeeded, FR_DENIED:no free entry or too
 	FF_DIR* dp						/* Target directory with object name to be created */
 )
 {
-    printf("FUNC=dir_register");
+    //ESP_LOGF("FUNC", "dir_register");
 
 	FRESULT res;
 	FATFS *fs = dp->obj.fs;
@@ -2714,7 +2714,7 @@ static FRESULT dir_remove (	/* FR_OK:Succeeded, FR_DISK_ERR:A disk error */
 	FF_DIR* dp					/* Directory object pointing the entry to be removed */
 )
 {
-    printf("FUNC=dir_remove");
+    //ESP_LOGF("FUNC", "dir_remove");
 
 	FRESULT res;
 	FATFS *fs = dp->obj.fs;
@@ -2763,7 +2763,7 @@ static void get_fileinfo (
 	FILINFO* fno		/* Pointer to the file information to be filled */
 )
 {
-    printf("FUNC=get_fileinfo");
+    //ESP_LOGF("FUNC", "get_fileinfo");
 
 	UINT si, di;
 #if FF_USE_LFN
@@ -2870,7 +2870,7 @@ static DWORD get_achar (	/* Get a character and advances ptr */
 	const TCHAR** ptr		/* Pointer to pointer to the ANSI/OEM or Unicode string */
 )
 {
-    printf("FUNC=get_achar");
+    //ESP_LOGF("FUNC", "get_achar");
 
 	DWORD chr;
 
@@ -2906,7 +2906,7 @@ static int pattern_matching (	/* 0:not matched, 1:matched */
 	int inf				/* Infinite search (* specified) */
 )
 {
-    printf("FUNC=pattern_matching");
+    //ESP_LOGF("FUNC", "pattern_matching");
 
 	const TCHAR *pp, *np;
 	DWORD pc, nc;
@@ -2953,7 +2953,7 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	const TCHAR** path			/* Pointer to pointer to the segment in the path string */
 )
 {
-    printf("FUNC=create_name");
+    //ESP_LOGF("FUNC", "create_name");
 
 #if FF_USE_LFN		/* LFN configuration */
 	BYTE b, cf;
@@ -3152,7 +3152,7 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	const TCHAR* path			/* Full-path string to find a file or directory */
 )
 {
-    printf("FUNC=follow_path");
+    //ESP_LOGF("FUNC", "follow_path");
 
 	FRESULT res;
 	BYTE ns;
@@ -3240,7 +3240,7 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 	const TCHAR** path		/* Pointer to pointer to the path name */
 )
 {
-    printf("FUNC=get_ldnumber");
+    //ESP_LOGF("FUNC", "get_ldnumber");
 
 	const TCHAR *tp, *tt;
 	TCHAR tc;
@@ -3317,7 +3317,7 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 	DWORD sect			/* Sector# (lba) to load and check if it is an FAT-VBR or not */
 )
 {
-    printf("FUNC=check_fs");
+    //ESP_LOGF("FUNC", "check_fs");
 
 	fs->wflag = 0; fs->winsect = 0xFFFFFFFF;		/* Invaidate window */
 	if (move_window(fs, sect) != FR_OK) return 4;	/* Load boot record */
@@ -3347,7 +3347,7 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	BYTE mode					/* !=0: Check write protection for write access */
 )
 {
-    printf("FUNC=find_volume");
+    //ESP_LOGF("FUNC", "find_volume");
 
 	BYTE fmt, *pt;
 	int vol;
@@ -3589,7 +3589,7 @@ static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 	FATFS** rfs				/* Pointer to pointer to the owner filesystem object to return */
 )
 {
-    printf("FUNC=validate");
+    //ESP_LOGF("FUNC", "validate");
 
 	FRESULT res = FR_INVALID_OBJECT;
 
@@ -3636,7 +3636,7 @@ FRESULT f_mount (
 	BYTE opt			/* Mode option 0:Do not mount (delayed mount), 1:Mount immediately */
 )
 {
-    printf("FUNC=f_mount");
+    //ESP_LOGF("FUNC", "f_mount");
 
 	FATFS *cfs;
 	int vol;
@@ -3686,7 +3686,7 @@ FRESULT f_open (
 	BYTE mode			/* Access mode and file open mode flags */
 )
 {
-    printf("FUNC=f_open");
+    //ESP_LOGF("FUNC", "f_open");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -3879,7 +3879,7 @@ FRESULT f_read (
 	UINT* br	/* Pointer to number of bytes read */
 )
 {
-    printf("FUNC=f_read");
+    //ESP_LOGF("FUNC", "f_read");
 
 	FRESULT res;
 	FATFS *fs;
@@ -3981,7 +3981,7 @@ FRESULT f_write (
 	UINT* bw			/* Pointer to number of bytes written */
 )
 {
-    printf("FUNC=f_write");
+    //ESP_LOGF("FUNC", "f_write");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4101,7 +4101,7 @@ FRESULT f_sync (
 	FIL* fp		/* Pointer to the file object */
 )
 {
-    printf("FUNC=f_sync");
+    //ESP_LOGF("FUNC", "f_sync");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4184,7 +4184,7 @@ FRESULT f_close (
 	FIL* fp		/* Pointer to the file object to be closed */
 )
 {
-    printf("FUNC=f_close");
+    //ESP_LOGF("FUNC", "f_close");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4222,7 +4222,7 @@ FRESULT f_chdrive (
 	const TCHAR* path		/* Drive number to set */
 )
 {
-    printf("FUNC=f_chdrive");
+    //ESP_LOGF("FUNC", "f_chdrive");
 
 	int vol;
 
@@ -4241,7 +4241,7 @@ FRESULT f_chdir (
 	const TCHAR* path	/* Pointer to the directory path */
 )
 {
-    printf("FUNC=f_chdir");
+    //ESP_LOGF("FUNC", "f_chdir");
 
 #if FF_STR_VOLUME_ID == 2
 	UINT i;
@@ -4306,7 +4306,7 @@ FRESULT f_getcwd (
 	UINT len		/* Size of buff in unit of TCHAR */
 )
 {
-    printf("FUNC=f_getcwd");
+    //ESP_LOGF("FUNC", "f_getcwd");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -4408,7 +4408,7 @@ FRESULT f_lseek (
 	FSIZE_t ofs		/* File pointer from top of file */
 )
 {
-    printf("FUNC=f_lseek");
+    //ESP_LOGF("FUNC", "f_lseek");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4571,7 +4571,7 @@ FRESULT f_opendir (
 	const TCHAR* path	/* Pointer to the directory path */
 )
 {
-    printf("FUNC=f_opendir");
+    //ESP_LOGF("FUNC", "f_opendir");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4638,7 +4638,7 @@ FRESULT f_closedir (
 	FF_DIR *dp		/* Pointer to the directory object to be closed */
 )
 {
-    printf("FUNC=f_closedir");
+    //ESP_LOGF("FUNC", "f_closedir");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4671,7 +4671,7 @@ FRESULT f_readdir (
 	FILINFO* fno		/* Pointer to file information to return */
 )
 {
-    printf("FUNC=f_readdir");
+    //ESP_LOGF("FUNC", "f_readdir");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4709,7 +4709,7 @@ FRESULT f_findnext (
 	FILINFO* fno	/* Pointer to the file information structure */
 )
 {
-    printf("FUNC=f_findnext");
+    //ESP_LOGF("FUNC", "f_findnext");
 
 	FRESULT res;
 
@@ -4738,7 +4738,7 @@ FRESULT f_findfirst (
 	const TCHAR* pattern	/* Pointer to the matching pattern */
 )
 {
-    printf("FUNC=f_findfirst");
+    //ESP_LOGF("FUNC", "f_findfirst");
 
 	FRESULT res;
 
@@ -4765,7 +4765,7 @@ FRESULT f_stat (
 	FILINFO* fno		/* Pointer to file information to return */
 )
 {
-    printf("FUNC=f_stat");
+    //ESP_LOGF("FUNC", "f_stat");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -4803,7 +4803,7 @@ FRESULT f_getfree (
 	FATFS** fatfs		/* Pointer to return pointer to corresponding filesystem object */
 )
 {
-    printf("FUNC=f_getfree");
+    //ESP_LOGF("FUNC", "f_getfree");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4892,7 +4892,7 @@ FRESULT f_truncate (
 	FIL* fp		/* Pointer to the file object */
 )
 {
-    printf("FUNC=f_truncate");
+    //ESP_LOGF("FUNC", "f_truncate");
 
 	FRESULT res;
 	FATFS *fs;
@@ -4944,7 +4944,7 @@ FRESULT f_unlink (
 	const TCHAR* path		/* Pointer to the file or directory path */
 )
 {
-    printf("FUNC=f_unlink");
+    //ESP_LOGF("FUNC", "f_unlink");
 
 	FRESULT res;
 	FF_DIR dj, sdj;
@@ -5040,7 +5040,7 @@ FRESULT f_mkdir (
 	const TCHAR* path		/* Pointer to the directory path */
 )
 {
-    printf("FUNC=f_mkdir");
+    //ESP_LOGF("FUNC", "f_mkdir");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -5127,7 +5127,7 @@ FRESULT f_rename (
 	const TCHAR* path_new	/* Pointer to the new name */
 )
 {
-    printf("FUNC=f_rename");
+    //ESP_LOGF("FUNC", "f_rename");
 
 	FRESULT res;
 	FF_DIR djo, djn;
@@ -5240,7 +5240,7 @@ FRESULT f_chmod (
 	BYTE mask			/* Attribute mask to change */
 )
 {
-    printf("FUNC=f_chmod");
+    //ESP_LOGF("FUNC", "f_chmod");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -5288,7 +5288,7 @@ FRESULT f_utime (
 	const FILINFO* fno	/* Pointer to the timestamp to be set */
 )
 {
-    printf("FUNC=f_utime");
+    //ESP_LOGF("FUNC", "f_utime");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -5338,7 +5338,7 @@ FRESULT f_getlabel (
 	DWORD* vsn			/* Variable to store the volume serial number */
 )
 {
-    printf("FUNC=f_getlabel");
+    //ESP_LOGF("FUNC", "f_getlabel");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -5433,7 +5433,7 @@ FRESULT f_setlabel (
 	const TCHAR* label	/* Volume label to set with heading logical drive number */
 )
 {
-    printf("FUNC=f_setlabel");
+    //ESP_LOGF("FUNC", "f_setlabel");
 
 	FRESULT res;
 	FF_DIR dj;
@@ -5557,7 +5557,7 @@ FRESULT f_expand (
 	BYTE opt		/* Operation mode 0:Find and prepare or 1:Find and allocate */
 )
 {
-    printf("FUNC=f_expand");
+    //ESP_LOGF("FUNC", "f_expand");
 
 	FRESULT res;
 	FATFS *fs;
@@ -5650,7 +5650,7 @@ FRESULT f_forward (
 	UINT* bf						/* Pointer to number of bytes forwarded */
 )
 {
-    printf("FUNC=f_forward");
+    //ESP_LOGF("FUNC", "f_forward");
 
 	FRESULT res;
 	FATFS *fs;
@@ -5724,7 +5724,7 @@ FRESULT f_mkfs (
 	UINT len			/* Size of working buffer [byte] */
 )
 {
-    printf("FUNC=f_mkfs");
+    //ESP_LOGF("FUNC", "f_mkfs");
 
 	const UINT n_fats = 1;		/* Number of FATs for FAT/FAT32 volume (1 or 2) */
 	const UINT n_rootdir = 512;	/* Number of root directory entries for FAT volume */
@@ -6192,7 +6192,7 @@ FRESULT f_fdisk (
 	void* work			/* Pointer to the working buffer (null: use heap memory) */
 )
 {
-    printf("FUNC=f_fdisk");
+    //ESP_LOGF("FUNC", "f_fdisk");
 
 	UINT i, n, sz_cyl, tot_cyl, b_cyl, e_cyl, p_cyl;
 	BYTE s_hd, e_hd, *p, *buf = (BYTE*)work;
@@ -6284,7 +6284,7 @@ TCHAR* f_gets (
 	FIL* fp			/* Pointer to the file object */
 )
 {
-    printf("FUNC=f_gets");
+    //ESP_LOGF("FUNC", "f_gets");
 
 	int nc = 0;
 	TCHAR *p = buff;
@@ -6426,7 +6426,7 @@ static void putc_bfd (		/* Buffered write with code conversion */
 	TCHAR c
 )
 {
-    printf("FUNC=putc_bfd");
+    //ESP_LOGF("FUNC", "putc_bfd");
 
 	UINT n;
 	int i, nc;
@@ -6558,7 +6558,7 @@ static int putc_flush (		/* Flush left characters in the buffer */
 	putbuff* pb
 )
 {
-    printf("FUNC=putc_flush");
+    //ESP_LOGF("FUNC", "putc_flush");
 
 	UINT nw;
 
@@ -6574,7 +6574,7 @@ static void putc_init (		/* Initialize write buffer */
 	FIL* fp
 )
 {
-    printf("FUNC=putc_init");
+    //ESP_LOGF("FUNC", "putc_init");
 
 	mem_set(pb, 0, sizeof (putbuff));
 	pb->fp = fp;
@@ -6587,7 +6587,7 @@ int f_putc (
 	FIL* fp		/* Pointer to the file object */
 )
 {
-    printf("FUNC=f_putc");
+    //ESP_LOGF("FUNC", "f_putc");
 
 	putbuff pb;
 
@@ -6609,7 +6609,7 @@ int f_puts (
 	FIL* fp				/* Pointer to the file object */
 )
 {
-    printf("FUNC=f_puts");
+    //ESP_LOGF("FUNC", "f_puts");
 
 	putbuff pb;
 
@@ -6632,7 +6632,7 @@ int f_printf (
 	...					/* Optional arguments... */
 )
 {
-    printf("FUNC=f_printf");
+    //ESP_LOGF("FUNC", "f_printf");
 
 	va_list arp;
 	putbuff pb;
@@ -6750,7 +6750,7 @@ FRESULT f_setcp (
 	WORD cp		/* Value to be set as active code page */
 )
 {
-    printf("FUNC=f_setcp");
+    //ESP_LOGF("FUNC", "f_setcp");
 
 	static const WORD       validcp[] = {  437,   720,   737,   771,   775,   850,   852,   857,   860,   861,   862,   863,   864,   865,   866,   869,   932,   936,   949,   950, 0};
 	static const BYTE* const tables[] = {Ct437, Ct720, Ct737, Ct771, Ct775, Ct850, Ct852, Ct857, Ct860, Ct861, Ct862, Ct863, Ct864, Ct865, Ct866, Ct869, Dc932, Dc936, Dc949, Dc950, 0};

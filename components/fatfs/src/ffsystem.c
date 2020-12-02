@@ -17,7 +17,7 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block (null if no
 	UINT msize		/* Number of bytes to allocate */
 )
 {
-    printf("FUNC=ff_memalloc");
+    //ESP_LOGF("FUNC", "ff_memalloc");
 
 	return malloc(msize);	/* Allocate a new memory block with POSIX API */
 }
@@ -31,7 +31,7 @@ void ff_memfree (
 	void* mblock	/* Pointer to the memory block to free (nothing to do if null) */
 )
 {
-    printf("FUNC=ff_memfree");
+    //ESP_LOGF("FUNC", "ff_memfree");
 
 	free(mblock);	/* Free the memory block with POSIX API */
 }
@@ -58,7 +58,7 @@ int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create the sync object
 	FF_SYNC_t* sobj		/* Pointer to return the created sync object */
 )
 {
-    printf("FUNC=ff_cre_syncobj");
+    //ESP_LOGF("FUNC", "ff_cre_syncobj");
 
 	/* Win32 */
 	*sobj = CreateMutex(NULL, FALSE, NULL);
@@ -96,7 +96,7 @@ int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to an error
 	FF_SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
 )
 {
-    printf("FUNC=ff_del_syncobj");
+    //ESP_LOGF("FUNC", "ff_del_syncobj");
 
 	/* Win32 */
 	return (int)CloseHandle(sobj);
@@ -129,7 +129,7 @@ int ff_req_grant (	/* 1:Got a grant to access the volume, 0:Could not get a gran
 	FF_SYNC_t sobj	/* Sync object to wait */
 )
 {
-    printf("FUNC=ff_req_grant");
+    //ESP_LOGF("FUNC", "ff_req_grant");
 
 	/* Win32 */
 	return (int)(WaitForSingleObject(sobj, FF_FS_TIMEOUT) == WAIT_OBJECT_0);
@@ -160,7 +160,7 @@ void ff_rel_grant (
 	FF_SYNC_t sobj	/* Sync object to be signaled */
 )
 {
-    printf("FUNC=ff_rel_grant");
+    //ESP_LOGF("FUNC", "ff_rel_grant");
 
 	/* Win32 */
 	ReleaseMutex(sobj);

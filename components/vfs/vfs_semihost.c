@@ -49,7 +49,7 @@ static vfs_semihost_ctx_t s_semhost_ctx[CONFIG_SEMIHOSTFS_MAX_MOUNT_POINTS];
 
 static inline int generic_syscall(int sys_nr, int arg1, int arg2, int arg3, int arg4, int* ret_errno)
 {
-    printf("FUNC=generic_syscall");
+    //ESP_LOGF("FUNC", "generic_syscall");
 
     int host_ret, host_errno;
 
@@ -75,21 +75,21 @@ static inline int generic_syscall(int sys_nr, int arg1, int arg2, int arg3, int 
 
 inline bool ctx_is_unused(const vfs_semihost_ctx_t* ctx)
 {
-    printf("FUNC=ctx_is_unused");
+    //ESP_LOGF("FUNC", "ctx_is_unused");
 
     return ctx->base_path[0] == 0;
 }
 
 inline bool ctx_uses_abspath(const vfs_semihost_ctx_t* ctx)
 {
-    printf("FUNC=ctx_uses_abspath");
+    //ESP_LOGF("FUNC", "ctx_uses_abspath");
 
     return ctx->host_path[0];
 }
 
 static int vfs_semihost_open(void* ctx, const char * path, int flags, int mode)
 {
-    printf("FUNC=vfs_semihost_open");
+    //ESP_LOGF("FUNC", "vfs_semihost_open");
 
     int fd = -1, host_err = 0;
     char *host_path;
@@ -120,7 +120,7 @@ static int vfs_semihost_open(void* ctx, const char * path, int flags, int mode)
 
 static ssize_t vfs_semihost_write(void* ctx, int fd, const void * data, size_t size)
 {
-    printf("FUNC=vfs_semihost_write");
+    //ESP_LOGF("FUNC", "vfs_semihost_write");
 
     int host_err = 0;
     size_t ret = -1;
@@ -135,7 +135,7 @@ static ssize_t vfs_semihost_write(void* ctx, int fd, const void * data, size_t s
 
 static ssize_t vfs_semihost_read(void* ctx, int fd, void* data, size_t size)
 {
-    printf("FUNC=vfs_semihost_read");
+    //ESP_LOGF("FUNC", "vfs_semihost_read");
 
     int host_err = 0;
     size_t ret = -1;
@@ -150,7 +150,7 @@ static ssize_t vfs_semihost_read(void* ctx, int fd, void* data, size_t size)
 
 static int vfs_semihost_close(void* ctx, int fd)
 {
-    printf("FUNC=vfs_semihost_close");
+    //ESP_LOGF("FUNC", "vfs_semihost_close");
 
     int ret = -1, host_err = 0;
 
@@ -164,7 +164,7 @@ static int vfs_semihost_close(void* ctx, int fd)
 
 static off_t vfs_semihost_lseek(void* ctx, int fd, off_t size, int mode)
 {
-    printf("FUNC=vfs_semihost_lseek");
+    //ESP_LOGF("FUNC", "vfs_semihost_lseek");
 
     int ret = -1, host_err = 0;
 
@@ -178,7 +178,7 @@ static off_t vfs_semihost_lseek(void* ctx, int fd, off_t size, int mode)
 
 esp_err_t esp_vfs_semihost_register(const char* base_path, const char* host_path)
 {
-    printf("FUNC=esp_vfs_semihost_register");
+    //ESP_LOGF("FUNC", "esp_vfs_semihost_register");
 
     const esp_vfs_t vfs = {
         .flags = ESP_VFS_FLAG_CONTEXT_PTR,
@@ -215,7 +215,7 @@ esp_err_t esp_vfs_semihost_register(const char* base_path, const char* host_path
 
 esp_err_t esp_vfs_semihost_unregister(const char* base_path)
 {
-    printf("FUNC=esp_vfs_semihost_unregister");
+    //ESP_LOGF("FUNC", "esp_vfs_semihost_unregister");
 
     ESP_LOGD(TAG, "Unregister semihosting driver @ '%s'", base_path);
     int i = 0;

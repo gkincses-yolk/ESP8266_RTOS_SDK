@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "sdkconfig.h"
+#include "esp_log.h"
 
 #ifdef CONFIG_IDF_TARGET_ESP32
 
 #include "bootloader_sha.h"
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
 #include <assert.h>
 #include <sys/param.h>
 
@@ -29,7 +29,7 @@
 
 bootloader_sha256_handle_t bootloader_sha256_start()
 {
-    printf("FUNC=bootloader_sha256_start");
+    //ESP_LOGF("FUNC", "bootloader_sha256_start");
 
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)malloc(sizeof(mbedtls_sha256_context));
     if (!ctx) {
@@ -42,7 +42,7 @@ bootloader_sha256_handle_t bootloader_sha256_start()
 
 void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data, size_t data_len)
 {
-    printf("FUNC=bootloader_sha256_data");
+    //ESP_LOGF("FUNC", "bootloader_sha256_data");
 
     assert(handle != NULL);
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)handle;
@@ -51,7 +51,7 @@ void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data,
 
 void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest)
 {
-    printf("FUNC=bootloader_sha256_finish");
+    //ESP_LOGF("FUNC", "bootloader_sha256_finish");
 
     assert(handle != NULL);
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)handle;
@@ -79,7 +79,7 @@ static const size_t DIGEST_WORDS = (32/sizeof(uint32_t));
 
 bootloader_sha256_handle_t bootloader_sha256_start()
 {
-    printf("FUNC=bootloader_sha256_start");
+    //ESP_LOGF("FUNC", "bootloader_sha256_start");
 
     // Enable SHA hardware
     ets_sha_enable();
@@ -89,7 +89,7 @@ bootloader_sha256_handle_t bootloader_sha256_start()
 
 void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data, size_t data_len)
 {
-    printf("FUNC=bootloader_sha256_data");
+    //ESP_LOGF("FUNC", "bootloader_sha256_data");
 
     assert(handle != NULL);
     assert(data_len % 4 == 0);
@@ -136,7 +136,7 @@ void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data,
 
 void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest)
 {
-    printf("FUNC=bootloader_sha256_finish");
+    //ESP_LOGF("FUNC", "bootloader_sha256_finish");
 
     assert(handle != NULL);
 
@@ -199,7 +199,7 @@ void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest
 
 bootloader_sha256_handle_t bootloader_sha256_start()
 {
-    printf("FUNC=bootloader_sha256_start");
+    //ESP_LOGF("FUNC", "bootloader_sha256_start");
 
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)malloc(sizeof(mbedtls_sha256_context));
     if (!ctx) {
@@ -212,7 +212,7 @@ bootloader_sha256_handle_t bootloader_sha256_start()
 
 void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data, size_t data_len)
 {
-    printf("FUNC=bootloader_sha256_data");
+    //ESP_LOGF("FUNC", "bootloader_sha256_data");
 
     assert(handle != NULL);
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)handle;
@@ -221,7 +221,7 @@ void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data,
 
 void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest)
 {
-    printf("FUNC=bootloader_sha256_finish");
+    //ESP_LOGF("FUNC", "bootloader_sha256_finish");
 
     assert(handle != NULL);
     mbedtls_sha256_context *ctx = (mbedtls_sha256_context *)handle;
@@ -238,7 +238,6 @@ void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest
 
 #include "bootloader_sha.h"
 #include "esp_sha.h"
-#include <stdio.h>
 
 // typedef esp_sha_t* bootloader_sha256_handle_t;
 
@@ -246,7 +245,7 @@ static esp_sha256_t s_sha256_ctx;
 
 bootloader_sha256_handle_t bootloader_sha256_start()
 {
-    printf("FUNC=bootloader_sha256_start");
+    //ESP_LOGF("FUNC", "bootloader_sha256_start");
 
     esp_sha256_t *ctx = &s_sha256_ctx;
 
@@ -257,14 +256,14 @@ bootloader_sha256_handle_t bootloader_sha256_start()
 
 void bootloader_sha256_data(bootloader_sha256_handle_t handle, const void *data, size_t data_len)
 {
-    printf("FUNC=bootloader_sha256_data");
+    //ESP_LOGF("FUNC", "bootloader_sha256_data");
 
     esp_sha256_update((esp_sha256_t *)handle, data, data_len);
 }
 
 void bootloader_sha256_finish(bootloader_sha256_handle_t handle, uint8_t *digest)
 {
-    printf("FUNC=bootloader_sha256_finish");
+    //ESP_LOGF("FUNC", "bootloader_sha256_finish");
 
     esp_sha256_finish((esp_sha256_t *)handle, digest);
 }

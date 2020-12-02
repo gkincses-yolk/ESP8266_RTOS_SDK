@@ -37,7 +37,7 @@ const char* fatfs_test_hello_str_utf = "世界，你好！\n";
 
 void test_fatfs_create_file_with_text(const char* name, const char* text)
 {
-    printf("FUNC=test_fatfs_create_file_with_text");
+    //ESP_LOGF("FUNC", "test_fatfs_create_file_with_text");
 
     FILE* f = fopen(name, "wb");
     TEST_ASSERT_NOT_NULL(f);
@@ -47,7 +47,7 @@ void test_fatfs_create_file_with_text(const char* name, const char* text)
 
 void test_fatfs_overwrite_append(const char* filename)
 {
-    printf("FUNC=test_fatfs_overwrite_append");
+    //ESP_LOGF("FUNC", "test_fatfs_overwrite_append");
 
     /* Create new file with 'aaaa' */
     test_fatfs_create_file_with_text(filename, "aaaa");
@@ -84,7 +84,7 @@ void test_fatfs_overwrite_append(const char* filename)
 
 void test_fatfs_read_file(const char* filename)
 {
-    printf("FUNC=test_fatfs_read_file");
+    //ESP_LOGF("FUNC", "test_fatfs_read_file");
 
     FILE* f = fopen(filename, "r");
     TEST_ASSERT_NOT_NULL(f);
@@ -97,7 +97,7 @@ void test_fatfs_read_file(const char* filename)
 
 void test_fatfs_read_file_utf_8(const char* filename)
 {
-    printf("FUNC=test_fatfs_read_file_utf_8");
+    //ESP_LOGF("FUNC", "test_fatfs_read_file_utf_8");
 
     FILE* f = fopen(filename, "r");
     TEST_ASSERT_NOT_NULL(f);
@@ -110,7 +110,7 @@ void test_fatfs_read_file_utf_8(const char* filename)
 
 void test_fatfs_pread_file(const char* filename)
 {
-    printf("FUNC=test_fatfs_pread_file");
+    //ESP_LOGF("FUNC", "test_fatfs_pread_file");
 
     char buf[32] = { 0 };
     const int fd = open(filename, O_RDONLY);
@@ -151,7 +151,7 @@ void test_fatfs_pread_file(const char* filename)
 
 static void test_pwrite(const char *filename, off_t offset, const char *msg)
 {
-    printf("FUNC=test_pwrite");
+    //ESP_LOGF("FUNC", "test_pwrite");
 
     const int fd = open(filename, O_WRONLY);
     TEST_ASSERT_NOT_EQUAL(-1, fd);
@@ -168,7 +168,7 @@ static void test_pwrite(const char *filename, off_t offset, const char *msg)
 
 static void test_file_content(const char *filename, const char *msg)
 {
-    printf("FUNC=test_file_content");
+    //ESP_LOGF("FUNC", "test_file_content");
 
     char buf[32] = { 0 };
     const int fd = open(filename, O_RDONLY);
@@ -183,7 +183,7 @@ static void test_file_content(const char *filename, const char *msg)
 
 void test_fatfs_pwrite_file(const char *filename)
 {
-    printf("FUNC=test_fatfs_pwrite_file");
+    //ESP_LOGF("FUNC", "test_fatfs_pwrite_file");
 
     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
     TEST_ASSERT_NOT_EQUAL(-1, fd);
@@ -200,7 +200,7 @@ void test_fatfs_pwrite_file(const char *filename)
 
 void test_fatfs_open_max_files(const char* filename_prefix, size_t files_count)
 {
-    printf("FUNC=test_fatfs_open_max_files");
+    //ESP_LOGF("FUNC", "test_fatfs_open_max_files");
 
     FILE** files = calloc(files_count, sizeof(FILE*));
     for (size_t i = 0; i < files_count; ++i) {
@@ -218,7 +218,7 @@ void test_fatfs_open_max_files(const char* filename_prefix, size_t files_count)
 
 void test_fatfs_lseek(const char* filename)
 {
-    printf("FUNC=test_fatfs_lseek");
+    //ESP_LOGF("FUNC", "test_fatfs_lseek");
 
     FILE* f = fopen(filename, "wb+");
     TEST_ASSERT_NOT_NULL(f);
@@ -245,7 +245,7 @@ void test_fatfs_lseek(const char* filename)
 
 void test_fatfs_truncate_file(const char* filename)
 {
-    printf("FUNC=test_fatfs_truncate_file");
+    //ESP_LOGF("FUNC", "test_fatfs_truncate_file");
 
     int read = 0;
     int truncated_len = 0;
@@ -322,7 +322,7 @@ void test_fatfs_truncate_file(const char* filename)
 
 void test_fatfs_stat(const char* filename, const char* root_dir)
 {
-    printf("FUNC=test_fatfs_stat");
+    //ESP_LOGF("FUNC", "test_fatfs_stat");
 
     struct tm tm;
     tm.tm_year = 2017 - 1900;
@@ -357,7 +357,7 @@ void test_fatfs_stat(const char* filename, const char* root_dir)
 
 void test_fatfs_utime(const char* filename, const char* root_dir)
 {
-    printf("FUNC=test_fatfs_utime");
+    //ESP_LOGF("FUNC", "test_fatfs_utime");
 
     struct stat achieved_stat;
     struct tm desired_tm;
@@ -434,7 +434,7 @@ void test_fatfs_utime(const char* filename, const char* root_dir)
 
 void test_fatfs_unlink(const char* filename)
 {
-    printf("FUNC=test_fatfs_unlink");
+    //ESP_LOGF("FUNC", "test_fatfs_unlink");
 
     test_fatfs_create_file_with_text(filename, "unlink\n");
 
@@ -445,7 +445,7 @@ void test_fatfs_unlink(const char* filename)
 
 void test_fatfs_link_rename(const char* filename_prefix)
 {
-    printf("FUNC=test_fatfs_link_rename");
+    //ESP_LOGF("FUNC", "test_fatfs_link_rename");
 
     char name_copy[64];
     char name_dst[64];
@@ -482,7 +482,7 @@ void test_fatfs_link_rename(const char* filename_prefix)
 
 void test_fatfs_mkdir_rmdir(const char* filename_prefix)
 {
-    printf("FUNC=test_fatfs_mkdir_rmdir");
+    //ESP_LOGF("FUNC", "test_fatfs_mkdir_rmdir");
 
     char name_dir1[64];
     char name_dir2[64];
@@ -514,7 +514,7 @@ void test_fatfs_mkdir_rmdir(const char* filename_prefix)
 
 void test_fatfs_can_opendir(const char* path)
 {
-    printf("FUNC=test_fatfs_can_opendir");
+    //ESP_LOGF("FUNC", "test_fatfs_can_opendir");
 
     char name_dir_file[64];
     const char * file_name = "test_opd.txt";
@@ -541,7 +541,7 @@ void test_fatfs_can_opendir(const char* path)
 
 void test_fatfs_opendir_readdir_rewinddir(const char* dir_prefix)
 {
-    printf("FUNC=test_fatfs_opendir_readdir_rewinddir");
+    //ESP_LOGF("FUNC", "test_fatfs_opendir_readdir_rewinddir");
 
     char name_dir_inner_file[64];
     char name_dir_inner[64];
@@ -623,7 +623,7 @@ void test_fatfs_opendir_readdir_rewinddir(const char* dir_prefix)
 
 void test_fatfs_opendir_readdir_rewinddir_utf_8(const char* dir_prefix)
 {
-    printf("FUNC=test_fatfs_opendir_readdir_rewinddir_utf_8");
+    //ESP_LOGF("FUNC", "test_fatfs_opendir_readdir_rewinddir_utf_8");
 
     char name_dir_inner_file[64];
     char name_dir_inner[64];
@@ -723,7 +723,7 @@ typedef struct {
 
 static void read_write_task(void* param)
 {
-    printf("FUNC=read_write_task");
+    //ESP_LOGF("FUNC", "read_write_task");
 
     read_write_test_arg_t* args = (read_write_test_arg_t*) param;
     FILE* f = fopen(args->filename, args->write ? "wb" : "rb");
@@ -765,7 +765,7 @@ done:
 
 void test_fatfs_concurrent(const char* filename_prefix)
 {
-    printf("FUNC=test_fatfs_concurrent");
+    //ESP_LOGF("FUNC", "test_fatfs_concurrent");
 
     char names[4][64];
     for (size_t i = 0; i < 4; ++i) {
@@ -824,7 +824,7 @@ void test_fatfs_concurrent(const char* filename_prefix)
 
 void test_fatfs_rw_speed(const char* filename, void* buf, size_t buf_size, size_t file_size, bool is_write)
 {
-    printf("FUNC=test_fatfs_rw_speed");
+    //ESP_LOGF("FUNC", "test_fatfs_rw_speed");
 
     const size_t buf_count = file_size / buf_size;
 

@@ -23,21 +23,21 @@ static const char* TAG = "SPIFFS";
 
 void spiffs_api_lock(spiffs *fs)
 {
-    printf("FUNC=spiffs_api_lock");
+    //ESP_LOGF("FUNC", "spiffs_api_lock");
 
     (void) xSemaphoreTake(((esp_spiffs_t *)(fs->user_data))->lock, portMAX_DELAY);
 }
 
 void spiffs_api_unlock(spiffs *fs)
 {
-    printf("FUNC=spiffs_api_unlock");
+    //ESP_LOGF("FUNC", "spiffs_api_unlock");
 
     xSemaphoreGive(((esp_spiffs_t *)(fs->user_data))->lock);
 }
 
 s32_t spiffs_api_read(spiffs *fs, uint32_t addr, uint32_t size, uint8_t *dst)
 {
-    printf("FUNC=spiffs_api_read");
+    //ESP_LOGF("FUNC", "spiffs_api_read");
 
     esp_err_t err = esp_partition_read(((esp_spiffs_t *)(fs->user_data))->partition, 
                                         addr, dst, size);
@@ -50,7 +50,7 @@ s32_t spiffs_api_read(spiffs *fs, uint32_t addr, uint32_t size, uint8_t *dst)
 
 s32_t spiffs_api_write(spiffs *fs, uint32_t addr, uint32_t size, uint8_t *src)
 {
-    printf("FUNC=spiffs_api_write");
+    //ESP_LOGF("FUNC", "spiffs_api_write");
 
     esp_err_t err = esp_partition_write(((esp_spiffs_t *)(fs->user_data))->partition, 
                                         addr, src, size);
@@ -63,7 +63,7 @@ s32_t spiffs_api_write(spiffs *fs, uint32_t addr, uint32_t size, uint8_t *src)
 
 s32_t spiffs_api_erase(spiffs *fs, uint32_t addr, uint32_t size)
 {
-    printf("FUNC=spiffs_api_erase");
+    //ESP_LOGF("FUNC", "spiffs_api_erase");
 
     esp_err_t err = esp_partition_erase_range(((esp_spiffs_t *)(fs->user_data))->partition, 
                                         addr, size);
@@ -77,7 +77,7 @@ s32_t spiffs_api_erase(spiffs *fs, uint32_t addr, uint32_t size)
 void spiffs_api_check(spiffs *fs, spiffs_check_type type, 
                             spiffs_check_report report, uint32_t arg1, uint32_t arg2)
 {
-    printf("FUNC=spiffs_api_check");
+    //ESP_LOGF("FUNC", "spiffs_api_check");
 
     static const char * spiffs_check_type_str[3] = {
         "LOOKUP",

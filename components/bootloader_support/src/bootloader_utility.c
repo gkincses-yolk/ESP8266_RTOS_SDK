@@ -71,7 +71,7 @@ static void set_cache_and_start_app(uint32_t drom_addr,
 
 bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 {
-    printf("FUNC=bootloader_utility_load_partition_table");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
 
     const esp_partition_info_t *partitions;
     const char *partition_usage;
@@ -173,7 +173,7 @@ bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 /* Given a partition index, return the partition position data from the bootloader_state_t structure */
 static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int index)
 {
-    printf("FUNC=index_to_partition");
+    //ESP_LOGF("FUNC", "index_to_partition");
 
     if (index == FACTORY_INDEX) {
         return bs->factory;
@@ -193,7 +193,7 @@ static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int 
 
 static void log_invalid_app_partition(int index)
 {
-    printf("FUNC=log_invalid_app_partition");
+    //ESP_LOGF("FUNC", "log_invalid_app_partition");
 
     const char *not_bootable = " is not bootable"; /* save a few string literal bytes */
     switch(index) {
@@ -211,7 +211,7 @@ static void log_invalid_app_partition(int index)
 
 int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 {
-    printf("FUNC=bootloader_utility_get_selected_boot_partition");
+    //ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
 
     esp_ota_select_entry_t sa,sb;
     const esp_ota_select_entry_t *ota_select_map;
@@ -283,7 +283,7 @@ int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 /* Return true if a partition has a valid app image that was successfully loaded */
 static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_metadata_t *data)
 {
-    printf("FUNC=try_load_partition");
+    //ESP_LOGF("FUNC", "try_load_partition");
 
     if (partition->size == 0) {
         ESP_LOGD(TAG, "Can't boot from zero-length partition");
@@ -304,7 +304,7 @@ static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_m
 
 bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_index, esp_image_metadata_t *result)
 {
-    printf("FUNC=bootloader_utility_load_boot_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
 
     int index = start_index;
     esp_partition_pos_t part;
@@ -354,7 +354,7 @@ bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_
 
 void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 {
-    printf("FUNC=bootloader_utility_load_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_image");
 
 #if defined(CONFIG_SECURE_BOOT_ENABLED) || defined(CONFIG_FLASH_ENCRYPTION_ENABLED)
     esp_err_t err;
@@ -401,7 +401,7 @@ void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 
 static void unpack_load_app(const esp_image_metadata_t* data)
 {
-    printf("FUNC=unpack_load_app");
+    //ESP_LOGF("FUNC", "unpack_load_app");
 
     uint32_t drom_addr = 0;
     uint32_t drom_load_addr = 0;
@@ -454,7 +454,7 @@ static void set_cache_and_start_app(
     uint32_t irom_size,
     uint32_t entry_addr)
 {
-    printf("FUNC=set_cache_and_start_app");
+    //ESP_LOGF("FUNC", "set_cache_and_start_app");
 
     ESP_LOGD(TAG, "configure drom and irom and start");
     Cache_Read_Disable( 0 );
@@ -518,7 +518,7 @@ static const char* TAG = "boot";
 
 bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 {
-    printf("FUNC=bootloader_utility_load_partition_table");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
 
     const esp_partition_info_t *partitions;
     const char *partition_usage;
@@ -642,7 +642,7 @@ bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 
 int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 {
-    printf("FUNC=bootloader_utility_get_selected_boot_partition");
+    //ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
 
     esp_ota_select_entry_t sa,sb;
     const esp_ota_select_entry_t *ota_select_map;
@@ -714,7 +714,7 @@ int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 /* Given a partition index, return the partition position data from the bootloader_state_t structure */
 static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int index)
 {
-    printf("FUNC=index_to_partition");
+    //ESP_LOGF("FUNC", "index_to_partition");
 
     if (index == FACTORY_INDEX) {
         return bs->factory;
@@ -734,7 +734,7 @@ static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int 
 
 static void log_invalid_app_partition(int index)
 {
-    printf("FUNC=log_invalid_app_partition");
+    //ESP_LOGF("FUNC", "log_invalid_app_partition");
 
     const char *not_bootable = " is not bootable"; /* save a few string literal bytes */
     switch(index) {
@@ -753,7 +753,7 @@ static void log_invalid_app_partition(int index)
 /* Return true if a partition has a valid app image that was successfully loaded */
 static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_metadata_t *data)
 {
-    printf("FUNC=try_load_partition");
+    //ESP_LOGF("FUNC", "try_load_partition");
 
     if (partition->size == 0) {
         ESP_LOGD(TAG, "Can't boot from zero-length partition");
@@ -774,7 +774,7 @@ static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_m
 
 static void bootloader_utility_start_image(uint32_t image_start, uint32_t image_size, uint32_t entry_addr)
 {
-    printf("FUNC=bootloader_utility_start_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_start_image");
 
     void (*user_start)(size_t start_addr);
 
@@ -786,7 +786,7 @@ static void bootloader_utility_start_image(uint32_t image_start, uint32_t image_
 
 bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_index, esp_image_metadata_t *result)
 {
-    printf("FUNC=bootloader_utility_load_boot_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
 
     int index = start_index;
     esp_partition_pos_t part;
@@ -836,7 +836,7 @@ bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_
 
 void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 {
-    printf("FUNC=bootloader_utility_load_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_load_image");
 
 #if defined(CONFIG_SECURE_BOOT_ENABLED) || defined(CONFIG_FLASH_ENCRYPTION_ENABLED)
     esp_err_t err;
@@ -887,7 +887,7 @@ void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 
 void bootloader_utility_fast_boot_image(void)
 {
-    printf("FUNC=bootloader_utility_fast_boot_image");
+    //ESP_LOGF("FUNC", "bootloader_utility_fast_boot_image");
 
     uint32_t image_start, image_size, image_entry;
 

@@ -45,6 +45,7 @@ static const uint32_t s_log_color[ESP_LOG_MAX] = {
     32, //  ESP_LOG_INFO
     0,  //  ESP_LOG_DEBUG
     0,  //  ESP_LOG_VERBOSE
+    30, //  ESP_LOG_FUNC
 };
 #endif
 
@@ -55,6 +56,7 @@ static const char s_log_prefix[ESP_LOG_MAX] = {
     'I', //  ESP_LOG_INFO
     'D', //  ESP_LOG_DEBUG
     'V', //  ESP_LOG_VERBOSE
+    'F', //  ESP_LOG_FUNC
 };
 
 uint32_t IRAM_ATTR esp_log_early_timestamp()

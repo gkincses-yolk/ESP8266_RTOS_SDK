@@ -3,7 +3,7 @@
 
 static s32_t spiffs_page_data_check(spiffs *fs, spiffs_fd *fd, spiffs_page_ix pix, spiffs_span_ix spix)
 {
-    printf("FUNC=spiffs_page_data_check");
+    //ESP_LOGF("FUNC", "spiffs_page_data_check");
 
   s32_t res = SPIFFS_OK;
   if (pix == (spiffs_page_ix)-1) {
@@ -35,7 +35,7 @@ static s32_t spiffs_page_data_check(spiffs *fs, spiffs_fd *fd, spiffs_page_ix pi
 #if !SPIFFS_READ_ONLY
 static s32_t spiffs_page_index_check(spiffs *fs, spiffs_fd *fd, spiffs_page_ix pix, spiffs_span_ix spix)
 {
-    printf("FUNC=spiffs_page_index_check");
+    //ESP_LOGF("FUNC", "spiffs_page_index_check");
 
   s32_t res = SPIFFS_OK;
   if (pix == (spiffs_page_ix)-1) {
@@ -93,7 +93,7 @@ s32_t spiffs_phys_cpy(
     u32_t src,
     u32_t len)
 {
-    printf("FUNC=spiffs_phys_cpy");
+    //ESP_LOGF("FUNC", "spiffs_phys_cpy");
 
   (void)fh;
   s32_t res;
@@ -142,7 +142,7 @@ s32_t spiffs_obj_lu_find_entry_visitor(
     spiffs_block_ix *block_ix,
     int *lu_entry)
 {
-    printf("FUNC=spiffs_obj_lu_find_entry_visitor");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_entry_visitor");
 
   s32_t res = SPIFFS_OK;
   s32_t entry_count = fs->block_count * SPIFFS_OBJ_LOOKUP_MAX_ENTRIES(fs);
@@ -239,7 +239,7 @@ s32_t spiffs_erase_block(
     spiffs *fs,
     spiffs_block_ix bix)
 {
-    printf("FUNC=spiffs_erase_block");
+    //ESP_LOGF("FUNC", "spiffs_erase_block");
 
   s32_t res;
   u32_t addr = SPIFFS_BLOCK_TO_PADDR(fs, bix);
@@ -283,7 +283,7 @@ s32_t spiffs_erase_block(
 s32_t spiffs_probe(
     spiffs_config *cfg)
 {
-    printf("FUNC=spiffs_probe");
+    //ESP_LOGF("FUNC", "spiffs_probe");
 
   s32_t res;
   u32_t paddr;
@@ -343,7 +343,7 @@ static s32_t spiffs_obj_lu_scan_v(
     const void *user_const_p,
     void *user_var_p)
 {
-    printf("FUNC=spiffs_obj_lu_scan_v");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_scan_v");
 
   (void)bix;
   (void)user_const_p;
@@ -369,7 +369,7 @@ static s32_t spiffs_obj_lu_scan_v(
 s32_t spiffs_obj_lu_scan(
     spiffs *fs)
 {
-    printf("FUNC=spiffs_obj_lu_scan");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_scan");
 
   s32_t res;
   spiffs_block_ix bix;
@@ -477,7 +477,7 @@ s32_t spiffs_obj_lu_find_free(
     spiffs_block_ix *block_ix,
     int *lu_entry)
 {
-    printf("FUNC=spiffs_obj_lu_find_free");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_free");
 
   s32_t res;
   if (!fs->cleaning && fs->free_blocks < 2) {
@@ -517,7 +517,7 @@ s32_t spiffs_obj_lu_find_id(
     spiffs_block_ix *block_ix,
     int *lu_entry)
 {
-    printf("FUNC=spiffs_obj_lu_find_id");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_id");
 
   s32_t res = spiffs_obj_lu_find_entry_visitor(
       fs, starting_block, starting_lu_entry, SPIFFS_VIS_CHECK_ID, obj_id, 0, 0, 0, block_ix, lu_entry);
@@ -536,7 +536,7 @@ static s32_t spiffs_obj_lu_find_id_and_span_v(
     const void *user_const_p,
     void *user_var_p)
 {
-    printf("FUNC=spiffs_obj_lu_find_id_and_span_v");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_id_and_span_v");
 
   s32_t res;
   spiffs_page_header ph;
@@ -564,7 +564,7 @@ s32_t spiffs_obj_lu_find_id_and_span(
     spiffs_page_ix exclusion_pix,
     spiffs_page_ix *pix)
 {
-    printf("FUNC=spiffs_obj_lu_find_id_and_span");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_id_and_span");
 
   s32_t res;
   spiffs_block_ix bix;
@@ -606,7 +606,7 @@ s32_t spiffs_obj_lu_find_id_and_span_by_phdr(
     spiffs_page_ix exclusion_pix,
     spiffs_page_ix *pix)
 {
-    printf("FUNC=spiffs_obj_lu_find_id_and_span_by_phdr");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_id_and_span_by_phdr");
 
   s32_t res;
   spiffs_block_ix bix;
@@ -645,7 +645,7 @@ s32_t spiffs_obj_lu_find_id_and_span_by_phdr(
 static void spiffs_update_ix_map(spiffs *fs,
     spiffs_fd *fd, spiffs_span_ix objix_spix, spiffs_page_object_ix *objix)
 {
-    printf("FUNC=spiffs_update_ix_map");
+    //ESP_LOGF("FUNC", "spiffs_update_ix_map");
 
 #if SPIFFS_SINGLETON
   (void)fs;
@@ -712,7 +712,7 @@ static s32_t spiffs_populate_ix_map_v(
     const void *user_const_p,
     void *user_var_p)
 {
-    printf("FUNC=spiffs_populate_ix_map_v");
+    //ESP_LOGF("FUNC", "spiffs_populate_ix_map_v");
 
   (void)user_const_p;
   s32_t res;
@@ -756,7 +756,7 @@ static s32_t spiffs_populate_ix_map_v(
 // populates index map, from vector entry start to vector entry end, inclusive
 s32_t spiffs_populate_ix_map(spiffs *fs, spiffs_fd *fd, u32_t vec_entry_start, u32_t vec_entry_end)
 {
-    printf("FUNC=spiffs_populate_ix_map");
+    //ESP_LOGF("FUNC", "spiffs_populate_ix_map");
 
   s32_t res;
   spiffs_ix_map *map = fd->ix_map;
@@ -808,7 +808,7 @@ s32_t spiffs_page_allocate_data(
     u8_t finalize,
     spiffs_page_ix *pix)
 {
-    printf("FUNC=spiffs_page_allocate_data");
+    //ESP_LOGF("FUNC", "spiffs_page_allocate_data");
 
   s32_t res = SPIFFS_OK;
   spiffs_block_ix bix;
@@ -869,7 +869,7 @@ s32_t spiffs_page_move(
     spiffs_page_ix src_pix,
     spiffs_page_ix *dst_pix)
 {
-    printf("FUNC=spiffs_page_move");
+    //ESP_LOGF("FUNC", "spiffs_page_move");
 
   s32_t res;
   u8_t was_final = 0;
@@ -931,7 +931,7 @@ s32_t spiffs_page_delete(
     spiffs *fs,
     spiffs_page_ix pix)
 {
-    printf("FUNC=spiffs_page_delete");
+    //ESP_LOGF("FUNC", "spiffs_page_delete");
 
   s32_t res;
   spiffs_page_header hdr;
@@ -969,7 +969,7 @@ s32_t spiffs_object_create(
     spiffs_obj_type type,
     spiffs_page_ix *objix_hdr_pix)
 {
-    printf("FUNC=spiffs_object_create");
+    //ESP_LOGF("FUNC", "spiffs_object_create");
 
   s32_t res = SPIFFS_OK;
   spiffs_block_ix bix;
@@ -1042,7 +1042,7 @@ s32_t spiffs_object_update_index_hdr(
     u32_t size,
     spiffs_page_ix *new_pix)
 {
-    printf("FUNC=spiffs_object_update_index_hdr");
+    //ESP_LOGF("FUNC", "spiffs_object_update_index_hdr");
 
   s32_t res = SPIFFS_OK;
   spiffs_page_object_ix_header *objix_hdr;
@@ -1105,7 +1105,7 @@ void spiffs_cb_object_event(
     spiffs_page_ix new_pix,
     u32_t new_size)
 {
-    printf("FUNC=spiffs_cb_object_event");
+    //ESP_LOGF("FUNC", "spiffs_cb_object_event");
 
 #if SPIFFS_IX_MAP == 0
   (void)objix;
@@ -1219,7 +1219,7 @@ s32_t spiffs_object_open_by_id(
     spiffs_flags flags,
     spiffs_mode mode)
 {
-    printf("FUNC=spiffs_object_open_by_id");
+    //ESP_LOGF("FUNC", "spiffs_object_open_by_id");
 
   s32_t res = SPIFFS_OK;
   spiffs_page_ix pix;
@@ -1240,7 +1240,7 @@ s32_t spiffs_object_open_by_page(
     spiffs_flags flags,
     spiffs_mode mode)
 {
-    printf("FUNC=spiffs_object_open_by_page");
+    //ESP_LOGF("FUNC", "spiffs_object_open_by_page");
 
   (void)mode;
   s32_t res = SPIFFS_OK;
@@ -1278,7 +1278,7 @@ s32_t spiffs_object_open_by_page(
 // keep current object index (header) page in fs->work buffer
 s32_t spiffs_object_append(spiffs_fd *fd, u32_t offset, u8_t *data, u32_t len)
 {
-    printf("FUNC=spiffs_object_append");
+    //ESP_LOGF("FUNC", "spiffs_object_append");
 
   spiffs *fs = fd->fs;
   s32_t res = SPIFFS_OK;
@@ -1528,7 +1528,7 @@ s32_t spiffs_object_append(spiffs_fd *fd, u32_t offset, u8_t *data, u32_t len)
 // keep current object index (header) page in fs->work buffer
 s32_t spiffs_object_modify(spiffs_fd *fd, u32_t offset, u8_t *data, u32_t len)
 {
-    printf("FUNC=spiffs_object_modify");
+    //ESP_LOGF("FUNC", "spiffs_object_modify");
 
   spiffs *fs = fd->fs;
   s32_t res = SPIFFS_OK;
@@ -1739,7 +1739,7 @@ static s32_t spiffs_object_find_object_index_header_by_name_v(
     const void *user_const_p,
     void *user_var_p)
 {
-    printf("FUNC=spiffs_object_find_object_index_header_by_name_v");
+    //ESP_LOGF("FUNC", "spiffs_object_find_object_index_header_by_name_v");
 
   (void)user_var_p;
   s32_t res;
@@ -1769,7 +1769,7 @@ s32_t spiffs_object_find_object_index_header_by_name(
     const u8_t name[SPIFFS_OBJ_NAME_LEN],
     spiffs_page_ix *pix)
 {
-    printf("FUNC=spiffs_object_find_object_index_header_by_name");
+    //ESP_LOGF("FUNC", "spiffs_object_find_object_index_header_by_name");
 
   s32_t res;
   spiffs_block_ix bix;
@@ -1808,7 +1808,7 @@ s32_t spiffs_object_truncate(
     u32_t new_size,
     u8_t remove_full)
 {
-    printf("FUNC=spiffs_object_truncate");
+    //ESP_LOGF("FUNC", "spiffs_object_truncate");
 
   s32_t res = SPIFFS_OK;
   spiffs *fs = fd->fs;
@@ -2051,7 +2051,7 @@ s32_t spiffs_object_read(
     u32_t len,
     u8_t *dst)
 {
-    printf("FUNC=spiffs_object_read");
+    //ESP_LOGF("FUNC", "spiffs_object_read");
 
   s32_t res = SPIFFS_OK;
   spiffs *fs = fd->fs;
@@ -2151,7 +2151,7 @@ typedef struct {
 static s32_t spiffs_obj_lu_find_free_obj_id_bitmap_v(spiffs *fs, spiffs_obj_id id, spiffs_block_ix bix, int ix_entry,
     const void *user_const_p, void *user_var_p)
 {
-    printf("FUNC=spiffs_obj_lu_find_free_obj_id_bitmap_v");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_free_obj_id_bitmap_v");
 
   if (id != SPIFFS_OBJ_ID_FREE && id != SPIFFS_OBJ_ID_DELETED) {
     spiffs_obj_id min_obj_id = *((spiffs_obj_id*)user_var_p);
@@ -2187,7 +2187,7 @@ static s32_t spiffs_obj_lu_find_free_obj_id_bitmap_v(spiffs *fs, spiffs_obj_id i
 static s32_t spiffs_obj_lu_find_free_obj_id_compact_v(spiffs *fs, spiffs_obj_id id, spiffs_block_ix bix, int ix_entry,
     const void *user_const_p, void *user_var_p)
 {
-    printf("FUNC=spiffs_obj_lu_find_free_obj_id_compact_v");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_free_obj_id_compact_v");
 
   (void)user_var_p;
   if (id != SPIFFS_OBJ_ID_FREE && id != SPIFFS_OBJ_ID_DELETED && (id & SPIFFS_OBJ_ID_IX_FLAG)) {
@@ -2223,7 +2223,7 @@ static s32_t spiffs_obj_lu_find_free_obj_id_compact_v(spiffs *fs, spiffs_obj_id 
 // Finally, the bitmask is searched for a free id
 s32_t spiffs_obj_lu_find_free_obj_id(spiffs *fs, spiffs_obj_id *obj_id, const u8_t *conflicting_name)
 {
-    printf("FUNC=spiffs_obj_lu_find_free_obj_id");
+    //ESP_LOGF("FUNC", "spiffs_obj_lu_find_free_obj_id");
 
   s32_t res = SPIFFS_OK;
   u32_t max_objects = (fs->block_count * SPIFFS_OBJ_LOOKUP_MAX_ENTRIES(fs)) / 2;
@@ -2323,7 +2323,7 @@ s32_t spiffs_obj_lu_find_free_obj_id(spiffs *fs, spiffs_obj_id *obj_id, const u8
 // djb2 hash
 static u32_t spiffs_hash(spiffs *fs, const u8_t *name)
 {
-    printf("FUNC=spiffs_hash");
+    //ESP_LOGF("FUNC", "spiffs_hash");
 
   (void)fs;
   u32_t hash = 5381;
@@ -2338,7 +2338,7 @@ static u32_t spiffs_hash(spiffs *fs, const u8_t *name)
 
 s32_t spiffs_fd_find_new(spiffs *fs, spiffs_fd **fd, const char *name)
 {
-    printf("FUNC=spiffs_fd_find_new");
+    //ESP_LOGF("FUNC", "spiffs_fd_find_new");
 
 #if SPIFFS_TEMPORAL_FD_CACHE
   u32_t i;
@@ -2419,7 +2419,7 @@ s32_t spiffs_fd_find_new(spiffs *fs, spiffs_fd **fd, const char *name)
 
 s32_t spiffs_fd_return(spiffs *fs, spiffs_file f)
 {
-    printf("FUNC=spiffs_fd_return");
+    //ESP_LOGF("FUNC", "spiffs_fd_return");
 
   if (f <= 0 || f > (s16_t)fs->fd_count) {
     return SPIFFS_ERR_BAD_DESCRIPTOR;
@@ -2438,7 +2438,7 @@ s32_t spiffs_fd_return(spiffs *fs, spiffs_file f)
 
 s32_t spiffs_fd_get(spiffs *fs, spiffs_file f, spiffs_fd **fd)
 {
-    printf("FUNC=spiffs_fd_get");
+    //ESP_LOGF("FUNC", "spiffs_fd_get");
 
   if (f <= 0 || f > (s16_t)fs->fd_count) {
     return SPIFFS_ERR_BAD_DESCRIPTOR;
@@ -2457,7 +2457,7 @@ void spiffs_fd_temporal_cache_rehash(
     const char *old_path,
     const char *new_path)
 {
-    printf("FUNC=spiffs_fd_temporal_cache_rehash");
+    //ESP_LOGF("FUNC", "spiffs_fd_temporal_cache_rehash");
 
   u32_t i;
   u32_t old_hash = spiffs_hash(fs, (const u8_t *)old_path);

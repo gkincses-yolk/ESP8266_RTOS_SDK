@@ -35,6 +35,7 @@ typedef enum {
     ESP_LOG_INFO,       /*!< Information messages which describe normal flow of events */
     ESP_LOG_DEBUG,      /*!< Extra information which is not necessary for normal use (values, pointers, sizes, etc). */
     ESP_LOG_VERBOSE,    /*!< Bigger chunks of debugging information, or frequent messages which can potentially flood the output. */
+    ESP_LOG_FUNC,       /*!< Func entries. */
 
     ESP_LOG_MAX
 } esp_log_level_t;
@@ -268,6 +269,8 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
 #define ESP_EARLY_LOGD( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_DEBUG,   D, ##__VA_ARGS__)
 /// macro to output logs in startup code at ``ESP_LOG_VERBOSE`` level.  @see ``ESP_EARLY_LOGE``,``ESP_LOGE``, ``printf``
 #define ESP_EARLY_LOGV( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_VERBOSE, V, ##__VA_ARGS__)
+/// macro to output logs in startup code at ``ESP_LOG_VERBOSE`` level.  @see ``ESP_EARLY_LOGE``,``ESP_LOGE``, ``printf``
+#define ESP_EARLY_LOGF( tag, format, ... ) ESP_LOG_EARLY_IMPL(tag, format, ESP_LOG_FUNC,    F, ##__VA_ARGS__)
 
 #define ESP_LOG_EARLY_IMPL(tag, format, log_level, log_tag_letter, ...) do {                         \
         if (LOG_LOCAL_LEVEL >= log_level) {                                                          \
@@ -280,6 +283,7 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
 #define ESP_LOGI( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO,    tag, format, ##__VA_ARGS__)
 #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
 #define ESP_LOGV( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_VERBOSE, tag, format, ##__VA_ARGS__)
+#define ESP_LOGF( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_FUNC,    tag, format, ##__VA_ARGS__)
 #else
 /**
  * macro to output logs at ESP_LOG_ERROR level.
@@ -297,6 +301,8 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
 #define ESP_LOGD( tag, format, ... )  ESP_EARLY_LOGD(tag, format, ##__VA_ARGS__)
 /// macro to output logs at ``ESP_LOG_VERBOSE`` level.  @see ``ESP_LOGE``
 #define ESP_LOGV( tag, format, ... )  ESP_EARLY_LOGV(tag, format, ##__VA_ARGS__)
+/// macro to output logs at ``ESP_LOG_FUNC`` level.  @see ``ESP_LOGF``
+#define ESP_LOGF( tag, format, ... )  ESP_EARLY_LOGF(tag, format, ##__VA_ARGS__)
 #endif  // BOOTLOADER_BUILD
 
 /** runtime macro to output logs at a specified level.
@@ -312,6 +318,7 @@ void esp_early_log_write(esp_log_level_t level, const char* tag, const char* for
         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_WARN )      { esp_log_write(ESP_LOG_WARN,       tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_DEBUG )     { esp_log_write(ESP_LOG_DEBUG,      tag, format, ##__VA_ARGS__); } \
+        else if (level==ESP_LOG_FUNC )      { esp_log_write(ESP_LOG_FUNC,       tag, format, ##__VA_ARGS__); } \
         else if (level==ESP_LOG_VERBOSE )   { esp_log_write(ESP_LOG_VERBOSE,    tag, format, ##__VA_ARGS__); } \
         else                                { esp_log_write(ESP_LOG_INFO,       tag, format, ##__VA_ARGS__); } \
     } while(0)

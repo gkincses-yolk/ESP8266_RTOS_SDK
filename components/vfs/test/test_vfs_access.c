@@ -27,7 +27,7 @@ static wl_handle_t test_wl_handle;
 
 TEST_CASE("Can use access() for UART", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     const char *uarts[] = {
         "/dev/uart/0",
@@ -72,7 +72,7 @@ TEST_CASE("Can use access() for UART", "[vfs]")
 
 static inline void test_spi_flash_setup(void)
 {
-    printf("FUNC=test_spi_flash_setup");
+    //ESP_LOGF("FUNC", "test_spi_flash_setup");
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = true,
@@ -84,14 +84,14 @@ static inline void test_spi_flash_setup(void)
 
 static inline void test_spi_flash_teardown(void)
 {
-    printf("FUNC=test_spi_flash_teardown");
+    //ESP_LOGF("FUNC", "test_spi_flash_teardown");
 
     TEST_ESP_OK(esp_vfs_fat_spiflash_unmount("/spiflash", test_wl_handle));
 }
 
 static inline void test_fatfs_create_file(const char *name)
 {
-    printf("FUNC=test_fatfs_create_file");
+    //ESP_LOGF("FUNC", "test_fatfs_create_file");
 
     int fd = open(name, O_WRONLY | O_CREAT | O_TRUNC);
     TEST_ASSERT_NOT_EQUAL(fd, -1);
@@ -100,7 +100,7 @@ static inline void test_fatfs_create_file(const char *name)
 
 static inline void test_fatfs_delete_file(const char *name)
 {
-    printf("FUNC=test_fatfs_delete_file");
+    //ESP_LOGF("FUNC", "test_fatfs_delete_file");
 
     int ret = unlink(name);
     TEST_ASSERT_EQUAL(ret, 0);
@@ -108,7 +108,7 @@ static inline void test_fatfs_delete_file(const char *name)
 
 TEST_CASE("Can use access() for FATFS", "[vfs][fatfs][wear_levelling]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     const char *path = "/spiflash/access.txt";
 

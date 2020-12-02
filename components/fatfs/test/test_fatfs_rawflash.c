@@ -33,7 +33,7 @@
 
 static void test_setup(size_t max_files)
 {
-    printf("FUNC=test_setup");
+    //ESP_LOGF("FUNC", "test_setup");
 
     extern const char fatfs_start[] asm("_binary_fatfs_img_start");
     extern const char fatfs_end[]   asm("_binary_fatfs_img_end");
@@ -81,14 +81,14 @@ static void test_setup(size_t max_files)
 
 static void test_teardown(void)
 {
-    printf("FUNC=test_teardown");
+    //ESP_LOGF("FUNC", "test_teardown");
 
     TEST_ESP_OK(esp_vfs_fat_rawflash_unmount("/spiflash","flash_test"));
 }
 
 TEST_CASE("(raw) can read file", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
     FILE* f = fopen("/spiflash/hello.txt", "r");
@@ -103,7 +103,7 @@ TEST_CASE("(raw) can read file", "[fatfs]")
 
 TEST_CASE("(raw) can open maximum number of files", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     size_t max_files = FOPEN_MAX - 3; /* account for stdin, stdout, stderr */
     test_setup(max_files);
@@ -127,7 +127,7 @@ TEST_CASE("(raw) can open maximum number of files", "[fatfs]")
 
 TEST_CASE("(raw) can lseek", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
     FILE* f = fopen("/spiflash/hello.txt", "r");
@@ -149,7 +149,7 @@ TEST_CASE("(raw) can lseek", "[fatfs]")
 
 TEST_CASE("(raw) stat returns correct values", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
     struct tm tm;
@@ -186,7 +186,7 @@ TEST_CASE("(raw) stat returns correct values", "[fatfs]")
 
 TEST_CASE("(raw) can opendir root directory of FS", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
     DIR* dir = opendir("/spiflash");
@@ -209,7 +209,7 @@ TEST_CASE("(raw) can opendir root directory of FS", "[fatfs]")
 }
 TEST_CASE("(raw) opendir, readdir, rewinddir, seekdir work as expected", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
 
@@ -288,7 +288,7 @@ typedef struct {
 
 static void read_task(void* param)
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     read_test_arg_t* args = (read_test_arg_t*) param;
     FILE* f = fopen(args->filename, "rb");
@@ -321,7 +321,7 @@ done:
 
 TEST_CASE("(raw) multiple tasks can use same volume", "[fatfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
     char names[4][64];
@@ -367,7 +367,7 @@ TEST_CASE("(raw) multiple tasks can use same volume", "[fatfs]")
 
 TEST_CASE("(raw) read speed test", "[fatfs][timeout=60]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_setup(5);
 

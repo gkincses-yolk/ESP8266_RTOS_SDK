@@ -141,7 +141,7 @@ static esp_err_t uart_end_select(void *end_select_args);
 
 static int uart_open(const char * path, int flags, int mode)
 {
-    printf("FUNC=uart_open");
+    //ESP_LOGF("FUNC", "uart_open");
 
     // this is fairly primitive, we should check if file is opened read only,
     // and error out if write is requested
@@ -163,7 +163,7 @@ static int uart_open(const char * path, int flags, int mode)
 
 static void uart_tx_char(int fd, int c)
 {
-    printf("FUNC=uart_tx_char");
+    //ESP_LOGF("FUNC", "uart_tx_char");
 
     uart_dev_t* uart = s_ctx[fd]->uart;
     while (uart->status.txfifo_cnt >= 127) {
@@ -180,7 +180,7 @@ static void uart_tx_char(int fd, int c)
 
 static void uart_tx_char_via_driver(int fd, int c)
 {
-    printf("FUNC=uart_tx_char_via_driver");
+    //ESP_LOGF("FUNC", "uart_tx_char_via_driver");
 
     char ch = (char) c;
     uart_write_bytes(fd, &ch, 1);
@@ -188,7 +188,7 @@ static void uart_tx_char_via_driver(int fd, int c)
 
 static int uart_rx_char(int fd)
 {
-    printf("FUNC=uart_rx_char");
+    //ESP_LOGF("FUNC", "uart_rx_char");
 
     uart_dev_t* uart = s_ctx[fd]->uart;
     if (uart->status.rxfifo_cnt == 0) {
@@ -205,7 +205,7 @@ static int uart_rx_char(int fd)
 
 static int uart_rx_char_via_driver(int fd)
 {
-    printf("FUNC=uart_rx_char_via_driver");
+    //ESP_LOGF("FUNC", "uart_rx_char_via_driver");
 
     uint8_t c;
     int timeout = s_ctx[fd]->non_blocking ? 0 : portMAX_DELAY;
@@ -218,7 +218,7 @@ static int uart_rx_char_via_driver(int fd)
 
 static ssize_t uart_write(int fd, const void * data, size_t size)
 {
-    printf("FUNC=uart_write");
+    //ESP_LOGF("FUNC", "uart_write");
 
     assert(fd >=0 && fd < 3);
     const char *data_c = (const char *)data;
@@ -247,7 +247,7 @@ static ssize_t uart_write(int fd, const void * data, size_t size)
  */
 static int uart_read_char(int fd)
 {
-    printf("FUNC=uart_read_char");
+    //ESP_LOGF("FUNC", "uart_read_char");
 
     /* return character from peek buffer, if it is there */
     if (s_ctx[fd]->peek_char != NONE) {
@@ -261,7 +261,7 @@ static int uart_read_char(int fd)
 /* Push back a character; it will be returned by next call to uart_read_char */
 static void uart_return_char(int fd, int c)
 {
-    printf("FUNC=uart_return_char");
+    //ESP_LOGF("FUNC", "uart_return_char");
 
     assert(s_ctx[fd]->peek_char == NONE);
     s_ctx[fd]->peek_char = c;
@@ -269,7 +269,7 @@ static void uart_return_char(int fd, int c)
 
 static ssize_t uart_read(int fd, void* data, size_t size)
 {
-    printf("FUNC=uart_read");
+    //ESP_LOGF("FUNC", "uart_read");
 
     assert(fd >=0 && fd < 3);
     char *data_c = (char *) data;
@@ -317,7 +317,7 @@ static ssize_t uart_read(int fd, void* data, size_t size)
 
 static int uart_fstat(int fd, struct stat * st)
 {
-    printf("FUNC=uart_fstat");
+    //ESP_LOGF("FUNC", "uart_fstat");
 
     assert(fd >=0 && fd < 3);
     st->st_mode = S_IFCHR;
@@ -326,7 +326,7 @@ static int uart_fstat(int fd, struct stat * st)
 
 static int uart_close(int fd)
 {
-    printf("FUNC=uart_close");
+    //ESP_LOGF("FUNC", "uart_close");
 
     assert(fd >=0 && fd < 3);
     return 0;
@@ -334,7 +334,7 @@ static int uart_close(int fd)
 
 static int uart_fcntl(int fd, int cmd, int arg)
 {
-    printf("FUNC=uart_fcntl");
+    //ESP_LOGF("FUNC", "uart_fcntl");
 
     assert(fd >=0 && fd < 3);
     int result = 0;
@@ -354,7 +354,7 @@ static int uart_fcntl(int fd, int cmd, int arg)
 
 static int uart_access(const char *path, int amode)
 {
-    printf("FUNC=uart_access");
+    //ESP_LOGF("FUNC", "uart_access");
 
     int ret = -1;
 
@@ -377,7 +377,7 @@ static int uart_access(const char *path, int amode)
 
 static int uart_fsync(int fd)
 {
-    printf("FUNC=uart_fsync");
+    //ESP_LOGF("FUNC", "uart_fsync");
 
     assert(fd >= 0 && fd < 3);
     _lock_acquire_recursive(&s_ctx[fd]->write_lock);
@@ -388,7 +388,7 @@ static int uart_fsync(int fd)
 
 static esp_err_t register_select(uart_select_args_t *args)
 {
-    printf("FUNC=register_select");
+    //ESP_LOGF("FUNC", "register_select");
 
     esp_err_t ret = ESP_ERR_INVALID_ARG;
 
@@ -410,7 +410,7 @@ static esp_err_t register_select(uart_select_args_t *args)
 
 static esp_err_t unregister_select(uart_select_args_t *args)
 {
-    printf("FUNC=unregister_select");
+    //ESP_LOGF("FUNC", "unregister_select");
 
     esp_err_t ret = ESP_OK;
     if (args) {
@@ -439,7 +439,7 @@ static esp_err_t unregister_select(uart_select_args_t *args)
 
 static void select_notif_callback_isr(uart_port_t uart_num, uart_select_notif_t uart_select_notif, BaseType_t *task_woken)
 {
-    printf("FUNC=select_notif_callback_isr");
+    //ESP_LOGF("FUNC", "select_notif_callback_isr");
 
     portENTER_CRITICAL();
     for (int i = 0; i < s_registered_select_num; ++i) {
@@ -473,7 +473,7 @@ static void select_notif_callback_isr(uart_port_t uart_num, uart_select_notif_t 
 static esp_err_t uart_start_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
         esp_vfs_select_sem_t select_sem, void **end_select_args)
 {
-    printf("FUNC=uart_start_select");
+    //ESP_LOGF("FUNC", "uart_start_select");
 
     const int max_fds = MIN(nfds, UART_NUM);
     *end_select_args = NULL;
@@ -538,7 +538,7 @@ static esp_err_t uart_start_select(int nfds, fd_set *readfds, fd_set *writefds, 
 
 static esp_err_t uart_end_select(void *end_select_args)
 {
-    printf("FUNC=uart_end_select");
+    //ESP_LOGF("FUNC", "uart_end_select");
 
     uart_select_args_t *args = end_select_args;
 
@@ -559,7 +559,7 @@ static esp_err_t uart_end_select(void *end_select_args)
 #ifdef CONFIG_VFS_SUPPORT_TERMIOS
 static int uart_tcsetattr(int fd, int optional_actions, const struct termios *p)
 {
-    printf("FUNC=uart_tcsetattr");
+    //ESP_LOGF("FUNC", "uart_tcsetattr");
 
     if (fd < 0 || fd >= UART_NUM) {
         errno = EBADF;
@@ -766,7 +766,7 @@ static int uart_tcsetattr(int fd, int optional_actions, const struct termios *p)
 
 static int uart_tcgetattr(int fd, struct termios *p)
 {
-    printf("FUNC=uart_tcgetattr");
+    //ESP_LOGF("FUNC", "uart_tcgetattr");
 
     if (fd < 0 || fd >= UART_NUM) {
         errno = EBADF;
@@ -977,7 +977,7 @@ static int uart_tcgetattr(int fd, struct termios *p)
 
 static int uart_tcdrain(int fd)
 {
-    printf("FUNC=uart_tcdrain");
+    //ESP_LOGF("FUNC", "uart_tcdrain");
 
     if (fd < 0 || fd >= UART_NUM) {
         errno = EBADF;
@@ -994,7 +994,7 @@ static int uart_tcdrain(int fd)
 
 static int uart_tcflush(int fd, int select)
 {
-    printf("FUNC=uart_tcflush");
+    //ESP_LOGF("FUNC", "uart_tcflush");
 
     if (fd < 0 || fd >= UART_NUM) {
         errno = EBADF;
@@ -1018,7 +1018,7 @@ static int uart_tcflush(int fd, int select)
 
 void esp_vfs_dev_uart_register(void)
 {
-    printf("FUNC=esp_vfs_dev_uart_register");
+    //ESP_LOGF("FUNC", "esp_vfs_dev_uart_register");
 
     esp_vfs_t vfs = {
         .flags = ESP_VFS_FLAG_DEFAULT,
@@ -1044,7 +1044,7 @@ void esp_vfs_dev_uart_register(void)
 
 void esp_vfs_dev_uart_set_rx_line_endings(esp_line_endings_t mode)
 {
-    printf("FUNC=esp_vfs_dev_uart_set_rx_line_endings");
+    //ESP_LOGF("FUNC", "esp_vfs_dev_uart_set_rx_line_endings");
 
     for (int i = 0; i < UART_NUM; ++i) {
         s_ctx[i]->rx_mode = mode;
@@ -1053,7 +1053,7 @@ void esp_vfs_dev_uart_set_rx_line_endings(esp_line_endings_t mode)
 
 void esp_vfs_dev_uart_set_tx_line_endings(esp_line_endings_t mode)
 {
-    printf("FUNC=esp_vfs_dev_uart_set_tx_line_endings");
+    //ESP_LOGF("FUNC", "esp_vfs_dev_uart_set_tx_line_endings");
 
     for (int i = 0; i < UART_NUM; ++i) {
         s_ctx[i]->tx_mode = mode;
@@ -1062,7 +1062,7 @@ void esp_vfs_dev_uart_set_tx_line_endings(esp_line_endings_t mode)
 
 void esp_vfs_dev_uart_use_nonblocking(int uart_num)
 {
-    printf("FUNC=esp_vfs_dev_uart_use_nonblocking");
+    //ESP_LOGF("FUNC", "esp_vfs_dev_uart_use_nonblocking");
 
     _lock_acquire_recursive(&s_ctx[uart_num]->read_lock);
     _lock_acquire_recursive(&s_ctx[uart_num]->write_lock);
@@ -1074,7 +1074,7 @@ void esp_vfs_dev_uart_use_nonblocking(int uart_num)
 
 void esp_vfs_dev_uart_use_driver(int uart_num)
 {
-    printf("FUNC=esp_vfs_dev_uart_use_driver");
+    //ESP_LOGF("FUNC", "esp_vfs_dev_uart_use_driver");
 
     _lock_acquire_recursive(&s_ctx[uart_num]->read_lock);
     _lock_acquire_recursive(&s_ctx[uart_num]->write_lock);

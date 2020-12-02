@@ -27,21 +27,21 @@ const esp_partition_t* ff_raw_handles[FF_VOLUMES];
 
 DSTATUS ff_raw_initialize (BYTE pdrv)
 {
-    printf("FUNC=ff_raw_initialize ");
+    //ESP_LOGF("FUNC", "ff_raw_initialize ");
 
     return 0;
 }
 
 DSTATUS ff_raw_status (BYTE pdrv)
 {
-    printf("FUNC=ff_raw_status ");
+    //ESP_LOGF("FUNC", "ff_raw_status ");
 
     return 0;
 }
 
 DRESULT ff_raw_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
-    printf("FUNC=ff_raw_read ");
+    //ESP_LOGF("FUNC", "ff_raw_read ");
 
     ESP_LOGV(TAG, "ff_raw_read - pdrv=%i, sector=%i, count=%in", (unsigned int)pdrv, (unsigned int)sector, (unsigned int)count);
     const esp_partition_t* part = ff_raw_handles[pdrv];
@@ -57,14 +57,14 @@ DRESULT ff_raw_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 
 DRESULT ff_raw_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 {
-    printf("FUNC=ff_raw_write ");
+    //ESP_LOGF("FUNC", "ff_raw_write ");
 
     return RES_ERROR;
 }
 
 DRESULT ff_raw_ioctl (BYTE pdrv, BYTE cmd, void *buff)
 {
-    printf("FUNC=ff_raw_ioctl ");
+    //ESP_LOGF("FUNC", "ff_raw_ioctl ");
 
     const esp_partition_t* part = ff_raw_handles[pdrv];
     ESP_LOGV(TAG, "ff_raw_ioctl: cmd=%in", cmd);
@@ -87,7 +87,7 @@ DRESULT ff_raw_ioctl (BYTE pdrv, BYTE cmd, void *buff)
 
 esp_err_t ff_diskio_register_raw_partition(BYTE pdrv, const esp_partition_t* part_handle)
 {
-    printf("FUNC=ff_diskio_register_raw_partition");
+    //ESP_LOGF("FUNC", "ff_diskio_register_raw_partition");
 
     if (pdrv >= FF_VOLUMES) {
         return ESP_ERR_INVALID_ARG;
@@ -108,7 +108,7 @@ esp_err_t ff_diskio_register_raw_partition(BYTE pdrv, const esp_partition_t* par
 
 BYTE ff_diskio_get_pdrv_raw(const esp_partition_t* part_handle)
 {
-    printf("FUNC=ff_diskio_get_pdrv_raw");
+    //ESP_LOGF("FUNC", "ff_diskio_get_pdrv_raw");
 
     for (int i = 0; i < FF_VOLUMES; i++) {
         if (part_handle == ff_raw_handles[i]) {

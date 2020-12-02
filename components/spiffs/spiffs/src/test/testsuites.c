@@ -9,7 +9,7 @@
 
 void add_suites(void)
 {
-    printf("FUNC=add_suites");
+    //ESP_LOGF("FUNC", "add_suites");
 
   //ADD_SUITE(dev_tests);
   ADD_SUITE(check_tests);

@@ -41,7 +41,7 @@ static size_t s_sc_ack_info_size = 0;
 
 static int sc_ack_send_get_errno(int fd)
 {
-    printf("FUNC=sc_ack_send_get_errno");
+    //ESP_LOGF("FUNC", "sc_ack_send_get_errno");
 
     int sock_errno = 0;
     u32_t optlen = sizeof(sock_errno);
@@ -53,7 +53,7 @@ static int sc_ack_send_get_errno(int fd)
 
 static void sc_ack_send_task(void *pvParameters)
 {
-    printf("FUNC=sc_ack_send_task");
+    //ESP_LOGF("FUNC", "sc_ack_send_task");
 
     sc_ack_t *ack = (sc_ack_t *)pvParameters;
     tcpip_adapter_ip_info_t local_ip;
@@ -187,7 +187,7 @@ _end:
 
 void sc_ack_send(sc_ack_t *param)
 {
-    printf("FUNC=sc_ack_send");
+    //ESP_LOGF("FUNC", "sc_ack_send");
 
     sc_ack_t *ack = NULL;
 
@@ -213,14 +213,14 @@ void sc_ack_send(sc_ack_t *param)
 
 void sc_ack_send_stop(void)
 {
-    printf("FUNC=sc_ack_send_stop");
+    //ESP_LOGF("FUNC", "sc_ack_send_stop");
 
     s_sc_ack_send = false;
 }
 
 bool sc_ack_send_info(void *buffer, size_t size)
 {
-    printf("FUNC=sc_ack_send_info");
+    //ESP_LOGF("FUNC", "sc_ack_send_info");
 
     if (!buffer || !size)
         return false;

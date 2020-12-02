@@ -20,20 +20,20 @@
 SUITE(dev_tests)
 static void setup()
 {
-    printf("FUNC=setup");
+    //ESP_LOGF("FUNC", "setup");
 
   _setup();
 }
 static void teardown()
 {
-    printf("FUNC=teardown");
+    //ESP_LOGF("FUNC", "teardown");
 
   _teardown();
 }
 
 TEST(interrupted_write)
 {
-    printf("FUNC=TEST");
+    //ESP_LOGF("FUNC", "TEST");
 
   char *name = "interrupt";
   char *name2 = "interrupt2";

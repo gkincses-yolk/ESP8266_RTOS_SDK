@@ -41,7 +41,7 @@ extern const uint8_t signature_verification_key_end[] asm("_binary_signature_ver
 
 esp_err_t esp_secure_boot_verify_signature(uint32_t src_addr, uint32_t length)
 {
-    printf("FUNC=esp_secure_boot_verify_signature");
+    //ESP_LOGF("FUNC", "esp_secure_boot_verify_signature");
 
     uint8_t digest[DIGEST_LEN];
     const uint8_t *data;
@@ -74,7 +74,7 @@ esp_err_t esp_secure_boot_verify_signature(uint32_t src_addr, uint32_t length)
 
 esp_err_t esp_secure_boot_verify_signature_block(const esp_secure_boot_sig_block_t *sig_block, const uint8_t *image_digest)
 {
-    printf("FUNC=esp_secure_boot_verify_signature_block");
+    //ESP_LOGF("FUNC", "esp_secure_boot_verify_signature_block");
 
     ptrdiff_t keylen;
     bool is_valid;

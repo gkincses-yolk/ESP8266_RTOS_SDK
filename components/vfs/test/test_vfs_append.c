@@ -31,14 +31,14 @@
 
 static inline void test_write(int fd, const char *str, const char *msg)
 {
-    printf("FUNC=test_write");
+    //ESP_LOGF("FUNC", "test_write");
 
     TEST_ASSERT_EQUAL_MESSAGE(strlen(str), write(fd, str, strlen(str)), msg);
 }
 
 static inline void test_read(int fd, const char *str, const char *msg)
 {
-    printf("FUNC=test_read");
+    //ESP_LOGF("FUNC", "test_read");
 
     char buf[strlen(str)];
     TEST_ASSERT_EQUAL_MESSAGE(strlen(str), read(fd, buf, strlen(str)), msg);
@@ -47,7 +47,7 @@ static inline void test_read(int fd, const char *str, const char *msg)
 
 static inline void test_read_fails(int fd, const char *msg)
 {
-    printf("FUNC=test_read_fails");
+    //ESP_LOGF("FUNC", "test_read_fails");
 
     char buf;
     TEST_ASSERT_EQUAL_MESSAGE(0, read(fd, &buf, 1), msg);
@@ -55,7 +55,7 @@ static inline void test_read_fails(int fd, const char *msg)
 
 static void test_append(const char *path)
 {
-    printf("FUNC=test_append");
+    //ESP_LOGF("FUNC", "test_append");
 
     int fd = open(path, O_RDWR | O_APPEND | O_CREAT | O_TRUNC, OPEN_MODE);
     TEST_ASSERT_NOT_EQUAL(-1, fd);
@@ -95,7 +95,7 @@ static void test_append(const char *path)
 
 TEST_CASE("open() with O_APPEND on FATFS works well", "[vfs][FATFS]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     wl_handle_t test_wl_handle;
 
@@ -112,7 +112,7 @@ TEST_CASE("open() with O_APPEND on FATFS works well", "[vfs][FATFS]")
 
 TEST_CASE("open() with O_APPEND on SPIFFS works well", "[vfs][spiffs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",

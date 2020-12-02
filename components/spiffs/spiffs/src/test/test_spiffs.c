@@ -63,7 +63,7 @@ static int check_valid_flash = 1;
 
 static int do_mkdir(const char *path, mode_t mode)
 {
-    printf("FUNC=do_mkdir");
+    //ESP_LOGF("FUNC", "do_mkdir");
 
   struct stat st;
   int status = 0;
@@ -89,7 +89,7 @@ static int do_mkdir(const char *path, mode_t mode)
 */
 static int mkpath(const char *path, mode_t mode)
 {
-    printf("FUNC=mkpath");
+    //ESP_LOGF("FUNC", "mkpath");
 
   char *pp;
   char *sp;
@@ -119,7 +119,7 @@ static int mkpath(const char *path, mode_t mode)
 //
 char *make_test_fname(const char *name)
 {
-    printf("FUNC=make_test_fname");
+    //ESP_LOGF("FUNC", "make_test_fname");
 
   sprintf(_path, "%s/%s", TEST_PATH, name);
   return _path;
@@ -127,7 +127,7 @@ char *make_test_fname(const char *name)
 
 void create_test_path(void)
 {
-    printf("FUNC=create_test_path");
+    //ESP_LOGF("FUNC", "create_test_path");
 
   if (mkpath(TEST_PATH, 0755)) {
     printf("could not create path %s\n", TEST_PATH);
@@ -137,7 +137,7 @@ void create_test_path(void)
 
 void clear_test_path()
 {
-    printf("FUNC=clear_test_path");
+    //ESP_LOGF("FUNC", "clear_test_path");
 
   DIR *dp;
   struct dirent *ep;
@@ -160,7 +160,7 @@ static s32_t _read(
 #endif
     u32_t addr, u32_t size, u8_t *dst)
 {
-    printf("FUNC=_read");
+    //ESP_LOGF("FUNC", "_read");
 
   //printf("rd @ addr %08x => %p\n", addr, &AREA(addr));
   if (log_flash_ops) {
@@ -625,14 +625,14 @@ u32_t get_flash_ops_log_write_bytes() {
 
 void invoke_error_after_read_bytes(u32_t b, char once_only)
 {
-    printf("FUNC=invoke_error_after_read_bytes");
+    //ESP_LOGF("FUNC", "invoke_error_after_read_bytes");
 
   error_after_bytes_read = b;
   error_after_bytes_read_once_only = once_only;
 }
 void invoke_error_after_write_bytes(u32_t b, char once_only)
 {
-    printf("FUNC=invoke_error_after_write_bytes");
+    //ESP_LOGF("FUNC", "invoke_error_after_write_bytes");
 
   error_after_bytes_written = b;
   error_after_bytes_written_once_only = once_only;
@@ -640,14 +640,14 @@ void invoke_error_after_write_bytes(u32_t b, char once_only)
 
 void fs_set_validate_flashing(int i)
 {
-    printf("FUNC=fs_set_validate_flashing");
+    //ESP_LOGF("FUNC", "fs_set_validate_flashing");
 
   check_valid_flash = i;
 }
 
 void real_assert(int c, const char *n, const char *file, int l)
 {
-    printf("FUNC=real_assert");
+    //ESP_LOGF("FUNC", "real_assert");
 
   if (c == 0) {
     printf("ASSERT: %s %s @ %i\n", (n ? n : ""), file, l);
@@ -658,7 +658,7 @@ void real_assert(int c, const char *n, const char *file, int l)
 
 int read_and_verify(char *name)
 {
-    printf("FUNC=read_and_verify");
+    //ESP_LOGF("FUNC", "read_and_verify");
 
   int fd = SPIFFS_open(&__fs, name, SPIFFS_RDONLY, 0);
   if (fd < 0) {
@@ -670,7 +670,7 @@ int read_and_verify(char *name)
 
 int read_and_verify_fd(spiffs_file fd, char *name)
 {
-    printf("FUNC=read_and_verify_fd");
+    //ESP_LOGF("FUNC", "read_and_verify_fd");
 
   s32_t res;
   int pfd = open(make_test_fname(name), O_RDONLY);
@@ -746,7 +746,7 @@ int read_and_verify_fd(spiffs_file fd, char *name)
 
 static void test_on_stop(test *t)
 {
-    printf("FUNC=test_on_stop");
+    //ESP_LOGF("FUNC", "test_on_stop");
 
   printf("  spiffs errno:%i\n", SPIFFS_errno(&__fs));
 #if SPIFFS_TEST_VISUALISATION
@@ -757,7 +757,7 @@ static void test_on_stop(test *t)
 
 void memrand(u8_t *b, int len)
 {
-    printf("FUNC=memrand");
+    //ESP_LOGF("FUNC", "memrand");
 
   int i;
   for (i = 0; i < len; i++) {
@@ -767,7 +767,7 @@ void memrand(u8_t *b, int len)
 
 int test_create_file(char *name)
 {
-    printf("FUNC=test_create_file");
+    //ESP_LOGF("FUNC", "test_create_file");
 
   spiffs_stat s;
   spiffs_file fd;
@@ -793,7 +793,7 @@ int test_create_file(char *name)
 
 int test_create_and_write_file(char *name, int size, int chunk_size)
 {
-    printf("FUNC=test_create_and_write_file");
+    //ESP_LOGF("FUNC", "test_create_and_write_file");
 
   int res;
   spiffs_file fd;
@@ -895,7 +895,7 @@ static u32_t crc32_tab[] = {
 
 static u32_t crc32(u32_t crc, const void *buf, size_t size)
 {
-    printf("FUNC=crc32");
+    //ESP_LOGF("FUNC", "crc32");
 
   const u8_t *p;
 
@@ -910,7 +910,7 @@ static u32_t crc32(u32_t crc, const void *buf, size_t size)
 
 u32_t get_spiffs_file_crc_by_fd(spiffs_file fd)
 {
-    printf("FUNC=get_spiffs_file_crc_by_fd");
+    //ESP_LOGF("FUNC", "get_spiffs_file_crc_by_fd");
 
   s32_t res;
   u32_t crc = 0;
@@ -928,7 +928,7 @@ u32_t get_spiffs_file_crc_by_fd(spiffs_file fd)
 
 u32_t get_spiffs_file_crc(char *name)
 {
-    printf("FUNC=get_spiffs_file_crc");
+    //ESP_LOGF("FUNC", "get_spiffs_file_crc");
 
   s32_t res;
   spiffs_file fd;
@@ -949,7 +949,7 @@ static u32_t cmiss_tot = 0;
 
 void _setup_test_only()
 {
-    printf("FUNC=_setup_test_only");
+    //ESP_LOGF("FUNC", "_setup_test_only");
 
   create_test_path();
   fs_set_validate_flashing(1);
@@ -958,7 +958,7 @@ void _setup_test_only()
 
 void _setup()
 {
-    printf("FUNC=_setup");
+    //ESP_LOGF("FUNC", "_setup");
 
   _fs_locks = 0;
   fs_reset();
@@ -967,7 +967,7 @@ void _setup()
 
 void _teardown()
 {
-    printf("FUNC=_teardown");
+    //ESP_LOGF("FUNC", "_teardown");
 
   printf("  free blocks     : %i of %i\n", (FS)->free_blocks, (FS)->block_count);
   printf("  pages allocated : %i\n", (FS)->stats_p_allocated);
@@ -1013,7 +1013,7 @@ void _teardown()
 
 u32_t tfile_get_size(tfile_size s)
 {
-    printf("FUNC=tfile_get_size");
+    //ESP_LOGF("FUNC", "tfile_get_size");
 
   switch (s) {
   case EMPTY:
@@ -1030,7 +1030,7 @@ u32_t tfile_get_size(tfile_size s)
 
 int run_file_config(int cfg_count, tfile_conf* cfgs, int max_runs, int max_concurrent_files, int dbg)
 {
-    printf("FUNC=run_file_config");
+    //ESP_LOGF("FUNC", "run_file_config");
 
   int res;
   tfile *tfiles = malloc(sizeof(tfile) * max_concurrent_files);
@@ -1171,7 +1171,7 @@ int run_file_config(int cfg_count, tfile_conf* cfgs, int max_runs, int max_concu
 
 int count_taken_fds(spiffs *fs)
 {
-    printf("FUNC=count_taken_fds");
+    //ESP_LOGF("FUNC", "count_taken_fds");
 
   int i;
   spiffs_fd *fds = (spiffs_fd *)fs->fd_space;

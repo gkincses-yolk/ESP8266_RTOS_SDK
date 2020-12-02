@@ -37,7 +37,7 @@ typedef struct {
 
 static int collision_test_vfs_open(void* ctx, const char * path, int flags, int mode)
 {
-    printf("FUNC=collision_test_vfs_open");
+    //ESP_LOGF("FUNC", "collision_test_vfs_open");
 
     const collision_test_vfs_param_t *param = (collision_test_vfs_param_t *) ctx;
     if (strcmp(param->path, path) == 0) {
@@ -49,7 +49,7 @@ static int collision_test_vfs_open(void* ctx, const char * path, int flags, int 
 
 static int collision_test_vfs_close(void* ctx, int fd)
 {
-    printf("FUNC=collision_test_vfs_close");
+    //ESP_LOGF("FUNC", "collision_test_vfs_close");
 
     const collision_test_vfs_param_t *param = (collision_test_vfs_param_t *) ctx;
     if (fd == param->fd) {
@@ -61,7 +61,7 @@ static int collision_test_vfs_close(void* ctx, int fd)
 
 TEST_CASE("FDs from different VFSs don't collide", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     collision_test_vfs_param_t param = {
         .path = FILE1,
@@ -117,7 +117,7 @@ static concurrent_test_path_to_fd_t concurrent_test_path_to_fd[] = {
 
 static int concurrent_test_vfs_open(const char * path, int flags, int mode)
 {
-    printf("FUNC=concurrent_test_vfs_open");
+    //ESP_LOGF("FUNC", "concurrent_test_vfs_open");
 
     for (int i = 0; i < sizeof(concurrent_test_path_to_fd)/sizeof(concurrent_test_path_to_fd[0]); ++i) {
         if (strcmp(concurrent_test_path_to_fd[i].path, path) == 0) {
@@ -133,7 +133,7 @@ static int concurrent_test_vfs_open(const char * path, int flags, int mode)
 
 static int concurrent_test_vfs_close(int fd)
 {
-    printf("FUNC=concurrent_test_vfs_close");
+    //ESP_LOGF("FUNC", "concurrent_test_vfs_close");
 
     for (int i = 0; i < sizeof(concurrent_test_path_to_fd)/sizeof(concurrent_test_path_to_fd[0]); ++i) {
         if (concurrent_test_path_to_fd[i].local_fd == fd) {
@@ -146,14 +146,14 @@ static int concurrent_test_vfs_close(int fd)
 
 static inline void test_delay_rand_ms(int ms)
 {
-    printf("FUNC=test_delay_rand_ms");
+    //ESP_LOGF("FUNC", "test_delay_rand_ms");
 
     vTaskDelay((rand() % ms) / portTICK_PERIOD_MS);
 }
 
 static void concurrent_task(void *param)
 {
-    printf("FUNC=concurrent_task");
+    //ESP_LOGF("FUNC", "concurrent_task");
 
     concurrent_test_task_param_t *task_param = (concurrent_test_task_param_t *) param;
 
@@ -171,7 +171,7 @@ static void concurrent_task(void *param)
 
 TEST_CASE("VFS can handle concurrent open/close requests", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     esp_vfs_t desc = {
         .flags = ESP_VFS_FLAG_DEFAULT,
@@ -236,28 +236,28 @@ TEST_CASE("VFS can handle concurrent open/close requests", "[vfs]")
 
 static int time_test_vfs_open(const char *path, int flags, int mode)
 {
-    printf("FUNC=time_test_vfs_open");
+    //ESP_LOGF("FUNC", "time_test_vfs_open");
 
     return 1;
 }
 
 static int time_test_vfs_close(int fd)
 {
-    printf("FUNC=time_test_vfs_close");
+    //ESP_LOGF("FUNC", "time_test_vfs_close");
 
     return 1;
 }
 
 static int time_test_vfs_write(int fd, const void *data, size_t size)
 {
-    printf("FUNC=time_test_vfs_write");
+    //ESP_LOGF("FUNC", "time_test_vfs_write");
 
     return size;
 }
 
 TEST_CASE("Open & write & close through VFS passes performance test", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     esp_vfs_t desc = {
         .flags = ESP_VFS_FLAG_DEFAULT,

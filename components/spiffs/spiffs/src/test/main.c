@@ -6,7 +6,7 @@
 
 int main(int argc, char **args)
 {
-    printf("FUNC=main");
+    //ESP_LOGF("FUNC", "main");
 
 #ifndef NO_TEST
   run_tests(argc, args);

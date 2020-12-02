@@ -50,7 +50,7 @@ static s32_t spiffs_object_get_data_page_index_reference(
   spiffs_page_ix *pix,
   spiffs_page_ix *objix_pix)
 {
-    printf("FUNC=spiffs_object_get_data_page_index_reference");
+    //ESP_LOGF("FUNC", "spiffs_object_get_data_page_index_reference");
 
   s32_t res;
 
@@ -79,7 +79,7 @@ static s32_t spiffs_object_get_data_page_index_reference(
 // copies page contents to a new page
 static s32_t spiffs_rewrite_page(spiffs *fs, spiffs_page_ix cur_pix, spiffs_page_header *p_hdr, spiffs_page_ix *new_pix)
 {
-    printf("FUNC=spiffs_rewrite_page");
+    //ESP_LOGF("FUNC", "spiffs_rewrite_page");
 
   s32_t res;
   res = spiffs_page_allocate_data(fs, p_hdr->obj_id, p_hdr, 0,0,0,0, new_pix);
@@ -96,7 +96,7 @@ static s32_t spiffs_rewrite_page(spiffs *fs, spiffs_page_ix cur_pix, spiffs_page
 // data page index to a new page index
 static s32_t spiffs_rewrite_index(spiffs *fs, spiffs_obj_id obj_id, spiffs_span_ix data_spix, spiffs_page_ix new_data_pix, spiffs_page_ix objix_pix)
 {
-    printf("FUNC=spiffs_rewrite_index");
+    //ESP_LOGF("FUNC", "spiffs_rewrite_index");
 
   s32_t res;
   spiffs_block_ix bix;
@@ -164,7 +164,7 @@ static s32_t spiffs_rewrite_index(spiffs *fs, spiffs_obj_id obj_id, spiffs_span_
 // deletes an object just by marking object index header as deleted
 static s32_t spiffs_delete_obj_lazy(spiffs *fs, spiffs_obj_id obj_id)
 {
-    printf("FUNC=spiffs_delete_obj_lazy");
+    //ESP_LOGF("FUNC", "spiffs_delete_obj_lazy");
 
   spiffs_page_ix objix_hdr_pix;
   s32_t res;
@@ -185,7 +185,7 @@ static s32_t spiffs_delete_obj_lazy(spiffs *fs, spiffs_obj_id obj_id)
 static s32_t spiffs_lookup_check_validate(spiffs *fs, spiffs_obj_id lu_obj_id, spiffs_page_header *p_hdr,
     spiffs_page_ix cur_pix, spiffs_block_ix cur_block, int cur_entry, int *reload_lu)
 {
-    printf("FUNC=spiffs_lookup_check_validate");
+    //ESP_LOGF("FUNC", "spiffs_lookup_check_validate");
 
   (void)cur_block;
   (void)cur_entry;
@@ -460,7 +460,7 @@ static s32_t spiffs_lookup_check_validate(spiffs *fs, spiffs_obj_id lu_obj_id, s
 static s32_t spiffs_lookup_check_v(spiffs *fs, spiffs_obj_id obj_id, spiffs_block_ix cur_block, int cur_entry,
     const void *user_const_p, void *user_var_p)
 {
-    printf("FUNC=spiffs_lookup_check_v");
+    //ESP_LOGF("FUNC", "spiffs_lookup_check_v");
 
   (void)user_const_p;
   (void)user_var_p;
@@ -492,7 +492,7 @@ static s32_t spiffs_lookup_check_v(spiffs *fs, spiffs_obj_id obj_id, spiffs_bloc
 // If an object index header page is found, this is also checked
 s32_t spiffs_lookup_consistency_check(spiffs *fs, u8_t check_all_objects)
 {
-    printf("FUNC=spiffs_lookup_consistency_check");
+    //ESP_LOGF("FUNC", "spiffs_lookup_consistency_check");
 
   (void)check_all_objects;
   s32_t res = SPIFFS_OK;
@@ -529,7 +529,7 @@ s32_t spiffs_lookup_consistency_check(spiffs *fs, u8_t check_all_objects)
 // The working memory might not fit all pages so several scans might be needed
 static s32_t spiffs_page_consistency_check_i(spiffs *fs)
 {
-    printf("FUNC=spiffs_page_consistency_check_i");
+    //ESP_LOGF("FUNC", "spiffs_page_consistency_check_i");
 
   const u32_t bits = 4;
   const spiffs_page_ix pages_per_scan = SPIFFS_CFG_LOG_PAGE_SZ(fs) * 8 / bits;
@@ -874,7 +874,7 @@ static s32_t spiffs_page_consistency_check_i(spiffs *fs)
 // Checks consistency amongst all pages and fixes irregularities
 s32_t spiffs_page_consistency_check(spiffs *fs)
 {
-    printf("FUNC=spiffs_page_consistency_check");
+    //ESP_LOGF("FUNC", "spiffs_page_consistency_check");
 
   CHECK_CB(fs, SPIFFS_CHECK_PAGE, SPIFFS_CHECK_PROGRESS, 0, 0);
   s32_t res = spiffs_page_consistency_check_i(fs);
@@ -892,7 +892,7 @@ s32_t spiffs_page_consistency_check(spiffs *fs)
 // returns the index or -1
 static int spiffs_object_index_search(spiffs *fs, spiffs_obj_id obj_id)
 {
-    printf("FUNC=spiffs_object_index_search");
+    //ESP_LOGF("FUNC", "spiffs_object_index_search");
 
   u32_t i;
   spiffs_obj_id *obj_table = (spiffs_obj_id *)fs->work;
@@ -908,7 +908,7 @@ static int spiffs_object_index_search(spiffs *fs, spiffs_obj_id obj_id)
 static s32_t spiffs_object_index_consistency_check_v(spiffs *fs, spiffs_obj_id obj_id, spiffs_block_ix cur_block,
     int cur_entry, const void *user_const_p, void *user_var_p)
 {
-    printf("FUNC=spiffs_object_index_consistency_check_v");
+    //ESP_LOGF("FUNC", "spiffs_object_index_consistency_check_v");
 
   (void)user_const_p;
   s32_t res_c = SPIFFS_VIS_COUNTINUE;
@@ -1005,7 +1005,7 @@ static s32_t spiffs_object_index_consistency_check_v(spiffs *fs, spiffs_obj_id o
 // deleted.
 s32_t spiffs_object_index_consistency_check(spiffs *fs)
 {
-    printf("FUNC=spiffs_object_index_consistency_check");
+    //ESP_LOGF("FUNC", "spiffs_object_index_consistency_check");
 
   s32_t res = SPIFFS_OK;
   // impl note:

@@ -121,7 +121,7 @@ static uint32_t execute_flash_command(uint8_t command, uint32_t mosi_data, uint8
 extern uint8_t g_rom_spiflash_dummy_len_plus[];
 uint32_t bootloader_read_flash_id()
 {
-    printf("FUNC=bootloader_read_flash_id");
+    //ESP_LOGF("FUNC", "bootloader_read_flash_id");
 
     uint32_t id = execute_flash_command(CMD_RDID, 0, 0, 24);
     id = ((id & 0xff) << 16) | ((id >> 16) & 0xff) | (id & 0xff00);
@@ -130,7 +130,7 @@ uint32_t bootloader_read_flash_id()
 
 void bootloader_enable_qio_mode(void)
 {
-    printf("FUNC=bootloader_enable_qio_mode");
+    //ESP_LOGF("FUNC", "bootloader_enable_qio_mode");
 
     uint32_t raw_flash_id;
     uint8_t mfg_id;
@@ -168,7 +168,7 @@ static esp_err_t enable_qio_mode(read_status_fn_t read_status_fn,
                             write_status_fn_t write_status_fn,
                             uint8_t status_qio_bit)
 {
-    printf("FUNC=enable_qio_mode");
+    //ESP_LOGF("FUNC", "enable_qio_mode");
 
     uint32_t status;
     const uint32_t spiconfig = ets_efuse_get_spiconfig();
@@ -229,49 +229,49 @@ static esp_err_t enable_qio_mode(read_status_fn_t read_status_fn,
 
 static unsigned read_status_8b_rdsr()
 {
-    printf("FUNC=read_status_8b_rdsr");
+    //ESP_LOGF("FUNC", "read_status_8b_rdsr");
 
     return execute_flash_command(CMD_RDSR, 0, 0, 8);
 }
 
 static unsigned read_status_8b_rdsr2()
 {
-    printf("FUNC=read_status_8b_rdsr2");
+    //ESP_LOGF("FUNC", "read_status_8b_rdsr2");
 
     return execute_flash_command(CMD_RDSR2, 0, 0, 8);
 }
 
 static unsigned read_status_16b_rdsr_rdsr2()
 {
-    printf("FUNC=read_status_16b_rdsr_rdsr2");
+    //ESP_LOGF("FUNC", "read_status_16b_rdsr_rdsr2");
 
     return execute_flash_command(CMD_RDSR, 0, 0, 8) | (execute_flash_command(CMD_RDSR2, 0, 0, 8) << 8);
 }
 
 static void write_status_8b_wrsr(unsigned new_status)
 {
-    printf("FUNC=write_status_8b_wrsr");
+    //ESP_LOGF("FUNC", "write_status_8b_wrsr");
 
     execute_flash_command(CMD_WRSR, new_status, 8, 0);
 }
 
 static void write_status_8b_wrsr2(unsigned new_status)
 {
-    printf("FUNC=write_status_8b_wrsr2");
+    //ESP_LOGF("FUNC", "write_status_8b_wrsr2");
 
     execute_flash_command(CMD_WRSR2, new_status, 8, 0);
 }
 
 static void write_status_16b_wrsr(unsigned new_status)
 {
-    printf("FUNC=write_status_16b_wrsr");
+    //ESP_LOGF("FUNC", "write_status_16b_wrsr");
 
     execute_flash_command(CMD_WRSR, new_status, 16, 0);
 }
 
 static uint32_t execute_flash_command(uint8_t command, uint32_t mosi_data, uint8_t mosi_len, uint8_t miso_len)
 {
-    printf("FUNC=execute_flash_command");
+    //ESP_LOGF("FUNC", "execute_flash_command");
 
     uint32_t old_ctrl_reg = SPIFLASH.ctrl.val;
     SPIFLASH.ctrl.val = SPI_WP_REG_M; // keep WP high while idle, otherwise leave DIO mode

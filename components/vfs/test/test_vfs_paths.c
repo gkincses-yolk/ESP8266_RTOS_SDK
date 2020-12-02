@@ -32,7 +32,7 @@ typedef struct {
 
 static int dummy_open(void* ctx, const char * path, int flags, int mode)
 {
-    printf("FUNC=dummy_open");
+    //ESP_LOGF("FUNC", "dummy_open");
 
     dummy_vfs_t* dummy = (dummy_vfs_t*) ctx;
     dummy->called = true;
@@ -45,7 +45,7 @@ static int dummy_open(void* ctx, const char * path, int flags, int mode)
 
 static int dummy_close(void* ctx, int fd)
 {
-    printf("FUNC=dummy_close");
+    //ESP_LOGF("FUNC", "dummy_close");
 
     dummy_vfs_t* dummy = (dummy_vfs_t*) ctx;
     dummy->called = true;
@@ -58,7 +58,7 @@ static int dummy_close(void* ctx, int fd)
 
 static DIR* dummy_opendir(void* ctx, const char* path)
 {
-    printf("FUNC=dummy_opendir");
+    //ESP_LOGF("FUNC", "dummy_opendir");
 
     dummy_vfs_t* dummy = (dummy_vfs_t*) ctx;
     dummy->called = true;
@@ -73,7 +73,7 @@ static DIR* dummy_opendir(void* ctx, const char* path)
 
 static int dummy_closedir(void* ctx, DIR* pdir)
 {
-    printf("FUNC=dummy_closedir");
+    //ESP_LOGF("FUNC", "dummy_closedir");
 
     dummy_vfs_t* dummy = (dummy_vfs_t*) ctx;
     dummy->called = true;
@@ -98,7 +98,7 @@ static int dummy_closedir(void* ctx, DIR* pdir)
 static void test_open(dummy_vfs_t* instance, const char* path,
         bool should_be_called, bool should_be_opened, int line)
 {
-    printf("FUNC=test_open");
+    //ESP_LOGF("FUNC", "test_open");
 
     const int flags = O_CREAT | O_TRUNC | O_RDWR;
     instance->called = false;
@@ -118,7 +118,7 @@ static void test_open(dummy_vfs_t* instance, const char* path,
 static void test_opendir(dummy_vfs_t* instance, const char* path,
         bool should_be_called, bool should_be_opened, int line)
 {
-    printf("FUNC=test_opendir");
+    //ESP_LOGF("FUNC", "test_opendir");
 
     instance->called = false;
     DIR* dir = opendir(path);
@@ -152,7 +152,7 @@ static void test_opendir(dummy_vfs_t* instance, const char* path,
 
 TEST_CASE("vfs parses paths correctly", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     dummy_vfs_t inst_foo = {
             .match_path = "",
@@ -222,7 +222,7 @@ TEST_CASE("vfs parses paths correctly", "[vfs]")
 
 TEST_CASE("vfs unregisters correct nested mount point", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     dummy_vfs_t inst_foobar = {
         .match_path = "/file",
@@ -265,7 +265,7 @@ TEST_CASE("vfs unregisters correct nested mount point", "[vfs]")
 
 void test_vfs_register(const char* prefix, bool expect_success, int line)
 {
-    printf("FUNC=test_vfs_register");
+    //ESP_LOGF("FUNC", "test_vfs_register");
 
     dummy_vfs_t inst;
     esp_vfs_t desc = DUMMY_VFS();
@@ -286,7 +286,7 @@ void test_vfs_register(const char* prefix, bool expect_success, int line)
 
 TEST_CASE("vfs checks mount point path", "[vfs]")
 {
-    printf("FUNC=TEST_CASE");
+    //ESP_LOGF("FUNC", "TEST_CASE");
 
     test_register_ok("");
     test_register_fail("/");

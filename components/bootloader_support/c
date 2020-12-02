@@ -1,0 +1,14 @@
+./src/flash_qio_mode.c
+./src/bootloader_common.c
+./src/bootloader_init.c
+./src/secure_boot.c
+./src/flash_partitions.c
+./src/efuse.c
+./src/bootloader_random.c
+./src/esp_image_format.c
+./src/bootloader_sha.c
+./src/bootloader_flash.c
+./src/flash_encrypt.c
+./src/bootloader_utility.c
+./src/bootloader_clock.c
+./src/secure_boot_signatures.c
