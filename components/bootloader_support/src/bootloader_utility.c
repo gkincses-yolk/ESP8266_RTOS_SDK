@@ -47,8 +47,6 @@
 
 #include "sdkconfig.h"
 #include "esp_image_format.h"
-#include "esp_secure_boot.h"
-#include "esp_flash_encrypt.h"
 #include "esp_flash_partitions.h"
 #include "bootloader_flash.h"
 #include "bootloader_random.h"
@@ -71,24 +69,12 @@ static void set_cache_and_start_app(uint32_t drom_addr,
 
 bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
+    ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
 
     const esp_partition_info_t *partitions;
     const char *partition_usage;
     esp_err_t err;
     int num_partitions;
-
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    if(esp_secure_boot_enabled()) {
-        ESP_LOGI(TAG, "Verifying partition table signature...");
-        err = esp_secure_boot_verify_signature(ESP_PARTITION_TABLE_ADDR, ESP_PARTITION_TABLE_MAX_LEN);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to verify partition table signature.");
-            return false;
-        }
-        ESP_LOGD(TAG, "Partition table signature verified");
-    }
-#endif
 
     partitions = bootloader_mmap(ESP_PARTITION_TABLE_ADDR, ESP_PARTITION_TABLE_MAX_LEN);
     if (!partitions) {
@@ -173,7 +159,7 @@ bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 /* Given a partition index, return the partition position data from the bootloader_state_t structure */
 static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int index)
 {
-    //ESP_LOGF("FUNC", "index_to_partition");
+    ESP_LOGF("FUNC", "index_to_partition");
 
     if (index == FACTORY_INDEX) {
         return bs->factory;
@@ -193,7 +179,7 @@ static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int 
 
 static void log_invalid_app_partition(int index)
 {
-    //ESP_LOGF("FUNC", "log_invalid_app_partition");
+    ESP_LOGF("FUNC", "log_invalid_app_partition");
 
     const char *not_bootable = " is not bootable"; /* save a few string literal bytes */
     switch(index) {
@@ -211,7 +197,7 @@ static void log_invalid_app_partition(int index)
 
 int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
+    ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
 
     esp_ota_select_entry_t sa,sb;
     const esp_ota_select_entry_t *ota_select_map;
@@ -283,7 +269,7 @@ int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 /* Return true if a partition has a valid app image that was successfully loaded */
 static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "try_load_partition");
+    ESP_LOGF("FUNC", "try_load_partition");
 
     if (partition->size == 0) {
         ESP_LOGD(TAG, "Can't boot from zero-length partition");
@@ -304,7 +290,7 @@ static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_m
 
 bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_index, esp_image_metadata_t *result)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
+    ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
 
     int index = start_index;
     esp_partition_pos_t part;
@@ -354,43 +340,7 @@ bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_
 
 void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_image");
-
-#if defined(CONFIG_SECURE_BOOT_ENABLED) || defined(CONFIG_FLASH_ENCRYPTION_ENABLED)
-    esp_err_t err;
-#endif
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    /* Generate secure digest from this bootloader to protect future
-       modifications */
-    ESP_LOGI(TAG, "Checking secure boot...");
-    err = esp_secure_boot_permanently_enable();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Bootloader digest generation failed (%d). SECURE BOOT IS NOT ENABLED.", err);
-        /* Allow booting to continue, as the failure is probably
-           due to user-configured EFUSEs for testing...
-        */
-    }
-#endif
-
-#ifdef CONFIG_FLASH_ENCRYPTION_ENABLED
-    /* encrypt flash */
-    ESP_LOGI(TAG, "Checking flash encryption...");
-    bool flash_encryption_enabled = esp_flash_encryption_enabled();
-    err = esp_flash_encrypt_check_and_update();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Flash encryption check failed (%d).", err);
-        return;
-    }
-
-    if (!flash_encryption_enabled && esp_flash_encryption_enabled()) {
-        /* Flash encryption was just enabled for the first time,
-           so issue a system reset to ensure flash encryption
-           cache resets properly */
-        ESP_LOGI(TAG, "Resetting with flash encryption enabled...");
-        REG_WRITE(RTC_CNTL_OPTIONS0_REG, RTC_CNTL_SW_SYS_RST);
-        return;
-    }
-#endif
+    ESP_LOGF("FUNC", "bootloader_utility_load_image");
 
     ESP_LOGI(TAG, "Disabling RNG early entropy source...");
     bootloader_random_disable();
@@ -401,7 +351,7 @@ void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 
 static void unpack_load_app(const esp_image_metadata_t* data)
 {
-    //ESP_LOGF("FUNC", "unpack_load_app");
+    ESP_LOGF("FUNC", "unpack_load_app");
 
     uint32_t drom_addr = 0;
     uint32_t drom_load_addr = 0;
@@ -454,7 +404,7 @@ static void set_cache_and_start_app(
     uint32_t irom_size,
     uint32_t entry_addr)
 {
-    //ESP_LOGF("FUNC", "set_cache_and_start_app");
+    ESP_LOGF("FUNC", "set_cache_and_start_app");
 
     ESP_LOGD(TAG, "configure drom and irom and start");
     Cache_Read_Disable( 0 );
@@ -511,14 +461,13 @@ static void set_cache_and_start_app(
 #include "esp_log.h"
 
 #include "esp_flash_partitions.h"
-#include "esp_fast_boot.h"
 #include "esp_private/esp_system_internal.h"
 
 static const char* TAG = "boot";
 
 bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
+    ESP_LOGF("FUNC", "bootloader_utility_load_partition_table");
 
     const esp_partition_info_t *partitions;
     const char *partition_usage;
@@ -530,18 +479,6 @@ bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
     if (esp_patition_table_init_location()) {
         ESP_LOGE(TAG, "Failed to update partition table location");
         return false;
-    }
-#endif
-
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    if(esp_secure_boot_enabled()) {
-        ESP_LOGI(TAG, "Verifying partition table signature...");
-        err = esp_secure_boot_verify_signature(ESP_PARTITION_TABLE_ADDR, ESP_PARTITION_TABLE_MAX_LEN);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to verify partition table signature.");
-            return false;
-        }
-        ESP_LOGD(TAG, "Partition table signature verified");
     }
 #endif
 
@@ -642,7 +579,7 @@ bool bootloader_utility_load_partition_table(bootloader_state_t* bs)
 
 int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
+    ESP_LOGF("FUNC", "bootloader_utility_get_selected_boot_partition");
 
     esp_ota_select_entry_t sa,sb;
     const esp_ota_select_entry_t *ota_select_map;
@@ -714,7 +651,7 @@ int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
 /* Given a partition index, return the partition position data from the bootloader_state_t structure */
 static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int index)
 {
-    //ESP_LOGF("FUNC", "index_to_partition");
+    ESP_LOGF("FUNC", "index_to_partition");
 
     if (index == FACTORY_INDEX) {
         return bs->factory;
@@ -734,7 +671,7 @@ static esp_partition_pos_t index_to_partition(const bootloader_state_t *bs, int 
 
 static void log_invalid_app_partition(int index)
 {
-    //ESP_LOGF("FUNC", "log_invalid_app_partition");
+    ESP_LOGF("FUNC", "log_invalid_app_partition");
 
     const char *not_bootable = " is not bootable"; /* save a few string literal bytes */
     switch(index) {
@@ -753,7 +690,7 @@ static void log_invalid_app_partition(int index)
 /* Return true if a partition has a valid app image that was successfully loaded */
 static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "try_load_partition");
+    ESP_LOGF("FUNC", "try_load_partition");
 
     if (partition->size == 0) {
         ESP_LOGD(TAG, "Can't boot from zero-length partition");
@@ -774,7 +711,7 @@ static bool try_load_partition(const esp_partition_pos_t *partition, esp_image_m
 
 static void bootloader_utility_start_image(uint32_t image_start, uint32_t image_size, uint32_t entry_addr)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_start_image");
+    ESP_LOGF("FUNC", "bootloader_utility_start_image");
 
     void (*user_start)(size_t start_addr);
 
@@ -786,7 +723,7 @@ static void bootloader_utility_start_image(uint32_t image_start, uint32_t image_
 
 bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_index, esp_image_metadata_t *result)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
+    ESP_LOGF("FUNC", "bootloader_utility_load_boot_image");
 
     int index = start_index;
     esp_partition_pos_t part;
@@ -836,43 +773,7 @@ bool bootloader_utility_load_boot_image(const bootloader_state_t *bs, int start_
 
 void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 {
-    //ESP_LOGF("FUNC", "bootloader_utility_load_image");
-
-#if defined(CONFIG_SECURE_BOOT_ENABLED) || defined(CONFIG_FLASH_ENCRYPTION_ENABLED)
-    esp_err_t err;
-#endif
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    /* Generate secure digest from this bootloader to protect future
-       modifications */
-    ESP_LOGI(TAG, "Checking secure boot...");
-    err = esp_secure_boot_permanently_enable();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Bootloader digest generation failed (%d). SECURE BOOT IS NOT ENABLED.", err);
-        /* Allow booting to continue, as the failure is probably
-           due to user-configured EFUSEs for testing...
-        */
-    }
-#endif
-
-#ifdef CONFIG_FLASH_ENCRYPTION_ENABLED
-    /* encrypt flash */
-    ESP_LOGI(TAG, "Checking flash encryption...");
-    bool flash_encryption_enabled = esp_flash_encryption_enabled();
-    err = esp_flash_encrypt_check_and_update();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Flash encryption check failed (%d).", err);
-        return;
-    }
-
-    if (!flash_encryption_enabled && esp_flash_encryption_enabled()) {
-        /* Flash encryption was just enabled for the first time,
-           so issue a system reset to ensure flash encryption
-           cache resets properly */
-        ESP_LOGI(TAG, "Resetting with flash encryption enabled...");
-        REG_WRITE(RTC_CNTL_OPTIONS0_REG, RTC_CNTL_SW_SYS_RST);
-        return;
-    }
-#endif
+    ESP_LOGF("FUNC", "bootloader_utility_load_image");
 
 #ifdef BOOTLOADER_UNPACK_APP
     ESP_LOGI(TAG, "Disabling RNG early entropy source...");
@@ -885,16 +786,4 @@ void bootloader_utility_load_image(const esp_image_metadata_t* image_data)
 #endif /* BOOTLOADER_UNPACK_APP */
 }
 
-void bootloader_utility_fast_boot_image(void)
-{
-    //ESP_LOGF("FUNC", "bootloader_utility_fast_boot_image");
-
-    uint32_t image_start, image_size, image_entry;
-
-    if (!esp_fast_boot_get_info(&image_start, &image_size, &image_entry)) {
-        bootloader_utility_start_image(image_start, image_size, image_entry);
-    }
-
-    ESP_LOGD(TAG, "fast boot image fail");
-}
 #endif

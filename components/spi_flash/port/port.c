@@ -114,6 +114,8 @@ static const uint32_t s_v2_flash_bin_size_map_size = sizeof(s_v2_flash_bin_map_t
 
 static void esp_hw_reset(uint32_t t, int block)
 {
+    ESP_LOGF("FUNC", "esp_hw_reset");
+
     CLEAR_WDT_REG_MASK(WDT_CTL_ADDRESS, BIT0);
 
     WDT_REG_WRITE(WDT_OP_ADDRESS, t);
@@ -133,11 +135,15 @@ static void esp_hw_reset(uint32_t t, int block)
 
 static void esp_hw_feed_wdt(void)
 {
+    ESP_LOGF("FUNC", "esp_hw_feed_wdt");
+
     WDT_FEED();
 }
 
 static int spi_flash_read_data(uint32_t addr, void *buf, size_t n)
 {
+    ESP_LOGF("FUNC", "spi_flash_read_data");
+
     int ret;
 
     if (addr & 3 || (uint32_t)buf & 3 || n & 3) {
@@ -156,6 +162,8 @@ static int spi_flash_read_data(uint32_t addr, void *buf, size_t n)
 
 static int spi_flash_write_data(uint32_t addr, const void *buf, uint32_t n)
 {
+    ESP_LOGF("FUNC", "spi_flash_write_data");
+
     int ret;
 
     if (addr & 3 || (uint32_t)buf & 3 || n & 3) {
@@ -174,6 +182,8 @@ static int spi_flash_write_data(uint32_t addr, const void *buf, uint32_t n)
 
 static int spi_flash_erase(uint32_t addr)
 {
+    ESP_LOGF("FUNC", "spi_flash_erase");
+
     int ret;
 
     ESP_LOGD(TAG, "erase addr is 0x%x", addr);
@@ -187,6 +197,8 @@ static int spi_flash_erase(uint32_t addr)
 
 static int get_v2_flash_map_size(void)
 {
+    ESP_LOGF("FUNC", "get_v2_flash_map_size");
+
     int ret;
     esp_image_header_t header;
 
@@ -216,6 +228,8 @@ static int get_v2_flash_map_size(void)
 
 static uint32_t esp_get_updated_partition_table_addr(void)
 {
+    ESP_LOGF("FUNC", "esp_get_updated_partition_table_addr");
+
     int ret;
     size_t offset;
     uint8_t user_bin;
@@ -281,6 +295,8 @@ static uint32_t esp_get_updated_partition_table_addr(void)
 
 static int spi_flash_write_data_safe(uint32_t addr, const void *buf, size_t n)
 {
+    ESP_LOGF("FUNC", "spi_flash_write_data_safe");
+
     int ret; 
 
     ret = spi_flash_erase(addr);
@@ -311,6 +327,8 @@ static int spi_flash_write_data_safe(uint32_t addr, const void *buf, size_t n)
 
 static int esp_flash_sector_copy(uint32_t dest, uint32_t src, uint32_t total_size)
 {
+    ESP_LOGF("FUNC", "esp_flash_sector_copy");
+
     ESP_LOGD(TAG, "Start to copy data from 0x%x to 0x%x total %d", src, dest, total_size);
 
     for (uint32_t offset = 0; offset < total_size; offset += SPI_FLASH_SEC_SIZE) {
@@ -336,6 +354,8 @@ static int esp_flash_sector_copy(uint32_t dest, uint32_t src, uint32_t total_siz
 
 static bool esp_rf_param_need_unpack(size_t rf_dest, size_t rf_src, size_t rf_size)
 {
+    ESP_LOGF("FUNC", "esp_rf_param_need_unpack");
+
     bool ret;
     const uint32_t rf_magic_size = sizeof(phy_init_magic_pre);
     const uint32_t rf_new_size = rf_size + rf_magic_size * 2;
@@ -364,6 +384,8 @@ static bool esp_rf_param_need_unpack(size_t rf_dest, size_t rf_src, size_t rf_si
 
 static int esp_unpack_old_rf_param(size_t rf_dest, size_t rf_src, size_t rf_size)
 {
+    ESP_LOGF("FUNC", "esp_unpack_old_rf_param");
+
     int ret;
     const uint32_t rf_magic_size = sizeof(phy_init_magic_pre);
     const uint32_t rf_new_size = rf_size + rf_magic_size * 2;
@@ -406,6 +428,8 @@ static int esp_unpack_old_rf_param(size_t rf_dest, size_t rf_src, size_t rf_size
 
 static int esp_set_v2boot_app1(void)
 {
+    ESP_LOGF("FUNC", "esp_set_v2boot_app1");
+
     int ret;
     const size_t offset = s_sys_param.flag ? 1 : 0;
     const uint32_t base_addr = s_v2_flash_size / SPI_FLASH_SEC_SIZE - 3;
@@ -453,6 +477,8 @@ static int esp_set_v2boot_app1(void)
 
 static int esp_sdk_update_from_v2(void)
 {
+    ESP_LOGF("FUNC", "esp_sdk_update_from_v2");
+
     const int segment_cnt = 3;
     const size_t v2_max_size = 4096;
 
@@ -486,6 +512,8 @@ static int esp_sdk_update_from_v2(void)
 
 int esp_patition_table_init_location(void)
 {
+    ESP_LOGF("FUNC", "esp_patition_table_init_location");
+
     uint32_t addr;
 
     esp_hw_reset(14, 0);
@@ -502,6 +530,8 @@ int esp_patition_table_init_location(void)
 
 int esp_patition_copy_ota1_to_ota0(const void *partition_info)
 {
+    ESP_LOGF("FUNC", "esp_patition_copy_ota1_to_ota0");
+
     int ret;
     bootloader_state_t *bs = (bootloader_state_t *)partition_info;
 
@@ -525,6 +555,8 @@ int esp_patition_copy_ota1_to_ota0(const void *partition_info)
 
 int esp_patition_table_init_data(void *partition_info)
 {
+    ESP_LOGF("FUNC", "esp_patition_table_init_data");
+
     int ret;
     int reboot = 0;
     const uint32_t boot_base = 0x1000;

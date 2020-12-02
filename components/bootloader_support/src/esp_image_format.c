@@ -22,7 +22,6 @@
 #include <rom/rtc.h>
 #include <soc/cpu.h>
 #include <esp_image_format.h>
-#include <esp_secure_boot.h>
 #include <esp_log.h>
 #include <esp_spi_flash.h>
 #include <bootloader_flash.h>
@@ -77,12 +76,11 @@ static esp_err_t verify_segment_header(int index, const esp_image_segment_header
 
 static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t checksum_word, esp_image_metadata_t *data);
 
-static esp_err_t __attribute__((unused)) verify_secure_boot_signature(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data);
 static esp_err_t __attribute__((unused)) verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data);
 
 esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *part, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "esp_image_load");
+    ESP_LOGF("FUNC", "esp_image_load");
 
 #ifdef BOOTLOADER_BUILD
     bool do_load = (mode == ESP_IMAGE_LOAD);
@@ -114,11 +112,7 @@ esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *
     }
 
     // Calculate SHA-256 of image if secure boot is on, or if image has a hash appended
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    if (1) {
-#else
     if (data->image.hash_appended) {
-#endif
         sha_handle = bootloader_sha256_start();
         if (sha_handle == NULL) {
             return ESP_ERR_NO_MEM;
@@ -181,15 +175,10 @@ goto err;
        rewritten the header - rely on esptool.py having verified the bootloader at flashing time, instead.
     */
     if (!is_bootloader) {
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-        // secure boot images have a signature appended
-        err = verify_secure_boot_signature(sha_handle, data);
-#else
         // No secure boot, but SHA-256 can be appended for basic corruption detection
         if (sha_handle != NULL && !esp_cpu_in_ocd_debug_mode()) {
             err = verify_simple_hash(sha_handle, data);
         }
-#endif // CONFIG_SECURE_BOOT_ENABLED
     } else { // is_bootloader
         // bootloader may still have a sha256 digest handle open
         if (sha_handle != NULL) {
@@ -233,7 +222,7 @@ goto err;
 
 static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t *image, bool silent)
 {
-    //ESP_LOGF("FUNC", "verify_image_header");
+    ESP_LOGF("FUNC", "verify_image_header");
 
     esp_err_t err = ESP_OK;
 
@@ -259,7 +248,7 @@ static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t
 
 static esp_err_t process_segment(int index, uint32_t flash_addr, esp_image_segment_header_t *header, bool silent, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
-    //ESP_LOGF("FUNC", "process_segment");
+    ESP_LOGF("FUNC", "process_segment");
 
     esp_err_t err;
 
@@ -340,7 +329,7 @@ err:
 
 static esp_err_t process_segment_data(intptr_t load_addr, uint32_t data_addr, uint32_t data_len, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
-    //ESP_LOGF("FUNC", "process_segment_data");
+    ESP_LOGF("FUNC", "process_segment_data");
 
     const uint32_t *data = (const uint32_t *)bootloader_mmap(data_addr, data_len);
     if(!data) {
@@ -388,7 +377,7 @@ static esp_err_t process_segment_data(intptr_t load_addr, uint32_t data_addr, ui
 
 static esp_err_t verify_segment_header(int index, const esp_image_segment_header_t *segment, uint32_t segment_data_offs, bool silent)
 {
-    //ESP_LOGF("FUNC", "verify_segment_header");
+    ESP_LOGF("FUNC", "verify_segment_header");
 
     if ((segment->data_len & 3) != 0
         || segment->data_len >= SIXTEEN_MB) {
@@ -420,7 +409,7 @@ static esp_err_t verify_segment_header(int index, const esp_image_segment_header
 
 static bool should_map(uint32_t load_addr)
 {
-    //ESP_LOGF("FUNC", "should_map");
+    ESP_LOGF("FUNC", "should_map");
 
     return (load_addr >= SOC_IROM_LOW && load_addr < SOC_IROM_HIGH)
         || (load_addr >= SOC_DROM_LOW && load_addr < SOC_DROM_HIGH);
@@ -428,7 +417,7 @@ static bool should_map(uint32_t load_addr)
 
 static bool should_load(uint32_t load_addr)
 {
-    //ESP_LOGF("FUNC", "should_load");
+    ESP_LOGF("FUNC", "should_load");
 
     /* Reload the RTC memory segments whenever a non-deepsleep reset
        is occurring */
@@ -462,7 +451,7 @@ static bool should_load(uint32_t load_addr)
 
 esp_err_t esp_image_verify_bootloader(uint32_t *length)
 {
-    //ESP_LOGF("FUNC", "esp_image_verify_bootloader");
+    ESP_LOGF("FUNC", "esp_image_verify_bootloader");
 
     esp_image_metadata_t data;
     const esp_partition_pos_t bootloader_part = {
@@ -480,7 +469,7 @@ esp_err_t esp_image_verify_bootloader(uint32_t *length)
 
 static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t checksum_word, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "verify_checksum");
+    ESP_LOGF("FUNC", "verify_checksum");
 
     uint32_t unpadded_length = data->image_len;
     uint32_t length = unpadded_length + 1; // Add a byte for the checksum
@@ -513,56 +502,9 @@ static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t
 
 static void debug_log_hash(const uint8_t *image_hash, const char *caption);
 
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-static esp_err_t verify_secure_boot_signature(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
-{
-    //ESP_LOGF("FUNC", "verify_secure_boot_signature");
-
-    uint8_t image_hash[HASH_LEN] = { 0 };
-
-    // For secure boot, we calculate the signature hash over the whole file, which includes any "simple" hash
-    // appended to the image for corruption detection
-    if (data->image.hash_appended) {
-        const void *simple_hash = bootloader_mmap(data->start_addr + data->image_len - HASH_LEN, HASH_LEN);
-        bootloader_sha256_data(sha_handle, simple_hash, HASH_LEN);
-        bootloader_munmap(simple_hash);
-    }
-
-    bootloader_sha256_finish(sha_handle, image_hash);
-
-    // Log the hash for debugging
-    debug_log_hash(image_hash, "Calculated secure boot hash");
-
-    // Use hash to verify signature block
-    const esp_secure_boot_sig_block_t *sig_block = bootloader_mmap(data->start_addr + data->image_len, sizeof(esp_secure_boot_sig_block_t));
-    esp_err_t err = esp_secure_boot_verify_signature_block(sig_block, image_hash);
-    bootloader_munmap(sig_block);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Secure boot signature verification failed");
-
-        // Go back and check if the simple hash matches or not (we're off the fast path so we can re-hash the whole image now)
-        ESP_LOGI(TAG, "Calculating simple hash to check for corruption...");
-        const void *whole_image = bootloader_mmap(data->start_addr, data->image_len - HASH_LEN);
-        if (whole_image != NULL) {
-            sha_handle = bootloader_sha256_start();
-            bootloader_sha256_data(sha_handle, whole_image, data->image_len - HASH_LEN);
-            bootloader_munmap(whole_image);
-            if (verify_simple_hash(sha_handle, data) != ESP_OK) {
-                ESP_LOGW(TAG, "image corrupted on flash");
-            } else {
-                ESP_LOGW(TAG, "image valid, signature bad");
-            }
-        }
-        return ESP_ERR_IMAGE_INVALID;
-    }
-
-    return ESP_OK;
-}
-#endif /* CONFIG_SECURE_BOOT_ENABLED */
-
 static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "verify_simple_hash");
+    ESP_LOGF("FUNC", "verify_simple_hash");
 
     uint8_t image_hash[HASH_LEN] = { 0 };
     bootloader_sha256_finish(sha_handle, image_hash);
@@ -586,7 +528,7 @@ static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_i
 // Log a hash as a hex string
 static void debug_log_hash(const uint8_t *image_hash, const char *label)
 {
-    //ESP_LOGF("FUNC", "debug_log_hash");
+    ESP_LOGF("FUNC", "debug_log_hash");
 
 #if BOOT_LOG_LEVEL >= LOG_LEVEL_DEBUG
         char hash_print[sizeof(image_hash)*2 + 1];
@@ -614,7 +556,6 @@ static void debug_log_hash(const uint8_t *image_hash, const char *label)
 #include <sys/param.h>
 
 #include <esp_image_format.h>
-#include <esp_secure_boot.h>
 #include <esp_log.h>
 #include <esp_spi_flash.h>
 #include <bootloader_flash.h>
@@ -673,16 +614,13 @@ static esp_err_t verify_segment_header(int index, const esp_image_segment_header
 
 static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t checksum_word, esp_image_metadata_t *data);
 
-#if defined(CONFIG_SECURE_BOOT_ENABLED)
-static esp_err_t __attribute__((unused)) verify_secure_boot_signature(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data);
-#endif
 #if defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
 static esp_err_t  __attribute__((unused)) verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data);
 #endif
 
 esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *part, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "esp_image_load");
+    ESP_LOGF("FUNC", "esp_image_load");
 
 #ifdef BOOTLOADER_BUILD
     bool do_load = (mode == ESP_IMAGE_LOAD);
@@ -713,10 +651,6 @@ esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *
         goto err;
     }
 
-    // Calculate SHA-256 of image if secure boot is on, or if image has a hash appended
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    if (1) {
-#else
 #ifdef CONFIG_APP_UPDATE_CHECK_APP_HASH
 #ifdef CONFIG_IDF_TARGET_ESP32
     if (data->image.hash_appended)
@@ -728,7 +662,6 @@ esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *
         }
         bootloader_sha256_data(sha_handle, &data->image, sizeof(esp_image_header_t));
     }
-#endif
 #endif
 
     ESP_LOGD(TAG, "image header: 0x%02x 0x%02x 0x%02x 0x%02x %08x",
@@ -791,10 +724,6 @@ goto err;
        rewritten the header - rely on esptool.py having verified the bootloader at flashing time, instead.
     */
     if (!is_bootloader) {
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-        // secure boot images have a signature appended
-        err = verify_secure_boot_signature(sha_handle, data);
-#else
 #ifdef CONFIG_APP_UPDATE_CHECK_APP_HASH
         // No secure boot, but SHA-256 can be appended for basic corruption detection
         if (sha_handle != NULL
@@ -805,7 +734,6 @@ goto err;
             err = verify_simple_hash(sha_handle, data);
         }
 #endif
-#endif // CONFIG_SECURE_BOOT_ENABLED
     } else { // is_bootloader
         // bootloader may still have a sha256 digest handle open
         if (sha_handle != NULL) {
@@ -851,7 +779,7 @@ goto err;
 
 static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t *image, bool silent)
 {
-    //ESP_LOGF("FUNC", "verify_image_header");
+    ESP_LOGF("FUNC", "verify_image_header");
 
     esp_err_t err = ESP_OK;
 
@@ -877,7 +805,7 @@ static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t
 
 static esp_err_t process_segment(int index, uint32_t flash_addr, esp_image_segment_header_t *header, bool silent, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
-    //ESP_LOGF("FUNC", "process_segment");
+    ESP_LOGF("FUNC", "process_segment");
 
     esp_err_t err;
 
@@ -963,7 +891,7 @@ err:
 
 static esp_err_t process_segment_data(intptr_t load_addr, uint32_t data_addr, uint32_t data_len, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
-    //ESP_LOGF("FUNC", "process_segment_data");
+    ESP_LOGF("FUNC", "process_segment_data");
 
     esp_err_t ret = ESP_OK;
 #if defined(CONFIG_APP_UPDATE_CHECK_APP_SUM) || defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
@@ -1014,7 +942,7 @@ exit:
 
 static esp_err_t verify_segment_header(int index, const esp_image_segment_header_t *segment, uint32_t segment_data_offs, bool silent)
 {
-    //ESP_LOGF("FUNC", "verify_segment_header");
+    ESP_LOGF("FUNC", "verify_segment_header");
 
 //    if ((segment->data_len & 3) != 0
 //        || segment->data_len >= SIXTEEN_MB) {
@@ -1046,14 +974,14 @@ static esp_err_t verify_segment_header(int index, const esp_image_segment_header
 
 static bool should_map(uint32_t load_addr)
 {
-    //ESP_LOGF("FUNC", "should_map");
+    ESP_LOGF("FUNC", "should_map");
 
     return (load_addr >= 0x40200000 && load_addr < 0x40300000);
 }
 
 static bool should_load(uint32_t load_addr)
 {
-    //ESP_LOGF("FUNC", "should_load");
+    ESP_LOGF("FUNC", "should_load");
 
     if (should_map(load_addr)) {
         return false;
@@ -1064,7 +992,7 @@ static bool should_load(uint32_t load_addr)
 
 esp_err_t esp_image_verify_bootloader(uint32_t *length)
 {
-    //ESP_LOGF("FUNC", "esp_image_verify_bootloader");
+    ESP_LOGF("FUNC", "esp_image_verify_bootloader");
 
     esp_image_metadata_t data;
     const esp_partition_pos_t bootloader_part = {
@@ -1082,7 +1010,7 @@ esp_err_t esp_image_verify_bootloader(uint32_t *length)
 
 static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t checksum_word, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "verify_checksum");
+    ESP_LOGF("FUNC", "verify_checksum");
 
     esp_err_t err = ESP_OK;
 #if defined(CONFIG_APP_UPDATE_CHECK_APP_SUM) || defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
@@ -1135,60 +1063,10 @@ static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t
 static void debug_log_hash(const uint8_t *image_hash, const char *caption);
 #endif
 
-#if defined(CONFIG_SECURE_BOOT_ENABLED)
-static esp_err_t verify_secure_boot_signature(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
-{
-    //ESP_LOGF("FUNC", "verify_secure_boot_signature");
-
-    uint8_t image_hash[HASH_LEN] = { 0 };
-
-    // For secure boot, we calculate the signature hash over the whole file, which includes any "simple" hash
-    // appended to the image for corruption detection
-#if CONFIG_IDF_TARGET_ESP32
-    if (data->image.hash_appended)
-#endif
-    {
-        const void *simple_hash = bootloader_mmap(data->start_addr + data->image_len - HASH_LEN, HASH_LEN);
-        bootloader_sha256_data(sha_handle, simple_hash, HASH_LEN);
-        bootloader_munmap(simple_hash);
-    }
-
-    bootloader_sha256_finish(sha_handle, image_hash);
-
-    // Log the hash for debugging
-    debug_log_hash(image_hash, "Calculated secure boot hash");
-
-    // Use hash to verify signature block
-    const esp_secure_boot_sig_block_t *sig_block = bootloader_mmap(data->start_addr + data->image_len, sizeof(esp_secure_boot_sig_block_t));
-    esp_err_t err = esp_secure_boot_verify_signature_block(sig_block, image_hash);
-    bootloader_munmap(sig_block);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Secure boot signature verification failed");
-
-        // Go back and check if the simple hash matches or not (we're off the fast path so we can re-hash the whole image now)
-        ESP_LOGI(TAG, "Calculating simple hash to check for corruption...");
-        const void *whole_image = bootloader_mmap(data->start_addr, data->image_len - HASH_LEN);
-        if (whole_image != NULL) {
-            sha_handle = bootloader_sha256_start();
-            bootloader_sha256_data(sha_handle, whole_image, data->image_len - HASH_LEN);
-            bootloader_munmap(whole_image);
-            if (verify_simple_hash(sha_handle, data) != ESP_OK) {
-                ESP_LOGW(TAG, "image corrupted on flash");
-            } else {
-                ESP_LOGW(TAG, "image valid, signature bad");
-            }
-        }
-        return ESP_ERR_IMAGE_INVALID;
-    }
-
-    return ESP_OK;
-}
-#endif
-
 #if defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
 static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
 {
-    //ESP_LOGF("FUNC", "verify_simple_hash");
+    ESP_LOGF("FUNC", "verify_simple_hash");
 
     uint8_t image_hash[HASH_LEN];
     uint8_t image_hash_flash[HASH_LEN];
@@ -1215,12 +1093,12 @@ static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_i
 }
 #endif
 
-#if defined(CONFIG_SECURE_BOOT_ENABLED) || defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
+#if defined(CONFIG_APP_UPDATE_CHECK_APP_HASH)
 
 // Log a hash as a hex string
 static void debug_log_hash(const uint8_t *image_hash, const char *label)
 {
-    //ESP_LOGF("FUNC", "debug_log_hash");
+    ESP_LOGF("FUNC", "debug_log_hash");
 
 #if BOOT_LOG_LEVEL >= LOG_LEVEL_DEBUG
         char hash_print[sizeof(image_hash)*2 + 1];

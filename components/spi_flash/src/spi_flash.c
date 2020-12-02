@@ -77,6 +77,8 @@ uint8_t FlashIsOnGoing = 0;
 
 bool spi_user_cmd(spi_cmd_dir_t mode, spi_cmd_t *p_cmd)
 {
+    ESP_LOGF("FUNC", "spi_user_cmd");
+
     bool ret;
     FLASH_INTR_DECLARE(c_tmp);
 
@@ -99,6 +101,8 @@ bool spi_user_cmd(spi_cmd_dir_t mode, spi_cmd_t *p_cmd)
 
 bool special_flash_read_status(uint8_t command, uint32_t* status, int len)
 {
+    ESP_LOGF("FUNC", "special_flash_read_status");
+
     bool ret;
     spi_cmd_t cmd;
 
@@ -121,6 +125,8 @@ bool special_flash_read_status(uint8_t command, uint32_t* status, int len)
 
 bool special_flash_write_status(uint8_t command, uint32_t status, int len, bool write_en)
 {
+    ESP_LOGF("FUNC", "special_flash_write_status");
+
     bool ret;
     spi_cmd_t cmd;
 
@@ -146,6 +152,8 @@ bool special_flash_write_status(uint8_t command, uint32_t status, int len, bool 
 
 uint8_t en25q16x_read_sfdp()
 {
+    ESP_LOGF("FUNC", "en25q16x_read_sfdp");
+
     spi_cmd_t cmd;
     uint32_t addr = 0x00003000;
     uint32_t data = 0;
@@ -167,6 +175,8 @@ uint8_t en25q16x_read_sfdp()
 
 uint32_t spi_flash_get_id(void)
 {
+    ESP_LOGF("FUNC", "spi_flash_get_id");
+
     uint32_t rdid = 0;
     FLASH_INTR_DECLARE(c_tmp);
 
@@ -185,6 +195,8 @@ uint32_t spi_flash_get_id(void)
 
 esp_err_t spi_flash_read_status(uint32_t *status)
 {
+    ESP_LOGF("FUNC", "spi_flash_read_status");
+
     esp_err_t ret;
     FLASH_INTR_DECLARE(c_tmp);
 
@@ -203,6 +215,8 @@ esp_err_t spi_flash_read_status(uint32_t *status)
 
 esp_err_t spi_flash_write_status(uint32_t status_value)
 {
+    ESP_LOGF("FUNC", "spi_flash_write_status");
+
     FLASH_INTR_DECLARE(c_tmp);
 
     FLASH_INTR_LOCK(c_tmp);
@@ -220,6 +234,8 @@ esp_err_t spi_flash_write_status(uint32_t status_value)
 
 bool spi_flash_check_wr_protect(void)
 {
+    ESP_LOGF("FUNC", "spi_flash_check_wr_protect");
+
     uint32_t flash_id=spi_flash_get_id();
     uint32_t status=0;
     //check for EN25Q16A/B flash chips
@@ -277,6 +293,8 @@ bool spi_flash_check_wr_protect(void)
 
 static void spi_flash_enable_qio_bit6(void)
 {
+    ESP_LOGF("FUNC", "spi_flash_enable_qio_bit6");
+
     uint8_t wrsr_cmd = 0x1;
     uint32_t issi_qio = SPI_FLASH_ISSI_ENABLE_QIO_MODE;
     special_flash_write_status(wrsr_cmd, issi_qio, 1, true);
@@ -284,6 +302,8 @@ static void spi_flash_enable_qio_bit6(void)
 
 static bool spi_flash_issi_enable_QIO_mode(void)
 {
+    ESP_LOGF("FUNC", "spi_flash_issi_enable_QIO_mode");
+
     uint32_t status = 0;
     if(spi_flash_read_status(&status) == 0) {
         if((status&SPI_FLASH_ISSI_ENABLE_QIO_MODE)) {
@@ -309,6 +329,8 @@ static bool spi_flash_issi_enable_QIO_mode(void)
 
 static uint8_t flash_gd25q32c_read_status(enum GD25Q32C_status status_index)
 {
+    ESP_LOGF("FUNC", "flash_gd25q32c_read_status");
+
     uint8_t rdsr_cmd=0;
     if(GD25Q32C_STATUS1 == status_index) {
         rdsr_cmd = SPI_FLASH_GD25Q32C_READ_STATUSE1_CMD;
@@ -329,6 +351,8 @@ static uint8_t flash_gd25q32c_read_status(enum GD25Q32C_status status_index)
 
 static void flash_gd25q32c_write_status(enum GD25Q32C_status status_index,uint8_t status)
 {
+    ESP_LOGF("FUNC", "flash_gd25q32c_write_status");
+
     uint32_t wrsr_cmd=0;
     uint32_t new_status = status;
     if(GD25Q32C_STATUS1 == status_index) {
@@ -348,6 +372,8 @@ static void flash_gd25q32c_write_status(enum GD25Q32C_status status_index,uint8_
 
 static bool flash_gd25q32c_enable_QIO_mode()
 {
+    ESP_LOGF("FUNC", "flash_gd25q32c_enable_QIO_mode");
+
     uint8_t data = 0;
     if((data=flash_gd25q32c_read_status(GD25Q32C_STATUS2))&SPI_FLASH_GD25Q32C_QIO_MODE) {
         return true;
@@ -365,6 +391,8 @@ static bool flash_gd25q32c_enable_QIO_mode()
 
 void special_flash_set_mode(uint8_t command, bool disable_wait_idle)
 {
+    ESP_LOGF("FUNC", "special_flash_set_mode");
+
     spi_cmd_t cmd;
     cmd.cmd = command;
     cmd.cmd_len = 1;
@@ -382,6 +410,8 @@ void special_flash_set_mode(uint8_t command, bool disable_wait_idle)
 
 bool en25q16x_write_volatile_status(uint8_t vsr)
 {
+    ESP_LOGF("FUNC", "en25q16x_write_volatile_status");
+
     //enter OTP mode
     special_flash_set_mode(0x3a, true);
     //volatile status register write enable
@@ -403,6 +433,8 @@ bool en25q16x_write_volatile_status(uint8_t vsr)
 
 void user_spi_flash_dio_to_qio_pre_init(void)
 {
+    ESP_LOGF("FUNC", "user_spi_flash_dio_to_qio_pre_init");
+
     uint32_t flash_id = spi_flash_get_id();
     bool to_qio = false;
     //check for EN25Q16A/B flash chips
@@ -448,6 +480,8 @@ void user_spi_flash_dio_to_qio_pre_init(void)
 
 esp_err_t spi_flash_erase_sector(size_t sec)
 {
+    ESP_LOGF("FUNC", "spi_flash_erase_sector");
+
     FLASH_INTR_DECLARE(c_tmp);
 
     esp_err_t ret;
@@ -473,6 +507,8 @@ esp_err_t spi_flash_erase_sector(size_t sec)
 
 static esp_err_t spi_flash_program(uint32_t target, uint32_t *src_addr, size_t len)
 {
+    ESP_LOGF("FUNC", "spi_flash_program");
+
     uint32_t page_size;
     uint32_t pgm_len, pgm_num;
     uint8_t i;
@@ -511,6 +547,8 @@ static esp_err_t spi_flash_program(uint32_t target, uint32_t *src_addr, size_t l
 
 static esp_err_t __spi_flash_write(size_t dest_addr, const void *src, size_t size)
 {
+    ESP_LOGF("FUNC", "__spi_flash_write");
+
     esp_err_t ret;
     FLASH_INTR_DECLARE(c_tmp);
 
@@ -527,6 +565,8 @@ static esp_err_t __spi_flash_write(size_t dest_addr, const void *src, size_t siz
 
 esp_err_t spi_flash_write(size_t dest_addr, const void *src, size_t size)
 {
+    ESP_LOGF("FUNC", "spi_flash_write");
+
 #undef FLASH_WRITE
 #define FLASH_WRITE(dest, src, size)                \
 {                                                   \
@@ -613,6 +653,8 @@ esp_err_t spi_flash_write(size_t dest_addr, const void *src, size_t size)
 
 static esp_err_t __spi_flash_read(size_t src_addr, void *dest, size_t size)
 {
+    ESP_LOGF("FUNC", "__spi_flash_read");
+
     esp_err_t ret;
     FLASH_INTR_DECLARE(c_tmp);
 
@@ -629,6 +671,8 @@ static esp_err_t __spi_flash_read(size_t src_addr, void *dest, size_t size)
 
 esp_err_t spi_flash_read(size_t src_addr, void *dest, size_t size)
 {
+    ESP_LOGF("FUNC", "spi_flash_read");
+
 #undef FLASH_READ
 #define FLASH_READ(addr, dest, size)                        \
 {                                                           \
@@ -692,6 +736,8 @@ esp_err_t spi_flash_read(size_t src_addr, void *dest, size_t size)
  */
 esp_err_t spi_flash_erase_range(size_t start_address, size_t size)
 {
+    ESP_LOGF("FUNC", "spi_flash_erase_range");
+
     esp_err_t ret;
     size_t sec, num;
 
@@ -722,6 +768,8 @@ esp_err_t spi_flash_erase_range(size_t start_address, size_t size)
 
 void esp_spi_flash_init(uint32_t spi_speed, uint32_t spi_mode)
 {
+    ESP_LOGF("FUNC", "esp_spi_flash_init");
+
     uint32_t freqdiv, freqbits;
 
     SET_PERI_REG_MASK(PERIPHS_SPI_FLASH_USRREG, BIT5);
@@ -753,6 +801,8 @@ void esp_spi_flash_init(uint32_t spi_speed, uint32_t spi_mode)
 
 uintptr_t spi_flash_cache2phys(const void *cached)
 {
+    ESP_LOGF("FUNC", "spi_flash_cache2phys");
+
     uint32_t map_size;
     uintptr_t addr_offset;
     uintptr_t addr = (uintptr_t)cached;
@@ -779,5 +829,7 @@ uintptr_t spi_flash_cache2phys(const void *cached)
 
 size_t spi_flash_get_chip_size()
 {
+    ESP_LOGF("FUNC", "spi_flash_get_chip_size");
+
     return g_rom_flashchip.chip_size;
 }

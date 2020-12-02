@@ -21,7 +21,6 @@
 #include <bootloader_flash.h>
 #include <esp_log.h>
 #include <esp_spi_flash.h> /* including in bootloader for error values */
-#include <esp_flash_encrypt.h>
 
 #ifndef BOOTLOADER_BUILD
 /* Normal app version maps to esp_spi_flash.h operations...
@@ -59,26 +58,18 @@ void bootloader_munmap(const void *mapping)
     map = 0;
 }
 
-esp_err_t bootloader_flash_read(size_t src, void *dest, size_t size, bool allow_decrypt)
+esp_err_t bootloader_flash_read(size_t src, void *dest, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_read");
 
-    if (allow_decrypt && esp_flash_encryption_enabled()) {
-        return spi_flash_read_encrypted(src, dest, size);
-    } else {
-        return spi_flash_read(src, dest, size);
-    }
+    return spi_flash_read(src, dest, size);
 }
 
-esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
+esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_write");
 
-    if (write_encrypted) {
-        return spi_flash_write_encrypted(dest_addr, src, size);
-    } else {
-        return spi_flash_write(dest_addr, src, size);
-    }
+    return spi_flash_write(dest_addr, src, size);
 }
 
 esp_err_t bootloader_flash_erase_sector(size_t sector)
@@ -171,52 +162,7 @@ static esp_err_t spi_to_esp_err(esp_rom_spiflash_result_t r)
     }
 }
 
-static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, size_t size)
-{
-    ESP_LOGF("FUNC", "bootloader_flash_read_no_decrypt");
-
-    Cache_Read_Disable(0);
-    Cache_Flush(0);
-    esp_rom_spiflash_result_t r = esp_rom_spiflash_read(src_addr, dest, size);
-    Cache_Read_Enable(0);
-
-    return spi_to_esp_err(r);
-}
-
-static esp_err_t bootloader_flash_read_allow_decrypt(size_t src_addr, void *dest, size_t size)
-{
-    ESP_LOGF("FUNC", "bootloader_flash_read_allow_decrypt");
-
-    uint32_t *dest_words = (uint32_t *)dest;
-
-    /* Use the 51st MMU mapping to read from flash in 64KB blocks.
-       (MMU will transparently decrypt if encryption is enabled.)
-    */
-    for (int word = 0; word < size / 4; word++) {
-        uint32_t word_src = src_addr + word * 4;  /* Read this offset from flash */
-        uint32_t map_at = word_src & MMU_FLASH_MASK; /* Map this 64KB block from flash */
-        uint32_t *map_ptr;
-        if (map_at != current_read_mapping) {
-            /* Move the 64KB mmu mapping window to fit map_at */
-            Cache_Read_Disable(0);
-            Cache_Flush(0);
-            ESP_LOGD(TAG, "mmu set block paddr=0x%08x (was 0x%08x)", map_at, current_read_mapping);
-            int e = cache_flash_mmu_set(0, 0, MMU_BLOCK50_VADDR, map_at, 64, 1);
-            if (e != 0) {
-                ESP_LOGE(TAG, "cache_flash_mmu_set failed: %d\n", e);
-                Cache_Read_Enable(0);
-                return ESP_FAIL;
-            }
-            current_read_mapping = map_at;
-            Cache_Read_Enable(0);
-        }
-        map_ptr = (uint32_t *)(MMU_BLOCK50_VADDR + (word_src - map_at));
-        dest_words[word] = *map_ptr;
-    }
-    return ESP_OK;
-}
-
-esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool allow_decrypt)
+esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_read");
 
@@ -233,19 +179,20 @@ esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool a
         return ESP_FAIL;
     }
 
-    if (allow_decrypt) {
-        return bootloader_flash_read_allow_decrypt(src_addr, dest, size);
-    } else {
-        return bootloader_flash_read_no_decrypt(src_addr, dest, size);
-    }
+    Cache_Read_Disable(0);
+    Cache_Flush(0);
+    esp_rom_spiflash_result_t r = esp_rom_spiflash_read(src_addr, dest, size);
+    Cache_Read_Enable(0);
+
+    return spi_to_esp_err(r);
 }
 
-esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
+esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_write");
 
     esp_err_t err;
-    size_t alignment = write_encrypted ? 32 : 4;
+    size_t alignment = 4;
     if ((dest_addr % alignment) != 0) {
         ESP_LOGE(TAG, "bootloader_flash_write dest_addr 0x%x not %d-byte aligned", dest_addr, alignment);
         return ESP_FAIL;
@@ -264,11 +211,7 @@ esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool 
         return err;
     }
 
-    if (write_encrypted) {
-        return spi_to_esp_err(esp_rom_spiflash_write_encrypted(dest_addr, src, size));
-    } else {
-        return spi_to_esp_err(esp_rom_spiflash_write(dest_addr, src, size));
-    }
+    return spi_to_esp_err(esp_rom_spiflash_write(dest_addr, src, size));
 }
 
 esp_err_t bootloader_flash_erase_sector(size_t sector)
@@ -378,20 +321,7 @@ void bootloader_munmap(const void *mapping)
     }
 }
 
-static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, size_t size)
-{
-    ESP_LOGF("FUNC", "bootloader_flash_read_no_decrypt");
-
-#ifdef BOOTLOADER_BUILD
-    SPIRead(src_addr, dest, size);
-#else
-    spi_flash_read(src_addr, dest, size);
-#endif
-
-    return ESP_OK;
-}
-
-esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool allow_decrypt)
+esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_read");
 
@@ -408,14 +338,20 @@ esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool a
         return ESP_FAIL;
     }
 
-        return bootloader_flash_read_no_decrypt(src_addr, dest, size);
+#ifdef BOOTLOADER_BUILD
+    SPIRead(src_addr, dest, size);
+#else
+    spi_flash_read(src_addr, dest, size);
+#endif
+
+    return ESP_OK;
 }
 
-esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
+esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size)
 {
     ESP_LOGF("FUNC", "bootloader_flash_write");
 
-    size_t alignment = write_encrypted ? 32 : 4;
+    size_t alignment = 4;
     if ((dest_addr % alignment) != 0) {
         ESP_LOGE(TAG, "bootloader_flash_write dest_addr 0x%x not %d-byte aligned", dest_addr, alignment);
         return ESP_FAIL;
@@ -428,7 +364,6 @@ esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool 
         ESP_LOGE(TAG, "bootloader_flash_write src 0x%x not 4 byte aligned", (intptr_t)src);
         return ESP_FAIL;
     }
-
 
     SPIWrite(dest_addr, src, size);
 

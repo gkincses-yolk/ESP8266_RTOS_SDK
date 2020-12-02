@@ -26,7 +26,6 @@
 #include "esp_partition.h"
 #include "esp_spi_flash.h"
 #include "esp_image_format.h"
-#include "esp_secure_boot.h"
 #include "sdkconfig.h"
 
 #include "esp_ota_ops.h"
@@ -273,14 +272,6 @@ esp_err_t esp_ota_end(esp_ota_handle_t handle)
     }
 #endif
 
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    ret = esp_secure_boot_verify_signature(it->part->address, data.image_len);
-    if (ret != ESP_OK) {
-        ret = ESP_ERR_OTA_VALIDATE_FAILED;
-        goto cleanup;
-    }
-#endif
-
  cleanup:
     LIST_REMOVE(it, entries);
     free(it);
@@ -432,12 +423,6 @@ esp_err_t esp_ota_set_boot_partition(const esp_partition_t *partition)
         return ESP_ERR_OTA_VALIDATE_FAILED;
     }
 
-#ifdef CONFIG_SECURE_BOOT_ENABLED
-    esp_err_t ret = esp_secure_boot_verify_signature(partition->address, data.image_len);
-    if (ret != ESP_OK) {
-        return ESP_ERR_OTA_VALIDATE_FAILED;
-    }
-#endif
     // if set boot partition to factory bin ,just format ota info partition
     if (partition->type == ESP_PARTITION_TYPE_APP) {
         if (partition->subtype == ESP_PARTITION_SUBTYPE_APP_FACTORY) {

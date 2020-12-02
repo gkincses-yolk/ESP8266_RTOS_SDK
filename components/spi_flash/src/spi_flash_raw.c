@@ -21,8 +21,12 @@
 #include "esp8266/pin_mux_register.h"
 #include "esp8266/spi_register.h"
 
+#include "esp_log.h"
+
 void Cache_Read_Disable_2(void)
 {
+    ESP_LOGF("FUNC", "Cache_Read_Disable_2");
+
     CLEAR_PERI_REG_MASK(CACHE_FLASH_CTRL_REG,CACHE_READ_EN_BIT);
     while(REG_READ(SPI_EXT2(0)) != 0) { }
     CLEAR_PERI_REG_MASK(PERIPHS_SPI_FLASH_CTRL,SPI_ENABLE_AHB);
@@ -30,6 +34,8 @@ void Cache_Read_Disable_2(void)
 
 void Cache_Read_Enable_2()
 {
+    ESP_LOGF("FUNC", "Cache_Read_Enable_2");
+
     SET_PERI_REG_MASK(PERIPHS_SPI_FLASH_CTRL,SPI_ENABLE_AHB);
     SET_PERI_REG_MASK(CACHE_FLASH_CTRL_REG,CACHE_READ_EN_BIT);
 }
@@ -37,6 +43,8 @@ void Cache_Read_Enable_New(void) __attribute__((alias("Cache_Read_Enable_2")));
 
 uint32_t spi_flash_get_id_raw(esp_rom_spiflash_chip_t *chip)
 {
+    ESP_LOGF("FUNC", "spi_flash_get_id_raw");
+
     uint32_t rdid = 0;
 
     Cache_Read_Disable();
@@ -56,6 +64,8 @@ uint32_t spi_flash_get_id_raw(esp_rom_spiflash_chip_t *chip)
 
 esp_err_t spi_flash_read_status_raw(esp_rom_spiflash_chip_t *chip, uint32_t *status)
 {
+    ESP_LOGF("FUNC", "spi_flash_read_status_raw");
+
     esp_err_t ret;
 
     Cache_Read_Disable_2();
@@ -69,6 +79,8 @@ esp_err_t spi_flash_read_status_raw(esp_rom_spiflash_chip_t *chip, uint32_t *sta
 
 esp_err_t spi_flash_write_status_raw(esp_rom_spiflash_chip_t *chip, uint32_t status_value)
 {
+    ESP_LOGF("FUNC", "spi_flash_write_status_raw");
+
     Cache_Read_Disable_2();
 
     Wait_SPI_Idle(chip);
@@ -88,6 +100,8 @@ esp_err_t spi_flash_write_status_raw(esp_rom_spiflash_chip_t *chip, uint32_t sta
 
 esp_err_t spi_flash_erase_sector_raw(esp_rom_spiflash_chip_t *chip, size_t sec, size_t sec_size)
 {
+    ESP_LOGF("FUNC", "spi_flash_erase_sector_raw");
+
     esp_err_t ret = ESP_OK;
 
     Cache_Read_Disable_2();
@@ -107,6 +121,8 @@ esp_err_t spi_flash_erase_sector_raw(esp_rom_spiflash_chip_t *chip, size_t sec, 
 
 esp_err_t spi_flash_enable_qmode_raw(esp_rom_spiflash_chip_t *chip)
 {
+    ESP_LOGF("FUNC", "spi_flash_enable_qmode_raw");
+
     esp_err_t ret;
 
     Cache_Read_Disable_2();
@@ -122,6 +138,8 @@ esp_err_t spi_flash_enable_qmode_raw(esp_rom_spiflash_chip_t *chip)
 
 esp_err_t spi_flash_write_raw(esp_rom_spiflash_chip_t *chip, size_t dest_addr, const void *src, size_t size)
 {
+    ESP_LOGF("FUNC", "spi_flash_write_raw");
+
     esp_err_t ret;
 
     Cache_Read_Disable_2();
@@ -135,6 +153,8 @@ esp_err_t spi_flash_write_raw(esp_rom_spiflash_chip_t *chip, size_t dest_addr, c
 
 esp_err_t spi_flash_read_raw(esp_rom_spiflash_chip_t *chip, size_t src_addr, void *dest, size_t size)
 {
+    ESP_LOGF("FUNC", "spi_flash_read_raw");
+
     esp_err_t ret;
 
     Cache_Read_Disable_2();
@@ -148,6 +168,8 @@ esp_err_t spi_flash_read_raw(esp_rom_spiflash_chip_t *chip, size_t src_addr, voi
 
 bool spi_user_cmd_raw(esp_rom_spiflash_chip_t *chip, spi_cmd_dir_t mode, spi_cmd_t *p_cmd)
 {
+    ESP_LOGF("FUNC", "spi_user_cmd_raw");
+
     int idx = 0;
 
     // Cache Disable
@@ -280,6 +302,8 @@ bool spi_user_cmd_raw(esp_rom_spiflash_chip_t *chip, spi_cmd_dir_t mode, spi_cmd
 
 void spi_flash_switch_to_qio_raw(void)
 {
+    ESP_LOGF("FUNC", "spi_flash_switch_to_qio_raw");
+
     CLEAR_PERI_REG_MASK(PERIPHS_SPI_FLASH_CTRL, SPI_QIO_MODE
                         |SPI_QOUT_MODE
                         |SPI_DIO_MODE
