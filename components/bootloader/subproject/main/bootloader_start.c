@@ -41,10 +41,6 @@ void call_start_cpu(void)
         return;
     }
 
-#ifdef CONFIG_BOOTLOADER_FAST_BOOT
-    bootloader_utility_fast_boot_image();
-#endif
-
     // 2. Select image to boot
     esp_image_metadata_t image_data;
     if(select_image(&image_data) != ESP_OK){

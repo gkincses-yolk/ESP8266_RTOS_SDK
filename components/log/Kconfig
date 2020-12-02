@@ -25,7 +25,7 @@ config LOG_DEFAULT_LEVEL_DEBUG
    bool "Debug"
 config LOG_DEFAULT_LEVEL_VERBOSE
    bool "Verbose"
-config LOG_DEAFULT_LEVEL_FUNC
+config LOG_DEFAULT_LEVEL_FUNC
    bool "Func"
 endchoice
 
