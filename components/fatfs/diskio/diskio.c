@@ -27,6 +27,10 @@ PARTITION VolToPart[] = {
 
 esp_err_t ff_diskio_get_drive(BYTE* out_pdrv)
 {
+    printf("FUNC=ff_diskio_get_drive");
+
+    printf("FUNC=ff_diskio_get_drive");
+
     BYTE i;
     for(i=0; i<FF_VOLUMES; i++) {
         if (!s_impls[i]) {
@@ -39,6 +43,10 @@ esp_err_t ff_diskio_get_drive(BYTE* out_pdrv)
 
 void ff_diskio_register(BYTE pdrv, const ff_diskio_impl_t* discio_impl)
 {
+    printf("FUNC=ff_diskio_register");
+
+    printf("FUNC=ff_diskio_register");
+
     assert(pdrv < FF_VOLUMES);
 
     if (s_impls[pdrv]) {
@@ -59,27 +67,39 @@ void ff_diskio_register(BYTE pdrv, const ff_diskio_impl_t* discio_impl)
 
 DSTATUS ff_disk_initialize (BYTE pdrv)
 {
+    printf("FUNC=ff_disk_initialize ");
+
     return s_impls[pdrv]->init(pdrv);
 }
 DSTATUS ff_disk_status (BYTE pdrv)
 {
+    printf("FUNC=ff_disk_status ");
+
     return s_impls[pdrv]->status(pdrv);
 }
 DRESULT ff_disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
+    printf("FUNC=ff_disk_read ");
+
     return s_impls[pdrv]->read(pdrv, buff, sector, count);
 }
 DRESULT ff_disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
+    printf("FUNC=ff_disk_write ");
+
     return s_impls[pdrv]->write(pdrv, buff, sector, count);
 }
 DRESULT ff_disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 {
+    printf("FUNC=ff_disk_ioctl ");
+
     return s_impls[pdrv]->ioctl(pdrv, cmd, buff);
 }
 
 DWORD get_fattime(void)
 {
+    printf("FUNC=get_fattime");
+
     time_t t = time(NULL);
     struct tm tmr;
     localtime_r(&t, &tmr);

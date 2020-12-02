@@ -8,7 +8,10 @@
 // is dropped.
 static s32_t spiffs_gc_erase_block(
     spiffs *fs,
-    spiffs_block_ix bix) {
+    spiffs_block_ix bix)
+{
+    printf("FUNC=spiffs_gc_erase_block");
+
   s32_t res;
 
   SPIFFS_GC_DBG("gc: erase block "_SPIPRIbl"\n", bix);
@@ -30,7 +33,10 @@ static s32_t spiffs_gc_erase_block(
 // the block is erased. Compared to the non-quick gc, the quick one ensures
 // that no updates are needed on existing objects on pages that are erased.
 s32_t spiffs_gc_quick(
-    spiffs *fs, u16_t max_free_pages) {
+    spiffs *fs, u16_t max_free_pages)
+{
+    printf("FUNC=spiffs_gc_quick");
+
   s32_t res = SPIFFS_OK;
   u32_t blocks = fs->block_count;
   spiffs_block_ix cur_block = 0;
@@ -108,7 +114,10 @@ s32_t spiffs_gc_quick(
 // cleansed and erased
 s32_t spiffs_gc_check(
     spiffs *fs,
-    u32_t len) {
+    u32_t len)
+{
+    printf("FUNC=spiffs_gc_check");
+
   s32_t res;
   s32_t free_pages =
       (SPIFFS_PAGES_PER_BLOCK(fs) - SPIFFS_OBJ_LOOKUP_PAGES(fs)) * (fs->block_count-2)
@@ -198,7 +207,10 @@ s32_t spiffs_gc_check(
 // Updates page statistics for a block that is about to be erased
 s32_t spiffs_gc_erase_page_stats(
     spiffs *fs,
-    spiffs_block_ix bix) {
+    spiffs_block_ix bix)
+{
+    printf("FUNC=spiffs_gc_erase_page_stats");
+
   s32_t res = SPIFFS_OK;
   int obj_lookup_page = 0;
   int entries_per_page = (SPIFFS_CFG_LOG_PAGE_SZ(fs) / sizeof(spiffs_obj_id));
@@ -237,7 +249,10 @@ s32_t spiffs_gc_find_candidate(
     spiffs *fs,
     spiffs_block_ix **block_candidates,
     int *candidate_count,
-    char fs_crammed) {
+    char fs_crammed)
+{
+    printf("FUNC=spiffs_gc_find_candidate");
+
   s32_t res = SPIFFS_OK;
   u32_t blocks = fs->block_count;
   spiffs_block_ix cur_block = 0;
@@ -374,7 +389,10 @@ typedef struct {
 //   repeat loop until end of object lookup
 //   scan object lookup again for remaining object index pages, move to new page in other block
 //
-s32_t spiffs_gc_clean(spiffs *fs, spiffs_block_ix bix) {
+s32_t spiffs_gc_clean(spiffs *fs, spiffs_block_ix bix)
+{
+    printf("FUNC=spiffs_gc_clean");
+
   s32_t res = SPIFFS_OK;
   const int entries_per_page = (SPIFFS_CFG_LOG_PAGE_SZ(fs) / sizeof(spiffs_obj_id));
   // this is the global localizer being pushed and popped

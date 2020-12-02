@@ -76,6 +76,8 @@ static esp_spiffs_t * _efs[CONFIG_SPIFFS_MAX_PARTITIONS];
 
 static void esp_spiffs_free(esp_spiffs_t ** efs)
 {
+    printf("FUNC=esp_spiffs_free");
+
     esp_spiffs_t * e = *efs;
     if (*efs == NULL) {
         return;
@@ -93,7 +95,10 @@ static void esp_spiffs_free(esp_spiffs_t ** efs)
     free(e);
 }
 
-static esp_err_t esp_spiffs_by_label(const char* label, int * index){
+static esp_err_t esp_spiffs_by_label(const char* label, int * index)
+{
+    printf("FUNC=esp_spiffs_by_label");
+
     int i;
     esp_spiffs_t * p;
     for (i = 0; i < CONFIG_SPIFFS_MAX_PARTITIONS; i++) {
@@ -112,7 +117,10 @@ static esp_err_t esp_spiffs_by_label(const char* label, int * index){
     return ESP_ERR_NOT_FOUND;
 }
 
-static esp_err_t esp_spiffs_get_empty(int * index){
+static esp_err_t esp_spiffs_get_empty(int * index)
+{
+    printf("FUNC=esp_spiffs_get_empty");
+
     int i;
     for (i = 0; i < CONFIG_SPIFFS_MAX_PARTITIONS; i++) {
         if (_efs[i] == NULL) {
@@ -125,6 +133,8 @@ static esp_err_t esp_spiffs_get_empty(int * index){
 
 static esp_err_t esp_spiffs_init(const esp_vfs_spiffs_conf_t* conf)
 {
+    printf("FUNC=esp_spiffs_init");
+
     int index;
     //find if such partition is already mounted
     if (esp_spiffs_by_label(conf->partition_label, &index) == ESP_OK) {
@@ -252,6 +262,8 @@ static esp_err_t esp_spiffs_init(const esp_vfs_spiffs_conf_t* conf)
 
 bool esp_spiffs_mounted(const char* partition_label)
 {
+    printf("FUNC=esp_spiffs_mounted");
+
     int index;
     if (esp_spiffs_by_label(partition_label, &index) != ESP_OK) {
         return false;
@@ -261,6 +273,8 @@ bool esp_spiffs_mounted(const char* partition_label)
 
 esp_err_t esp_spiffs_info(const char* partition_label, size_t *total_bytes, size_t *used_bytes)
 {
+    printf("FUNC=esp_spiffs_info");
+
     int index;
     if (esp_spiffs_by_label(partition_label, &index) != ESP_OK) {
         return ESP_ERR_INVALID_STATE;
@@ -271,6 +285,8 @@ esp_err_t esp_spiffs_info(const char* partition_label, size_t *total_bytes, size
 
 esp_err_t esp_spiffs_format(const char* partition_label)
 {
+    printf("FUNC=esp_spiffs_format");
+
     bool partition_was_mounted = false;
     int index;
     /* If the partition is not mounted, need to create SPIFFS structures
@@ -327,6 +343,8 @@ esp_err_t esp_spiffs_format(const char* partition_label)
 
 esp_err_t esp_vfs_spiffs_register(const esp_vfs_spiffs_conf_t * conf)
 {
+    printf("FUNC=esp_vfs_spiffs_register");
+
     assert(conf->base_path);
     const esp_vfs_t vfs = {
         .flags = ESP_VFS_FLAG_CONTEXT_PTR,
@@ -372,6 +390,8 @@ esp_err_t esp_vfs_spiffs_register(const esp_vfs_spiffs_conf_t * conf)
 
 esp_err_t esp_vfs_spiffs_unregister(const char* partition_label)
 {
+    printf("FUNC=esp_vfs_spiffs_unregister");
+
     int index;
     if (esp_spiffs_by_label(partition_label, &index) != ESP_OK) {
         return ESP_ERR_INVALID_STATE;
@@ -386,6 +406,8 @@ esp_err_t esp_vfs_spiffs_unregister(const char* partition_label)
 
 static int spiffs_res_to_errno(s32_t fr)
 {
+    printf("FUNC=spiffs_res_to_errno");
+
     switch(fr) {
     case SPIFFS_OK :
         return 0;
@@ -423,6 +445,8 @@ static int spiffs_res_to_errno(s32_t fr)
 
 static int spiffs_mode_conv(int m)
 {
+    printf("FUNC=spiffs_mode_conv");
+
     int res = 0;
     int acc_mode = m & O_ACCMODE;
     if (acc_mode == O_RDONLY) {
@@ -445,6 +469,8 @@ static int spiffs_mode_conv(int m)
 
 static int vfs_spiffs_open(void* ctx, const char * path, int flags, int mode)
 {
+    printf("FUNC=vfs_spiffs_open");
+
     assert(path);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     int spiffs_flags = spiffs_mode_conv(flags);
@@ -462,6 +488,8 @@ static int vfs_spiffs_open(void* ctx, const char * path, int flags, int mode)
 
 static ssize_t vfs_spiffs_write(void* ctx, int fd, const void * data, size_t size)
 {
+    printf("FUNC=vfs_spiffs_write");
+
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     ssize_t res = SPIFFS_write(efs->fs, fd, (void *)data, size);
     if (res < 0) {
@@ -474,6 +502,8 @@ static ssize_t vfs_spiffs_write(void* ctx, int fd, const void * data, size_t siz
 
 static ssize_t vfs_spiffs_read(void* ctx, int fd, void * dst, size_t size)
 {
+    printf("FUNC=vfs_spiffs_read");
+
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     ssize_t res = SPIFFS_read(efs->fs, fd, dst, size);
     if (res < 0) {
@@ -486,6 +516,8 @@ static ssize_t vfs_spiffs_read(void* ctx, int fd, void * dst, size_t size)
 
 static int vfs_spiffs_close(void* ctx, int fd)
 {
+    printf("FUNC=vfs_spiffs_close");
+
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     int res = SPIFFS_close(efs->fs, fd);
     if (res < 0) {
@@ -498,6 +530,8 @@ static int vfs_spiffs_close(void* ctx, int fd)
 
 static off_t vfs_spiffs_lseek(void* ctx, int fd, off_t offset, int mode)
 {
+    printf("FUNC=vfs_spiffs_lseek");
+
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     off_t res = SPIFFS_lseek(efs->fs, fd, offset, mode);
     if (res < 0) {
@@ -510,6 +544,8 @@ static off_t vfs_spiffs_lseek(void* ctx, int fd, off_t offset, int mode)
 
 static int vfs_spiffs_fstat(void* ctx, int fd, struct stat * st)
 {
+    printf("FUNC=vfs_spiffs_fstat");
+
     assert(st);
     spiffs_stat s;
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
@@ -529,6 +565,8 @@ static int vfs_spiffs_fstat(void* ctx, int fd, struct stat * st)
 
 static int vfs_spiffs_stat(void* ctx, const char * path, struct stat * st)
 {
+    printf("FUNC=vfs_spiffs_stat");
+
     assert(path);
     assert(st);
     spiffs_stat s;
@@ -551,6 +589,8 @@ static int vfs_spiffs_stat(void* ctx, const char * path, struct stat * st)
 
 static int vfs_spiffs_rename(void* ctx, const char *src, const char *dst)
 {
+    printf("FUNC=vfs_spiffs_rename");
+
     assert(src);
     assert(dst);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
@@ -565,6 +605,8 @@ static int vfs_spiffs_rename(void* ctx, const char *src, const char *dst)
 
 static int vfs_spiffs_unlink(void* ctx, const char *path)
 {
+    printf("FUNC=vfs_spiffs_unlink");
+
     assert(path);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     int res = SPIFFS_remove(efs->fs, path);
@@ -578,6 +620,8 @@ static int vfs_spiffs_unlink(void* ctx, const char *path)
 
 static DIR* vfs_spiffs_opendir(void* ctx, const char* name)
 {
+    printf("FUNC=vfs_spiffs_opendir");
+
     assert(name);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     vfs_spiffs_dir_t * dir = calloc(1, sizeof(vfs_spiffs_dir_t));
@@ -598,6 +642,8 @@ static DIR* vfs_spiffs_opendir(void* ctx, const char* name)
 
 static int vfs_spiffs_closedir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_spiffs_closedir");
+
     assert(pdir);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     vfs_spiffs_dir_t * dir = (vfs_spiffs_dir_t *)pdir;
@@ -613,6 +659,8 @@ static int vfs_spiffs_closedir(void* ctx, DIR* pdir)
 
 static struct dirent* vfs_spiffs_readdir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_spiffs_readdir");
+
     assert(pdir);
     vfs_spiffs_dir_t * dir = (vfs_spiffs_dir_t *)pdir;
     struct dirent* out_dirent;
@@ -627,6 +675,8 @@ static struct dirent* vfs_spiffs_readdir(void* ctx, DIR* pdir)
 static int vfs_spiffs_readdir_r(void* ctx, DIR* pdir, struct dirent* entry,
                                 struct dirent** out_dirent)
 {
+    printf("FUNC=vfs_spiffs_readdir_r");
+
     assert(pdir);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     vfs_spiffs_dir_t * dir = (vfs_spiffs_dir_t *)pdir;
@@ -662,6 +712,8 @@ static int vfs_spiffs_readdir_r(void* ctx, DIR* pdir, struct dirent* entry,
 
 static long vfs_spiffs_telldir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_spiffs_telldir");
+
     assert(pdir);
     vfs_spiffs_dir_t * dir = (vfs_spiffs_dir_t *)pdir;
     return dir->offset;
@@ -669,6 +721,8 @@ static long vfs_spiffs_telldir(void* ctx, DIR* pdir)
 
 static void vfs_spiffs_seekdir(void* ctx, DIR* pdir, long offset)
 {
+    printf("FUNC=vfs_spiffs_seekdir");
+
     assert(pdir);
     esp_spiffs_t * efs = (esp_spiffs_t *)ctx;
     vfs_spiffs_dir_t * dir = (vfs_spiffs_dir_t *)pdir;
@@ -701,24 +755,32 @@ static void vfs_spiffs_seekdir(void* ctx, DIR* pdir, long offset)
 
 static int vfs_spiffs_mkdir(void* ctx, const char* name, mode_t mode)
 {
+    printf("FUNC=vfs_spiffs_mkdir");
+
     errno = ENOTSUP;
     return -1;
 }
 
 static int vfs_spiffs_rmdir(void* ctx, const char* name)
 {
+    printf("FUNC=vfs_spiffs_rmdir");
+
     errno = ENOTSUP;
     return -1;
 }
 
 static int vfs_spiffs_link(void* ctx, const char* n1, const char* n2)
 {
+    printf("FUNC=vfs_spiffs_link");
+
     errno = ENOTSUP;
     return -1;
 }
 
 static void vfs_spiffs_update_mtime(spiffs *fs, spiffs_file fd)
 {
+    printf("FUNC=vfs_spiffs_update_mtime");
+
 #ifdef CONFIG_SPIFFS_USE_MTIME
     time_t t = time(NULL);
     spiffs_stat s;
@@ -738,6 +800,8 @@ static void vfs_spiffs_update_mtime(spiffs *fs, spiffs_file fd)
 
 static time_t vfs_spiffs_get_mtime(const spiffs_stat* s)
 {
+    printf("FUNC=vfs_spiffs_get_mtime");
+
     time_t t = 0;
 #ifdef CONFIG_SPIFFS_USE_MTIME
     memcpy(&t, s->meta, sizeof(t));

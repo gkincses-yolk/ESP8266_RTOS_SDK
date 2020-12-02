@@ -29,6 +29,8 @@ static const char *TAG = "efuse";
 
 void esp_efuse_burn_new_values(void)
 {
+    printf("FUNC=esp_efuse_burn_new_values");
+
     REG_WRITE(EFUSE_CONF_REG, EFUSE_CONF_WRITE);
     REG_WRITE(EFUSE_CMD_REG,  EFUSE_CMD_PGM);
     while (REG_READ(EFUSE_CMD_REG) != 0) {
@@ -42,6 +44,8 @@ void esp_efuse_burn_new_values(void)
 
 void esp_efuse_reset(void)
 {
+    printf("FUNC=esp_efuse_reset");
+
     REG_WRITE(EFUSE_CONF_REG, EFUSE_CONF_READ);
     const uint32_t block_start[4] = { EFUSE_BLK0_WDATA0_REG, EFUSE_BLK1_WDATA0_REG,
                                       EFUSE_BLK2_WDATA0_REG, EFUSE_BLK3_WDATA0_REG };
@@ -56,6 +60,8 @@ void esp_efuse_reset(void)
 
 void esp_efuse_disable_basic_rom_console(void)
 {
+    printf("FUNC=esp_efuse_disable_basic_rom_console");
+
     if ((REG_READ(EFUSE_BLK0_RDATA6_REG) & EFUSE_RD_CONSOLE_DEBUG_DISABLE) == 0) {
         ESP_EARLY_LOGI(TAG, "Disable BASIC ROM Console fallback via efuse...");
         esp_efuse_reset();

@@ -35,6 +35,8 @@ const char* spiffs_test_partition_label = "flash_test";
 
 void test_spiffs_create_file_with_text(const char* name, const char* text)
 {
+    printf("FUNC=test_spiffs_create_file_with_text");
+
     FILE* f = fopen(name, "wb");
     TEST_ASSERT_NOT_NULL(f);
     TEST_ASSERT_TRUE(fputs(text, f) != EOF);
@@ -43,6 +45,8 @@ void test_spiffs_create_file_with_text(const char* name, const char* text)
 
 void test_spiffs_overwrite_append(const char* filename)
 {
+    printf("FUNC=test_spiffs_overwrite_append");
+
     /* Create new file with 'aaaa' */
     test_spiffs_create_file_with_text(filename, "aaaa");
 
@@ -78,6 +82,8 @@ void test_spiffs_overwrite_append(const char* filename)
 
 void test_spiffs_read_file(const char* filename)
 {
+    printf("FUNC=test_spiffs_read_file");
+
     FILE* f = fopen(filename, "r");
     TEST_ASSERT_NOT_NULL(f);
     char buf[32] = { 0 };
@@ -89,6 +95,8 @@ void test_spiffs_read_file(const char* filename)
 
 void test_spiffs_open_max_files(const char* filename_prefix, size_t files_count)
 {
+    printf("FUNC=test_spiffs_open_max_files");
+
     FILE** files = calloc(files_count, sizeof(FILE*));
     for (size_t i = 0; i < files_count; ++i) {
         char name[32];
@@ -105,6 +113,8 @@ void test_spiffs_open_max_files(const char* filename_prefix, size_t files_count)
 
 void test_spiffs_lseek(const char* filename)
 {
+    printf("FUNC=test_spiffs_lseek");
+
     FILE* f = fopen(filename, "wb+");
     TEST_ASSERT_NOT_NULL(f);
     TEST_ASSERT_EQUAL(11, fprintf(f, "0123456789\n"));
@@ -130,6 +140,8 @@ void test_spiffs_lseek(const char* filename)
 
 void test_spiffs_stat(const char* filename)
 {
+    printf("FUNC=test_spiffs_stat");
+
     test_spiffs_create_file_with_text(filename, "foo\n");
     struct stat st;
     TEST_ASSERT_EQUAL(0, stat(filename, &st));
@@ -139,6 +151,8 @@ void test_spiffs_stat(const char* filename)
 
 void test_spiffs_unlink(const char* filename)
 {
+    printf("FUNC=test_spiffs_unlink");
+
     test_spiffs_create_file_with_text(filename, "unlink\n");
 
     TEST_ASSERT_EQUAL(0, unlink(filename));
@@ -148,6 +162,8 @@ void test_spiffs_unlink(const char* filename)
 
 void test_spiffs_rename(const char* filename_prefix)
 {
+    printf("FUNC=test_spiffs_rename");
+
     char name_dst[64];
     char name_src[64];
     snprintf(name_dst, sizeof(name_dst), "%s_dst.txt", filename_prefix);
@@ -174,6 +190,8 @@ void test_spiffs_rename(const char* filename_prefix)
 
 void test_spiffs_can_opendir(const char* path)
 {
+    printf("FUNC=test_spiffs_can_opendir");
+
     char name_dir_file[64];
     const char * file_name = "test_opd.txt";
     snprintf(name_dir_file, sizeof(name_dir_file), "%s/%s", path, file_name);
@@ -199,6 +217,8 @@ void test_spiffs_can_opendir(const char* path)
 
 void test_spiffs_opendir_readdir_rewinddir(const char* dir_prefix)
 {
+    printf("FUNC=test_spiffs_opendir_readdir_rewinddir");
+
     char name_dir_inner_file[64];
     char name_dir_inner[64];
     char name_dir_file3[64];
@@ -277,6 +297,8 @@ void test_spiffs_opendir_readdir_rewinddir(const char* dir_prefix)
 
 void test_spiffs_readdir_many_files(const char* dir_prefix)
 {
+    printf("FUNC=test_spiffs_readdir_many_files");
+
     const int n_files = 40;
     const int n_folders = 4;
     unsigned char file_count[n_files * n_folders];
@@ -354,6 +376,8 @@ typedef struct {
 
 static void read_write_task(void* param)
 {
+    printf("FUNC=read_write_task");
+
     read_write_test_arg_t* args = (read_write_test_arg_t*) param;
     FILE* f = fopen(args->filename, args->write ? "wb" : "rb");
     if (f == NULL) {
@@ -394,6 +418,8 @@ done:
 
 void test_spiffs_concurrent(const char* filename_prefix)
 {
+    printf("FUNC=test_spiffs_concurrent");
+
     char names[4][64];
     for (size_t i = 0; i < 4; ++i) {
         snprintf(names[i], sizeof(names[i]), "%s%d", filename_prefix, i + 1);
@@ -450,6 +476,8 @@ void test_spiffs_concurrent(const char* filename_prefix)
 
 static void test_setup()
 {
+    printf("FUNC=test_setup");
+
     esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
       .partition_label = spiffs_test_partition_label,
@@ -462,11 +490,15 @@ static void test_setup()
 
 static void test_teardown()
 {
+    printf("FUNC=test_teardown");
+
     TEST_ESP_OK(esp_vfs_spiffs_unregister(spiffs_test_partition_label));
 }
 
 TEST_CASE("can initialize SPIFFS in erased partition", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t* part = get_test_data_partition();
     TEST_ASSERT_NOT_NULL(part);
     TEST_ESP_OK(esp_partition_erase_range(part, 0, part->size));
@@ -480,6 +512,8 @@ TEST_CASE("can initialize SPIFFS in erased partition", "[spiffs]")
 
 TEST_CASE("can format mounted partition", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     // Mount SPIFFS, create file, format, check that the file does not exist.
     const esp_partition_t* part = get_test_data_partition();
     TEST_ASSERT_NOT_NULL(part);
@@ -494,6 +528,8 @@ TEST_CASE("can format mounted partition", "[spiffs]")
 
 TEST_CASE("can format unmounted partition", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     // Mount SPIFFS, create file, unmount. Format. Mount again, check that
     // the file does not exist.
     const esp_partition_t* part = get_test_data_partition();
@@ -518,6 +554,8 @@ TEST_CASE("can format unmounted partition", "[spiffs]")
 
 TEST_CASE("can create and write file", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_create_file_with_text("/spiffs/hello.txt", spiffs_test_hello_str);
     test_teardown();
@@ -525,6 +563,8 @@ TEST_CASE("can create and write file", "[spiffs]")
 
 TEST_CASE("can read file", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_create_file_with_text("/spiffs/hello.txt", spiffs_test_hello_str);
     test_spiffs_read_file("/spiffs/hello.txt");
@@ -533,6 +573,8 @@ TEST_CASE("can read file", "[spiffs]")
 
 TEST_CASE("can open maximum number of files", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     size_t max_files = FOPEN_MAX - 3; /* account for stdin, stdout, stderr */
     esp_vfs_spiffs_conf_t conf = {
         .base_path = "/spiffs",
@@ -547,6 +589,8 @@ TEST_CASE("can open maximum number of files", "[spiffs]")
 
 TEST_CASE("overwrite and append file", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_overwrite_append("/spiffs/hello.txt");
     test_teardown();
@@ -554,6 +598,8 @@ TEST_CASE("overwrite and append file", "[spiffs]")
 
 TEST_CASE("can lseek", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_lseek("/spiffs/seek.txt");
     test_teardown();
@@ -562,6 +608,8 @@ TEST_CASE("can lseek", "[spiffs]")
 
 TEST_CASE("stat returns correct values", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_stat("/spiffs/stat.txt");
     test_teardown();
@@ -569,6 +617,8 @@ TEST_CASE("stat returns correct values", "[spiffs]")
 
 TEST_CASE("unlink removes a file", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_unlink("/spiffs/unlink.txt");
     test_teardown();
@@ -576,6 +626,8 @@ TEST_CASE("unlink removes a file", "[spiffs]")
 
 TEST_CASE("rename moves a file", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_rename("/spiffs/move");
     test_teardown();
@@ -583,6 +635,8 @@ TEST_CASE("rename moves a file", "[spiffs]")
 
 TEST_CASE("can opendir root directory of FS", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_can_opendir("/spiffs");
     test_teardown();
@@ -590,6 +644,8 @@ TEST_CASE("can opendir root directory of FS", "[spiffs]")
 
 TEST_CASE("opendir, readdir, rewinddir, seekdir work as expected", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_opendir_readdir_rewinddir("/spiffs/dir");
     test_teardown();
@@ -597,6 +653,8 @@ TEST_CASE("opendir, readdir, rewinddir, seekdir work as expected", "[spiffs]")
 
 TEST_CASE("readdir with large number of files", "[spiffs][timeout=30]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_readdir_many_files("/spiffs/dir2");
     test_teardown();
@@ -604,6 +662,8 @@ TEST_CASE("readdir with large number of files", "[spiffs][timeout=30]")
 
 TEST_CASE("multiple tasks can use same volume", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_spiffs_concurrent("/spiffs/f");
     test_teardown();
@@ -612,6 +672,8 @@ TEST_CASE("multiple tasks can use same volume", "[spiffs]")
 #ifdef CONFIG_SPIFFS_USE_MTIME
 TEST_CASE("mtime is updated when file is opened", "[spiffs]")
 {
+    printf("FUNC=TEST_CASE");
+
     /* Open a file, check that mtime is set correctly */
     const char* filename = "/spiffs/time";
     test_setup();

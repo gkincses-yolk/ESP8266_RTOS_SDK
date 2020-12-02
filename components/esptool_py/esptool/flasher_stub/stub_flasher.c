@@ -52,6 +52,8 @@
 
 static uint32_t get_new_uart_divider(uint32_t current_baud, uint32_t new_baud)
 {
+    printf("FUNC=get_new_uart_divider");
+
   uint32_t master_freq;
   /* ESP32 has ROM code to detect the crystal freq but ESP8266 does not have this...
      So instead we use the previously auto-synced 115200 baud rate (which we know
@@ -87,6 +89,8 @@ static volatile uart_buf_t ub;
    data payload. */
 static uint8_t calculate_checksum(uint8_t *buf, int length)
 {
+    printf("FUNC=calculate_checksum");
+
   uint8_t res = 0xef;
   for(int i = 0; i < length; i++) {
     res ^= buf[i];
@@ -96,6 +100,8 @@ static uint8_t calculate_checksum(uint8_t *buf, int length)
 
 static void uart_isr_receive(char byte)
 {
+    printf("FUNC=uart_isr_receive");
+
   int16_t r = SLIP_recv_byte(byte, (slip_state_t *)&ub.state);
   if (r >= 0) {
     ub.reading_buf[ub.read++] = (uint8_t) r;
@@ -135,6 +141,8 @@ void uart_isr(void *arg) {
 
 static esp_command_error verify_data_len(esp_command_req_t *command, uint8_t len)
 {
+    printf("FUNC=verify_data_len");
+
   return (command->data_len == len) ? ESP_OK : ESP_BAD_DATA_LEN;
 }
 
@@ -385,6 +393,8 @@ __asm__ (
    reset to point to user code. */
 void stub_main()
 {
+    printf("FUNC=stub_main");
+
   const uint32_t greeting = 0x4941484f; /* OHAI */
 
   /* this points to stub_main now, clear for next boot */

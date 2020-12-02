@@ -24,6 +24,8 @@
 
 TEST_CASE("wl_unmount doesn't leak memory", "[wear_levelling]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t *partition = get_test_data_partition();
     wl_handle_t handle;
     // dummy unmount is needed to initialize static lock in WL
@@ -43,6 +45,8 @@ TEST_CASE("wl_unmount doesn't leak memory", "[wear_levelling]")
 
 TEST_CASE("wl_mount check partition parameters", "[wear_levelling][ignore]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t *test_partition = get_test_data_partition();
     esp_partition_t fake_partition;
     memcpy(&fake_partition, test_partition, sizeof(fake_partition));
@@ -105,6 +109,8 @@ typedef struct {
 
 static void read_write_task(void* param)
 {
+    printf("FUNC=read_write_task");
+
     read_write_test_arg_t* args = (read_write_test_arg_t*) param;
     esp_err_t err;
     srand(args->seed);
@@ -136,6 +142,8 @@ done:
 
 TEST_CASE("multiple tasks can access wl handle simultaneously", "[wear_levelling]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t *partition = get_test_data_partition();
     wl_handle_t handle;
     TEST_ESP_OK(wl_mount(partition, &handle));
@@ -194,6 +202,8 @@ TEST_CASE("multiple tasks can access wl handle simultaneously", "[wear_levelling
 
 static void check_mem_data(wl_handle_t handle, uint32_t init_val, uint32_t* buff)
 {
+    printf("FUNC=check_mem_data");
+
     size_t sector_size = wl_sector_size(handle);
 
     for (int m=0 ; m < TEST_SECTORS_COUNT ; m++) {
@@ -212,6 +222,8 @@ static void check_mem_data(wl_handle_t handle, uint32_t init_val, uint32_t* buff
 // We do this also with unmount
 TEST_CASE("multiple write is correct", "[wear_levelling]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t *partition = get_test_data_partition();
     esp_partition_t fake_partition;
     memcpy(&fake_partition, partition, sizeof(fake_partition));
@@ -276,6 +288,8 @@ extern const uint8_t test_partition_v1_bin_end[]   asm("_binary_test_partition_v
 
 TEST_CASE("Version update test", "[wear_levelling]")
 {
+    printf("FUNC=TEST_CASE");
+
     const esp_partition_t *partition = get_test_data_partition();
     esp_partition_t fake_partition;
     memcpy(&fake_partition, partition, sizeof(fake_partition));

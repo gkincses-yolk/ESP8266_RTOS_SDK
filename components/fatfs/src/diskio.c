@@ -24,6 +24,8 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
+    printf("FUNC=disk_status");
+
 	DSTATUS stat;
 	int result;
 
@@ -62,6 +64,8 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
+    printf("FUNC=disk_initialize");
+
 	DSTATUS stat;
 	int result;
 
@@ -103,6 +107,8 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
+    printf("FUNC=disk_read");
+
 	DRESULT res;
 	int result;
 
@@ -153,6 +159,8 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
+    printf("FUNC=disk_write");
+
 	DRESULT res;
 	int result;
 
@@ -201,6 +209,8 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
+    printf("FUNC=disk_ioctl");
+
 	DRESULT res;
 	int result;
 

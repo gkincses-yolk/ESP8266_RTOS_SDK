@@ -18,14 +18,23 @@
 
 
 SUITE(dev_tests)
-static void setup() {
+static void setup()
+{
+    printf("FUNC=setup");
+
   _setup();
 }
-static void teardown() {
+static void teardown()
+{
+    printf("FUNC=teardown");
+
   _teardown();
 }
 
-TEST(interrupted_write) {
+TEST(interrupted_write)
+{
+    printf("FUNC=TEST");
+
   char *name = "interrupt";
   char *name2 = "interrupt2";
   int res;

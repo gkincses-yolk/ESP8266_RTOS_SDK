@@ -31,6 +31,8 @@ esp_err_t esp_vfs_fat_spiflash_mount(const char* base_path,
     const esp_vfs_fat_mount_config_t* mount_config,
     wl_handle_t* wl_handle)
 {
+    printf("FUNC=esp_vfs_fat_spiflash_mount");
+
     esp_err_t result = ESP_OK;
     const size_t workbuf_size = 4096;
     void *workbuf = NULL;
@@ -117,6 +119,8 @@ fail:
 
 esp_err_t esp_vfs_fat_spiflash_unmount(const char *base_path, wl_handle_t wl_handle)
 {
+    printf("FUNC=esp_vfs_fat_spiflash_unmount");
+
     BYTE pdrv = ff_diskio_get_pdrv_wl(wl_handle);
     if (pdrv == 0xff) {
         return ESP_ERR_INVALID_STATE;
@@ -137,6 +141,8 @@ esp_err_t esp_vfs_fat_rawflash_mount(const char* base_path,
     const char* partition_label,
     const esp_vfs_fat_mount_config_t* mount_config)
 {
+    printf("FUNC=esp_vfs_fat_rawflash_mount");
+
     esp_err_t result = ESP_OK;
 
     const esp_partition_t *data_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
@@ -188,6 +194,8 @@ fail:
 
 esp_err_t esp_vfs_fat_rawflash_unmount(const char *base_path, const char* partition_label)
 {
+    printf("FUNC=esp_vfs_fat_rawflash_unmount");
+
     const esp_partition_t *data_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
             ESP_PARTITION_SUBTYPE_DATA_FAT, partition_label);
 

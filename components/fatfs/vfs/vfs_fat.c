@@ -96,6 +96,8 @@ static vfs_fat_ctx_t* s_fat_ctx = NULL;
 
 static size_t find_context_index_by_path(const char* base_path)
 {
+    printf("FUNC=find_context_index_by_path");
+
     for(size_t i=0; i<FF_VOLUMES; i++) {
         if (s_fat_ctxs[i] && !strcmp(s_fat_ctxs[i]->base_path, base_path)) {
             return i;
@@ -106,6 +108,8 @@ static size_t find_context_index_by_path(const char* base_path)
 
 static size_t find_unused_context_index(void)
 {
+    printf("FUNC=find_unused_context_index");
+
     for(size_t i=0; i<FF_VOLUMES; i++) {
         if (!s_fat_ctxs[i]) {
             return i;
@@ -116,6 +120,8 @@ static size_t find_unused_context_index(void)
 
 esp_err_t esp_vfs_fat_register(const char* base_path, const char* fat_drive, size_t max_files, FATFS** out_fs)
 {
+    printf("FUNC=esp_vfs_fat_register");
+
     size_t ctx = find_context_index_by_path(base_path);
     if (ctx < FF_VOLUMES) {
         return ESP_ERR_INVALID_STATE;
@@ -189,6 +195,8 @@ esp_err_t esp_vfs_fat_register(const char* base_path, const char* fat_drive, siz
 
 esp_err_t esp_vfs_fat_unregister_path(const char* base_path)
 {
+    printf("FUNC=esp_vfs_fat_unregister_path");
+
     size_t ctx = find_context_index_by_path(base_path);
     if (ctx == FF_VOLUMES) {
         return ESP_ERR_INVALID_STATE;
@@ -207,6 +215,8 @@ esp_err_t esp_vfs_fat_unregister_path(const char* base_path)
 
 static int get_next_fd(vfs_fat_ctx_t* fat_ctx)
 {
+    printf("FUNC=get_next_fd");
+
     for (size_t i = 0; i < fat_ctx->max_files; ++i) {
         if (fat_ctx->files[i].obj.fs == NULL) {
             return (int) i;
@@ -217,6 +227,8 @@ static int get_next_fd(vfs_fat_ctx_t* fat_ctx)
 
 static int fat_mode_conv(int m)
 {
+    printf("FUNC=fat_mode_conv");
+
     int res = 0;
     int acc_mode = m & O_ACCMODE;
     if (acc_mode == O_RDONLY) {
@@ -240,6 +252,8 @@ static int fat_mode_conv(int m)
 
 static int fresult_to_errno(FRESULT fr)
 {
+    printf("FUNC=fresult_to_errno");
+
     switch(fr) {
         case FR_DISK_ERR:       return EIO;
         case FR_INT_ERR:        return EIO;
@@ -268,6 +282,8 @@ static int fresult_to_errno(FRESULT fr)
 
 static void file_cleanup(vfs_fat_ctx_t* ctx, int fd)
 {
+    printf("FUNC=file_cleanup");
+
     memset(&ctx->files[fd], 0, sizeof(FIL));
 }
 
@@ -292,6 +308,8 @@ static void prepend_drive_to_path(vfs_fat_ctx_t * ctx, const char ** path, const
 
 static int vfs_fat_open(void* ctx, const char * path, int flags, int mode)
 {
+    printf("FUNC=vfs_fat_open");
+
     ESP_LOGV(TAG, "%s: path=\"%s\", flags=%x, mode=%x", __func__, path, flags, mode);
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
@@ -324,6 +342,8 @@ static int vfs_fat_open(void* ctx, const char * path, int flags, int mode)
 
 static ssize_t vfs_fat_write(void* ctx, int fd, const void * data, size_t size)
 {
+    printf("FUNC=vfs_fat_write");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     FIL* file = &fat_ctx->files[fd];
     FRESULT res;
@@ -348,6 +368,8 @@ static ssize_t vfs_fat_write(void* ctx, int fd, const void * data, size_t size)
 
 static ssize_t vfs_fat_read(void* ctx, int fd, void * dst, size_t size)
 {
+    printf("FUNC=vfs_fat_read");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     FIL* file = &fat_ctx->files[fd];
     unsigned read = 0;
@@ -364,6 +386,8 @@ static ssize_t vfs_fat_read(void* ctx, int fd, void * dst, size_t size)
 
 static ssize_t vfs_fat_pread(void *ctx, int fd, void *dst, size_t size, off_t offset)
 {
+    printf("FUNC=vfs_fat_pread");
+
     ssize_t ret = -1;
     vfs_fat_ctx_t *fat_ctx = (vfs_fat_ctx_t *) ctx;
     _lock_acquire(&fat_ctx->lock);
@@ -403,6 +427,8 @@ pread_release:
 
 static ssize_t vfs_fat_pwrite(void *ctx, int fd, const void *src, size_t size, off_t offset)
 {
+    printf("FUNC=vfs_fat_pwrite");
+
     ssize_t ret = -1;
     vfs_fat_ctx_t *fat_ctx = (vfs_fat_ctx_t *) ctx;
     _lock_acquire(&fat_ctx->lock);
@@ -442,6 +468,8 @@ pwrite_release:
 
 static int vfs_fat_fsync(void* ctx, int fd)
 {
+    printf("FUNC=vfs_fat_fsync");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     FIL* file = &fat_ctx->files[fd];
@@ -458,6 +486,8 @@ static int vfs_fat_fsync(void* ctx, int fd)
 
 static int vfs_fat_close(void* ctx, int fd)
 {
+    printf("FUNC=vfs_fat_close");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     FIL* file = &fat_ctx->files[fd];
@@ -475,6 +505,8 @@ static int vfs_fat_close(void* ctx, int fd)
 
 static off_t vfs_fat_lseek(void* ctx, int fd, off_t offset, int mode)
 {
+    printf("FUNC=vfs_fat_lseek");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     FIL* file = &fat_ctx->files[fd];
     off_t new_pos;
@@ -501,6 +533,8 @@ static off_t vfs_fat_lseek(void* ctx, int fd, off_t offset, int mode)
 
 static int vfs_fat_fstat(void* ctx, int fd, struct stat * st)
 {
+    printf("FUNC=vfs_fat_fstat");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     FIL* file = &fat_ctx->files[fd];
     st->st_size = f_size(file);
@@ -513,12 +547,16 @@ static int vfs_fat_fstat(void* ctx, int fd, struct stat * st)
 
 static inline mode_t get_stat_mode(bool is_dir)
 {
+    printf("FUNC=get_stat_mode");
+
     return S_IRWXU | S_IRWXG | S_IRWXO |
             ((is_dir) ? S_IFDIR : S_IFREG);
 }
 
 static int vfs_fat_stat(void* ctx, const char * path, struct stat * st)
 {
+    printf("FUNC=vfs_fat_stat");
+
     if (strcmp(path, "/") == 0) {
         /* FatFS f_stat function does not work for the drive root.
          * Just pretend that this is a directory.
@@ -561,6 +599,8 @@ static int vfs_fat_stat(void* ctx, const char * path, struct stat * st)
 
 static int vfs_fat_unlink(void* ctx, const char *path)
 {
+    printf("FUNC=vfs_fat_unlink");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     prepend_drive_to_path(fat_ctx, &path, NULL);
@@ -576,6 +616,8 @@ static int vfs_fat_unlink(void* ctx, const char *path)
 
 static int vfs_fat_link(void* ctx, const char* n1, const char* n2)
 {
+    printf("FUNC=vfs_fat_link");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     prepend_drive_to_path(fat_ctx, &n1, &n2);
@@ -644,6 +686,8 @@ fail1:
 
 static int vfs_fat_rename(void* ctx, const char *src, const char *dst)
 {
+    printf("FUNC=vfs_fat_rename");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     prepend_drive_to_path(fat_ctx, &src, &dst);
@@ -659,6 +703,8 @@ static int vfs_fat_rename(void* ctx, const char *src, const char *dst)
 
 static DIR* vfs_fat_opendir(void* ctx, const char* name)
 {
+    printf("FUNC=vfs_fat_opendir");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     prepend_drive_to_path(fat_ctx, &name, NULL);
@@ -683,6 +729,8 @@ static DIR* vfs_fat_opendir(void* ctx, const char* name)
 
 static int vfs_fat_closedir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_fat_closedir");
+
     assert(pdir);
     vfs_fat_dir_t* fat_dir = (vfs_fat_dir_t*) pdir;
     FRESULT res = f_closedir(&fat_dir->ffdir);
@@ -697,6 +745,8 @@ static int vfs_fat_closedir(void* ctx, DIR* pdir)
 
 static struct dirent* vfs_fat_readdir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_fat_readdir");
+
     vfs_fat_dir_t* fat_dir = (vfs_fat_dir_t*) pdir;
     struct dirent* out_dirent;
     int err = vfs_fat_readdir_r(ctx, pdir, &fat_dir->cur_dirent, &out_dirent);
@@ -710,6 +760,8 @@ static struct dirent* vfs_fat_readdir(void* ctx, DIR* pdir)
 static int vfs_fat_readdir_r(void* ctx, DIR* pdir,
         struct dirent* entry, struct dirent** out_dirent)
 {
+    printf("FUNC=vfs_fat_readdir_r");
+
     assert(pdir);
     vfs_fat_dir_t* fat_dir = (vfs_fat_dir_t*) pdir;
     FRESULT res = f_readdir(&fat_dir->ffdir, &fat_dir->filinfo);
@@ -738,6 +790,8 @@ static int vfs_fat_readdir_r(void* ctx, DIR* pdir,
 
 static long vfs_fat_telldir(void* ctx, DIR* pdir)
 {
+    printf("FUNC=vfs_fat_telldir");
+
     assert(pdir);
     vfs_fat_dir_t* fat_dir = (vfs_fat_dir_t*) pdir;
     return fat_dir->offset;
@@ -745,6 +799,8 @@ static long vfs_fat_telldir(void* ctx, DIR* pdir)
 
 static void vfs_fat_seekdir(void* ctx, DIR* pdir, long offset)
 {
+    printf("FUNC=vfs_fat_seekdir");
+
     assert(pdir);
     vfs_fat_dir_t* fat_dir = (vfs_fat_dir_t*) pdir;
     FRESULT res;
@@ -770,6 +826,8 @@ static void vfs_fat_seekdir(void* ctx, DIR* pdir, long offset)
 
 static int vfs_fat_mkdir(void* ctx, const char* name, mode_t mode)
 {
+    printf("FUNC=vfs_fat_mkdir");
+
     (void) mode;
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
@@ -786,6 +844,8 @@ static int vfs_fat_mkdir(void* ctx, const char* name, mode_t mode)
 
 static int vfs_fat_rmdir(void* ctx, const char* name)
 {
+    printf("FUNC=vfs_fat_rmdir");
+
     vfs_fat_ctx_t* fat_ctx = (vfs_fat_ctx_t*) ctx;
     _lock_acquire(&fat_ctx->lock);
     prepend_drive_to_path(fat_ctx, &name, NULL);
@@ -801,6 +861,8 @@ static int vfs_fat_rmdir(void* ctx, const char* name)
 
 static int vfs_fat_access(void* ctx, const char *path, int amode)
 {
+    printf("FUNC=vfs_fat_access");
+
     FILINFO info;
     int ret = 0;
     FRESULT res;
@@ -829,6 +891,8 @@ static int vfs_fat_access(void* ctx, const char *path, int amode)
 
 static int vfs_fat_truncate(void* ctx, const char *path, off_t length)
 {
+    printf("FUNC=vfs_fat_truncate");
+
     FRESULT res;
     FIL* file;
 
@@ -905,6 +969,8 @@ out:
 
 static int vfs_fat_utime(void *ctx, const char *path, const struct utimbuf *times)
 {
+    printf("FUNC=vfs_fat_utime");
+
     FILINFO filinfo_time;
 
     {

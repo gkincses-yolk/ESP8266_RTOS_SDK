@@ -35,16 +35,22 @@ static const char* TAG = "boot_comm";
 
 uint32_t bootloader_common_ota_select_crc(const esp_ota_select_entry_t *s)
 {
+    printf("FUNC=bootloader_common_ota_select_crc");
+
     return crc32_le(UINT32_MAX, (uint8_t*)&s->ota_seq, 4);
 }
 
 bool bootloader_common_ota_select_valid(const esp_ota_select_entry_t *s)
 {
+    printf("FUNC=bootloader_common_ota_select_valid");
+
     return s->ota_seq != UINT32_MAX && s->crc == bootloader_common_ota_select_crc(s);
 }
 
 esp_comm_gpio_hold_t bootloader_common_check_long_hold_gpio(uint32_t num_pin, uint32_t delay_sec)
 {
+    printf("FUNC=bootloader_common_check_long_hold_gpio");
+
     gpio_pad_select_gpio(num_pin);
     gpio_pad_pullup(num_pin);
     uint32_t tm_start = esp_log_early_timestamp();
@@ -62,6 +68,8 @@ esp_comm_gpio_hold_t bootloader_common_check_long_hold_gpio(uint32_t num_pin, ui
 // Search for a label in the list. list = "nvs1, nvs2, otadata, nvs"; label = "nvs".
 bool bootloader_common_label_search(const char *list, char *label)
 {
+    printf("FUNC=bootloader_common_label_search");
+
     if (list == NULL || label == NULL) {
         return false;
     }
@@ -94,6 +102,8 @@ bool bootloader_common_label_search(const char *list, char *label)
 
 bool bootloader_common_erase_part_type_data(const char *list_erase, bool ota_data_erase)
 {
+    printf("FUNC=bootloader_common_erase_part_type_data");
+
     const esp_partition_info_t *partitions;
     const char *marker;
     esp_err_t err;
@@ -180,16 +190,22 @@ static const char *TAG = "bootloader_common";
 
 uint32_t bootloader_common_ota_select_crc(const esp_ota_select_entry_t *s)
 {
+    printf("FUNC=bootloader_common_ota_select_crc");
+
     return crc32_le(UINT32_MAX, (uint8_t*)&s->ota_seq, 4);
 }
 
 bool bootloader_common_ota_select_valid(const esp_ota_select_entry_t *s)
 {
+    printf("FUNC=bootloader_common_ota_select_valid");
+
     return s->ota_seq != UINT32_MAX && s->crc == bootloader_common_ota_select_crc(s);
 }
 
 esp_comm_gpio_hold_t bootloader_common_check_long_hold_gpio(uint32_t num_pin, uint32_t delay_sec)
 {
+    printf("FUNC=bootloader_common_check_long_hold_gpio");
+
     gpio_pad_select_gpio(num_pin);
     gpio_pad_pullup(num_pin);
 

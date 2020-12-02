@@ -38,6 +38,8 @@
 
 static void test_setup(void)
 {
+    printf("FUNC=test_setup");
+
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
@@ -50,6 +52,8 @@ static void test_setup(void)
 
 static void test_teardown(void)
 {
+    printf("FUNC=test_teardown");
+
     TEST_ESP_OK(esp_vfs_fat_sdmmc_unmount());
 }
 
@@ -57,6 +61,8 @@ static const char* test_filename = "/sdcard/hello.txt";
 
 TEST_CASE("Mount fails cleanly without card inserted", "[fatfs][sd][ignore]")
 {
+    printf("FUNC=TEST_CASE");
+
     size_t heap_size;
     HEAP_SIZE_CAPTURE(heap_size);
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
@@ -77,6 +83,8 @@ TEST_CASE("Mount fails cleanly without card inserted", "[fatfs][sd][ignore]")
 
 TEST_CASE("(SD) can create and write file", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_create_file_with_text(test_filename, fatfs_test_hello_str);
     test_teardown();
@@ -84,6 +92,8 @@ TEST_CASE("(SD) can create and write file", "[fatfs][sd][test_env=UT_T1_SDMODE]"
 
 TEST_CASE("(SD) can read file", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_create_file_with_text(test_filename, fatfs_test_hello_str);
     test_fatfs_read_file(test_filename);
@@ -92,6 +102,8 @@ TEST_CASE("(SD) can read file", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) can read file with pread()", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_create_file_with_text(test_filename, fatfs_test_hello_str);
     test_fatfs_pread_file(test_filename);
@@ -100,6 +112,8 @@ TEST_CASE("(SD) can read file with pread()", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) pwrite() works well", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_pwrite_file(test_filename);
     test_teardown();
@@ -107,6 +121,8 @@ TEST_CASE("(SD) pwrite() works well", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) overwrite and append file", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_overwrite_append(test_filename);
     test_teardown();
@@ -114,6 +130,8 @@ TEST_CASE("(SD) overwrite and append file", "[fatfs][sd][test_env=UT_T1_SDMODE]"
 
 TEST_CASE("(SD) can lseek", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_lseek("/sdcard/seek.txt");
     test_teardown();
@@ -121,6 +139,8 @@ TEST_CASE("(SD) can lseek", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) can truncate", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_truncate_file("/sdcard/truncate.txt");
     test_teardown();
@@ -128,6 +148,8 @@ TEST_CASE("(SD) can truncate", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) stat returns correct values", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_stat("/sdcard/stat.txt", "/sdcard");
     test_teardown();
@@ -135,6 +157,8 @@ TEST_CASE("(SD) stat returns correct values", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) utime sets modification time", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_utime("/sdcard/utime.txt", "/sdcard");
     test_teardown();
@@ -142,6 +166,8 @@ TEST_CASE("(SD) utime sets modification time", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) unlink removes a file", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_unlink("/sdcard/unlink.txt");
     test_teardown();
@@ -149,6 +175,8 @@ TEST_CASE("(SD) unlink removes a file", "[fatfs][test_env=UT_T1_SDMODE]")
 
 TEST_CASE("(SD) link copies a file, rename moves a file", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_link_rename("/sdcard/link");
     test_teardown();
@@ -156,6 +184,8 @@ TEST_CASE("(SD) link copies a file, rename moves a file", "[fatfs][test_env=UT_T
 
 TEST_CASE("(SD) can create and remove directories", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_mkdir_rmdir("/sdcard/dir");
     test_teardown();
@@ -163,6 +193,8 @@ TEST_CASE("(SD) can create and remove directories", "[fatfs][test_env=UT_T1_SDMO
 
 TEST_CASE("(SD) can opendir root directory of FS", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_can_opendir("/sdcard");
     test_teardown();
@@ -170,6 +202,8 @@ TEST_CASE("(SD) can opendir root directory of FS", "[fatfs][test_env=UT_T1_SDMOD
 
 TEST_CASE("(SD) opendir, readdir, rewinddir, seekdir work as expected", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_opendir_readdir_rewinddir("/sdcard/dir");
     test_teardown();
@@ -177,6 +211,8 @@ TEST_CASE("(SD) opendir, readdir, rewinddir, seekdir work as expected", "[fatfs]
 
 TEST_CASE("(SD) multiple tasks can use same volume", "[fatfs][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_concurrent("/sdcard/f");
     test_teardown();
@@ -186,6 +222,8 @@ static void speed_test(void* buf, size_t buf_size, size_t file_size, bool write)
 
 TEST_CASE("(SD) write/read speed test", "[fatfs][sd][test_env=UT_T1_SDMODE][timeout=60]")
 {
+    printf("FUNC=TEST_CASE");
+
     size_t heap_size;
     HEAP_SIZE_CAPTURE(heap_size);
 
@@ -209,6 +247,8 @@ TEST_CASE("(SD) write/read speed test", "[fatfs][sd][test_env=UT_T1_SDMODE][time
 
 static void speed_test(void* buf, size_t buf_size, size_t file_size, bool write)
 {
+    printf("FUNC=TEST_CASE");
+
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
     host.max_freq_khz = SDMMC_FREQ_HIGHSPEED;
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
@@ -226,6 +266,8 @@ static void speed_test(void* buf, size_t buf_size, size_t file_size, bool write)
 
 TEST_CASE("(SD) mount two FAT partitions, SDMMC and WL, at the same time", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = true,
         .max_files = 5
@@ -285,6 +327,8 @@ static const char* test_filename_utf_8 = "/sdcard/测试文件.txt";
 
 TEST_CASE("(SD) can read file using UTF-8 encoded strings", "[fatfs][sd][test_env=UT_T1_SDMODE]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_create_file_with_text(test_filename_utf_8, fatfs_test_hello_str_utf);
     test_fatfs_read_file_utf_8(test_filename_utf_8);
@@ -293,6 +337,8 @@ TEST_CASE("(SD) can read file using UTF-8 encoded strings", "[fatfs][sd][test_en
 
 TEST_CASE("(SD) opendir, readdir, rewinddir, seekdir work as expected using UTF-8 encoded strings", "[fatfs][ignore]")
 {
+    printf("FUNC=TEST_CASE");
+
     test_setup();
     test_fatfs_opendir_readdir_rewinddir_utf_8("/sdcard/目录");
     test_teardown();

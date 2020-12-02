@@ -74,6 +74,8 @@ static _lock_t s_fd_table_lock;
 
 static esp_err_t esp_vfs_register_common(const char* base_path, size_t len, const esp_vfs_t* vfs, void* ctx, int *vfs_index)
 {
+    printf("FUNC=esp_vfs_register_common");
+
     if (len != LEN_PATH_PREFIX_IGNORED) {
         if ((len != 0 && len < 2) || (len > ESP_VFS_PATH_MAX)) {
             return ESP_ERR_INVALID_ARG;
@@ -119,11 +121,15 @@ static esp_err_t esp_vfs_register_common(const char* base_path, size_t len, cons
 
 esp_err_t esp_vfs_register(const char* base_path, const esp_vfs_t* vfs, void* ctx)
 {
+    printf("FUNC=esp_vfs_register");
+
     return esp_vfs_register_common(base_path, strlen(base_path), vfs, ctx, NULL);
 }
 
 esp_err_t esp_vfs_register_fd_range(const esp_vfs_t *vfs, void *ctx, int min_fd, int max_fd)
 {
+    printf("FUNC=esp_vfs_register_fd_range");
+
     if (min_fd < 0 || max_fd < 0 || min_fd > MAX_FDS || max_fd > MAX_FDS || min_fd > max_fd) {
         ESP_LOGD(TAG, "Invalid arguments: esp_vfs_register_fd_range(0x%x, 0x%x, %d, %d)", (int) vfs, (int) ctx, min_fd, max_fd);
         return ESP_ERR_INVALID_ARG;
@@ -161,6 +167,8 @@ esp_err_t esp_vfs_register_fd_range(const esp_vfs_t *vfs, void *ctx, int min_fd,
 
 esp_err_t esp_vfs_register_with_id(const esp_vfs_t *vfs, void *ctx, esp_vfs_id_t *vfs_id)
 {
+    printf("FUNC=esp_vfs_register_with_id");
+
     if (vfs_id == NULL) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -171,6 +179,8 @@ esp_err_t esp_vfs_register_with_id(const esp_vfs_t *vfs, void *ctx, esp_vfs_id_t
 
 esp_err_t esp_vfs_unregister(const char* base_path)
 {
+    printf("FUNC=esp_vfs_unregister");
+
     const size_t base_path_len = strlen(base_path);
     for (size_t i = 0; i < s_vfs_count; ++i) {
         vfs_entry_t* vfs = s_vfs[i];
@@ -199,6 +209,8 @@ esp_err_t esp_vfs_unregister(const char* base_path)
 
 esp_err_t esp_vfs_register_fd(esp_vfs_id_t vfs_id, int *fd)
 {
+    printf("FUNC=esp_vfs_register_fd");
+
     if (vfs_id < 0 || vfs_id >= s_vfs_count || fd == NULL) {
         ESP_LOGD(TAG, "Invalid arguments for esp_vfs_register_fd(%d, 0x%x)", vfs_id, (int) fd);
         return ESP_ERR_INVALID_ARG;
@@ -225,6 +237,8 @@ esp_err_t esp_vfs_register_fd(esp_vfs_id_t vfs_id, int *fd)
 
 esp_err_t esp_vfs_unregister_fd(esp_vfs_id_t vfs_id, int fd)
 {
+    printf("FUNC=esp_vfs_unregister_fd");
+
     esp_err_t ret = ESP_ERR_INVALID_ARG;
 
     if (vfs_id < 0 || vfs_id >= s_vfs_count || fd < 0 || fd >= MAX_FDS) {
@@ -247,6 +261,8 @@ esp_err_t esp_vfs_unregister_fd(esp_vfs_id_t vfs_id, int fd)
 
 static inline const vfs_entry_t *get_vfs_for_index(int index)
 {
+    printf("FUNC=get_vfs_for_index");
+
     if (index < 0 || index >= s_vfs_count) {
         return NULL;
     } else {
@@ -256,11 +272,15 @@ static inline const vfs_entry_t *get_vfs_for_index(int index)
 
 static inline bool fd_valid(int fd)
 {
+    printf("FUNC=fd_valid");
+
     return (fd < MAX_FDS) && (fd >= 0);
 }
 
 static const vfs_entry_t *get_vfs_for_fd(int fd)
 {
+    printf("FUNC=get_vfs_for_fd");
+
     const vfs_entry_t *vfs = NULL;
     if (fd_valid(fd)) {
         const int index = s_fd_table[fd].vfs_index; // single read -> no locking is required
@@ -271,6 +291,8 @@ static const vfs_entry_t *get_vfs_for_fd(int fd)
 
 static inline int get_local_fd(const vfs_entry_t *vfs, int fd)
 {
+    printf("FUNC=get_local_fd");
+
     int local_fd = -1;
 
     if (vfs && fd_valid(fd)) {
@@ -282,6 +304,8 @@ static inline int get_local_fd(const vfs_entry_t *vfs, int fd)
 
 static const char* translate_path(const vfs_entry_t* vfs, const char* src_path)
 {
+    printf("FUNC=translate_path");
+
     assert(strncmp(src_path, vfs->path_prefix, vfs->path_prefix_len) == 0);
     if (strlen(src_path) == vfs->path_prefix_len) {
         // special case when src_path matches the path prefix exactly
@@ -292,6 +316,8 @@ static const char* translate_path(const vfs_entry_t* vfs, const char* src_path)
 
 static const vfs_entry_t* get_vfs_for_path(const char* path)
 {
+    printf("FUNC=get_vfs_for_path");
+
     const vfs_entry_t* best_match = NULL;
     ssize_t best_match_prefix_len = -1;
     size_t len = strlen(path);
@@ -378,6 +404,8 @@ static const vfs_entry_t* get_vfs_for_path(const char* path)
 
 int esp_vfs_open(struct _reent *r, const char * path, int flags, int mode)
 {
+    printf("FUNC=esp_vfs_open");
+
     const vfs_entry_t *vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
         __errno_r(r) = ENOENT;
@@ -410,6 +438,8 @@ int esp_vfs_open(struct _reent *r, const char * path, int flags, int mode)
 
 ssize_t esp_vfs_write(struct _reent *r, int fd, const void * data, size_t size)
 {
+    printf("FUNC=esp_vfs_write");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -423,6 +453,8 @@ ssize_t esp_vfs_write(struct _reent *r, int fd, const void * data, size_t size)
 
 off_t esp_vfs_lseek(struct _reent *r, int fd, off_t size, int mode)
 {
+    printf("FUNC=esp_vfs_lseek");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -436,6 +468,8 @@ off_t esp_vfs_lseek(struct _reent *r, int fd, off_t size, int mode)
 
 ssize_t esp_vfs_read(struct _reent *r, int fd, void * dst, size_t size)
 {
+    printf("FUNC=esp_vfs_read");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -449,6 +483,8 @@ ssize_t esp_vfs_read(struct _reent *r, int fd, void * dst, size_t size)
 
 ssize_t esp_vfs_pread(int fd, void *dst, size_t size, off_t offset)
 {
+    printf("FUNC=esp_vfs_pread");
+
     struct _reent *r = __getreent();
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
@@ -463,6 +499,8 @@ ssize_t esp_vfs_pread(int fd, void *dst, size_t size, off_t offset)
 
 ssize_t esp_vfs_pwrite(int fd, const void *src, size_t size, off_t offset)
 {
+    printf("FUNC=esp_vfs_pwrite");
+
     struct _reent *r = __getreent();
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
@@ -477,6 +515,8 @@ ssize_t esp_vfs_pwrite(int fd, const void *src, size_t size, off_t offset)
 
 int esp_vfs_close(struct _reent *r, int fd)
 {
+    printf("FUNC=esp_vfs_close");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -496,6 +536,8 @@ int esp_vfs_close(struct _reent *r, int fd)
 
 int esp_vfs_fstat(struct _reent *r, int fd, struct stat * st)
 {
+    printf("FUNC=esp_vfs_fstat");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -509,6 +551,8 @@ int esp_vfs_fstat(struct _reent *r, int fd, struct stat * st)
 
 int esp_vfs_stat(struct _reent *r, const char * path, struct stat * st)
 {
+    printf("FUNC=esp_vfs_stat");
+
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
         __errno_r(r) = ENOENT;
@@ -522,6 +566,8 @@ int esp_vfs_stat(struct _reent *r, const char * path, struct stat * st)
 
 int esp_vfs_link(struct _reent *r, const char* n1, const char* n2)
 {
+    printf("FUNC=esp_vfs_link");
+
     const vfs_entry_t* vfs = get_vfs_for_path(n1);
     if (vfs == NULL) {
         __errno_r(r) = ENOENT;
@@ -541,6 +587,8 @@ int esp_vfs_link(struct _reent *r, const char* n1, const char* n2)
 
 int esp_vfs_unlink(struct _reent *r, const char *path)
 {
+    printf("FUNC=esp_vfs_unlink");
+
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
         __errno_r(r) = ENOENT;
@@ -554,6 +602,8 @@ int esp_vfs_unlink(struct _reent *r, const char *path)
 
 int esp_vfs_rename(struct _reent *r, const char *src, const char *dst)
 {
+    printf("FUNC=esp_vfs_rename");
+
     const vfs_entry_t* vfs = get_vfs_for_path(src);
     if (vfs == NULL) {
         __errno_r(r) = ENOENT;
@@ -601,6 +651,8 @@ int _rename_r(struct _reent *r, const char *src, const char *dst)
 
 DIR* opendir(const char* name)
 {
+    printf("FUNC=opendir");
+
     const vfs_entry_t* vfs = get_vfs_for_path(name);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -618,6 +670,8 @@ DIR* opendir(const char* name)
 
 struct dirent* readdir(DIR* pdir)
 {
+    printf("FUNC=readdir");
+
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -631,6 +685,8 @@ struct dirent* readdir(DIR* pdir)
 
 int readdir_r(DIR* pdir, struct dirent* entry, struct dirent** out_dirent)
 {
+    printf("FUNC=readdir_r");
+
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -644,6 +700,8 @@ int readdir_r(DIR* pdir, struct dirent* entry, struct dirent** out_dirent)
 
 long telldir(DIR* pdir)
 {
+    printf("FUNC=telldir");
+
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -657,6 +715,8 @@ long telldir(DIR* pdir)
 
 void seekdir(DIR* pdir, long loc)
 {
+    printf("FUNC=seekdir");
+
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -668,11 +728,15 @@ void seekdir(DIR* pdir, long loc)
 
 void rewinddir(DIR* pdir)
 {
+    printf("FUNC=rewinddir");
+
     seekdir(pdir, 0);
 }
 
 int closedir(DIR* pdir)
 {
+    printf("FUNC=closedir");
+
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -686,6 +750,8 @@ int closedir(DIR* pdir)
 
 int mkdir(const char* name, mode_t mode)
 {
+    printf("FUNC=mkdir");
+
     const vfs_entry_t* vfs = get_vfs_for_path(name);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -700,6 +766,8 @@ int mkdir(const char* name, mode_t mode)
 
 int rmdir(const char* name)
 {
+    printf("FUNC=rmdir");
+
     const vfs_entry_t* vfs = get_vfs_for_path(name);
     struct _reent* r = __getreent();
     if (vfs == NULL) {
@@ -714,6 +782,8 @@ int rmdir(const char* name)
 
 int _fcntl_r(struct _reent *r, int fd, int cmd, int arg)
 {
+    printf("FUNC=_fcntl_r");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
@@ -727,6 +797,8 @@ int _fcntl_r(struct _reent *r, int fd, int cmd, int arg)
 
 int ioctl(int fd, int cmd, ...)
 {
+    printf("FUNC=ioctl");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -744,6 +816,8 @@ int ioctl(int fd, int cmd, ...)
 
 int fsync(int fd)
 {
+    printf("FUNC=fsync");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -758,6 +832,8 @@ int fsync(int fd)
 
 int access(const char *path, int amode)
 {
+    printf("FUNC=access");
+
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     struct _reent* r = __getreent();
@@ -772,6 +848,8 @@ int access(const char *path, int amode)
 
 int truncate(const char *path, off_t length)
 {
+    printf("FUNC=truncate");
+
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     struct _reent* r = __getreent();
@@ -786,6 +864,8 @@ int truncate(const char *path, off_t length)
 
 static void call_end_selects(int end_index, const fds_triple_t *vfs_fds_triple, void **driver_args)
 {
+    printf("FUNC=call_end_selects");
+
     for (int i = 0; i < end_index; ++i) {
         const vfs_entry_t *vfs = get_vfs_for_index(i);
         const fds_triple_t *item = &vfs_fds_triple[i];
@@ -800,11 +880,15 @@ static void call_end_selects(int end_index, const fds_triple_t *vfs_fds_triple, 
 
 static inline bool esp_vfs_safe_fd_isset(int fd, const fd_set *fds)
 {
+    printf("FUNC=esp_vfs_safe_fd_isset");
+
     return fds && FD_ISSET(fd, fds);
 }
 
 static int set_global_fd_sets(const fds_triple_t *vfs_fds_triple, int size, fd_set *readfds, fd_set *writefds, fd_set *errorfds)
 {
+    printf("FUNC=set_global_fd_sets");
+
     int ret = 0;
 
     for (int i = 0; i < size; ++i) {
@@ -836,6 +920,8 @@ static int set_global_fd_sets(const fds_triple_t *vfs_fds_triple, int size, fd_s
 
 static void esp_vfs_log_fd_set(const char *fds_name, const fd_set *fds)
 {
+    printf("FUNC=esp_vfs_log_fd_set");
+
     if (fds_name && fds) {
         ESP_LOGD(TAG, "FDs in %s =", fds_name);
         for (int i = 0; i < MAX_FDS; ++i) {
@@ -848,6 +934,8 @@ static void esp_vfs_log_fd_set(const char *fds_name, const fd_set *fds)
 
 int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds, struct timeval *timeout)
 {
+    printf("FUNC=esp_vfs_select");
+
     // NOTE: Please see the "Synchronous input/output multiplexing" section of the ESP-IDF Programming Guide
     // (API Reference -> Storage -> Virtual Filesystem) for a general overview of the implementation of VFS select().
     int ret = 0;
@@ -1036,6 +1124,8 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
 
 void esp_vfs_select_triggered(esp_vfs_select_sem_t sem)
 {
+    printf("FUNC=esp_vfs_select_triggered");
+
     if (sem.is_sem_local) {
         xSemaphoreGive(sem.sem);
     } else {
@@ -1056,6 +1146,8 @@ void esp_vfs_select_triggered(esp_vfs_select_sem_t sem)
 
 void esp_vfs_select_triggered_isr(esp_vfs_select_sem_t sem, BaseType_t *woken)
 {
+    printf("FUNC=esp_vfs_select_triggered_isr");
+
     if (sem.is_sem_local) {
         xSemaphoreGiveFromISR(sem.sem, woken);
     } else {
@@ -1077,6 +1169,8 @@ void esp_vfs_select_triggered_isr(esp_vfs_select_sem_t sem, BaseType_t *woken)
 #ifdef CONFIG_VFS_SUPPORT_TERMIOS
 int tcgetattr(int fd, struct termios *p)
 {
+    printf("FUNC=tcgetattr");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1091,6 +1185,8 @@ int tcgetattr(int fd, struct termios *p)
 
 int tcsetattr(int fd, int optional_actions, const struct termios *p)
 {
+    printf("FUNC=tcsetattr");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1105,6 +1201,8 @@ int tcsetattr(int fd, int optional_actions, const struct termios *p)
 
 int tcdrain(int fd)
 {
+    printf("FUNC=tcdrain");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1119,6 +1217,8 @@ int tcdrain(int fd)
 
 int tcflush(int fd, int select)
 {
+    printf("FUNC=tcflush");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1133,6 +1233,8 @@ int tcflush(int fd, int select)
 
 int tcflow(int fd, int action)
 {
+    printf("FUNC=tcflow");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1147,6 +1249,8 @@ int tcflow(int fd, int action)
 
 pid_t tcgetsid(int fd)
 {
+    printf("FUNC=tcgetsid");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1161,6 +1265,8 @@ pid_t tcgetsid(int fd)
 
 int tcsendbreak(int fd, int duration)
 {
+    printf("FUNC=tcsendbreak");
+
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     struct _reent* r = __getreent();
@@ -1176,6 +1282,8 @@ int tcsendbreak(int fd, int duration)
 
 int esp_vfs_utime(const char *path, const struct utimbuf *times)
 {
+    printf("FUNC=esp_vfs_utime");
+
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     struct _reent* r = __getreent();
@@ -1190,6 +1298,8 @@ int esp_vfs_utime(const char *path, const struct utimbuf *times)
 
 int esp_vfs_poll(struct pollfd *fds, nfds_t nfds, int timeout)
 {
+    printf("FUNC=esp_vfs_poll");
+
     struct timeval tv = {
         // timeout is in milliseconds
         .tv_sec = timeout / 1000,
@@ -1266,5 +1376,7 @@ int esp_vfs_poll(struct pollfd *fds, nfds_t nfds, int timeout)
 
 void vfs_include_syscalls_impl(void)
 {
+    printf("FUNC=vfs_include_syscalls_impl");
+
     // Linker hook function, exists to make the linker examine this fine
 }

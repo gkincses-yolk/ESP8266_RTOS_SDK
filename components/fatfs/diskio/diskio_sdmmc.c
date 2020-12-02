@@ -25,16 +25,22 @@ static const char* TAG = "diskio_sdmmc";
 
 DSTATUS ff_sdmmc_initialize (BYTE pdrv)
 {
+    printf("FUNC=ff_sdmmc_initialize ");
+
     return 0;
 }
 
 DSTATUS ff_sdmmc_status (BYTE pdrv)
 {
+    printf("FUNC=ff_sdmmc_status ");
+
     return 0;
 }
 
 DRESULT ff_sdmmc_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
+    printf("FUNC=ff_sdmmc_read ");
+
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
     esp_err_t err = sdmmc_read_sectors(card, buff, sector, count);
@@ -47,6 +53,8 @@ DRESULT ff_sdmmc_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 
 DRESULT ff_sdmmc_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
+    printf("FUNC=ff_sdmmc_write ");
+
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
     esp_err_t err = sdmmc_write_sectors(card, buff, sector, count);
@@ -59,6 +67,8 @@ DRESULT ff_sdmmc_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 
 DRESULT ff_sdmmc_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 {
+    printf("FUNC=ff_sdmmc_ioctl ");
+
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
     switch(cmd) {
@@ -78,6 +88,8 @@ DRESULT ff_sdmmc_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 
 void ff_diskio_register_sdmmc(BYTE pdrv, sdmmc_card_t* card)
 {
+    printf("FUNC=ff_diskio_register_sdmmc");
+
     static const ff_diskio_impl_t sdmmc_impl = {
         .init = &ff_sdmmc_initialize,
         .status = &ff_sdmmc_status,

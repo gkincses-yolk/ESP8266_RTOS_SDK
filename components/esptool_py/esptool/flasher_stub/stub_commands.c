@@ -20,7 +20,10 @@
 #include "slip.h"
 #include "soc_support.h"
 
-int handle_flash_erase(uint32_t addr, uint32_t len) {
+int handle_flash_erase(uint32_t addr, uint32_t len)
+{
+    printf("FUNC=handle_flash_erase");
+
   if (addr % FLASH_SECTOR_SIZE != 0) return 0x32;
   if (len % FLASH_SECTOR_SIZE != 0) return 0x33;
   if (SPIUnlock() != 0) return 0x34;
@@ -47,7 +50,10 @@ int handle_flash_erase(uint32_t addr, uint32_t len) {
 }
 
 void handle_flash_read(uint32_t addr, uint32_t len, uint32_t block_size,
-                  uint32_t max_in_flight) {
+                  uint32_t max_in_flight)
+{
+    printf("FUNC=handle_flash_read");
+
   uint8_t buf[FLASH_SECTOR_SIZE];
   uint8_t digest[16];
   struct MD5Context ctx;
@@ -84,7 +90,10 @@ void handle_flash_read(uint32_t addr, uint32_t len, uint32_t block_size,
   ets_isr_unmask(1 << ETS_UART0_INUM);
 }
 
-int handle_flash_get_md5sum(uint32_t addr, uint32_t len) {
+int handle_flash_get_md5sum(uint32_t addr, uint32_t len)
+{
+    printf("FUNC=handle_flash_get_md5sum");
+
   uint8_t buf[FLASH_SECTOR_SIZE];
   uint8_t digest[16];
   struct MD5Context ctx;
@@ -109,12 +118,16 @@ int handle_flash_get_md5sum(uint32_t addr, uint32_t len) {
 
 esp_command_error handle_spi_set_params(uint32_t *args, int *status)
 {
+    printf("FUNC=handle_spi_set_params");
+
   *status = SPIParamCfg(args[0], args[1], args[2], args[3], args[4], args[5]);
   return *status ? ESP_FAILED_SPI_OP : ESP_OK;
 }
 
 esp_command_error handle_spi_attach(uint32_t hspi_config_arg)
 {
+    printf("FUNC=handle_spi_attach");
+
 #ifdef ESP8266
         /* ESP8266 doesn't yet support SPI flash on HSPI, but could:
          see https://github.com/themadinventor/esptool/issues/98 */
@@ -135,6 +148,8 @@ static uint32_t mem_remaining;
 
 esp_command_error handle_mem_begin(uint32_t size, uint32_t offset)
 {
+    printf("FUNC=handle_mem_begin");
+
     mem_offset = (uint32_t *)offset;
     mem_remaining = size;
     return ESP_OK;
@@ -142,6 +157,8 @@ esp_command_error handle_mem_begin(uint32_t size, uint32_t offset)
 
 esp_command_error handle_mem_data(void *data, uint32_t length)
 {
+    printf("FUNC=handle_mem_data");
+
     uint32_t *data_words = (uint32_t *)data;
     if (mem_offset == NULL && length > 0) {
         return ESP_NOT_IN_FLASH_MODE;
@@ -162,6 +179,8 @@ esp_command_error handle_mem_data(void *data, uint32_t length)
 
 esp_command_error handle_mem_finish()
 {
+    printf("FUNC=handle_mem_finish");
+
     esp_command_error res = mem_remaining > 0 ? ESP_NOT_ENOUGH_DATA : ESP_OK;
     mem_remaining = 0;
     mem_offset = NULL;

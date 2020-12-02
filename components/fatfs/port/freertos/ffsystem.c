@@ -16,6 +16,8 @@ void* ff_memalloc (    /* Returns pointer to the allocated memory block (null on
     unsigned msize     /* Number of bytes to allocate */
 )
 {
+    printf("FUNC=ff_memalloc");
+
 #ifdef CONFIG_FATFS_ALLOC_EXTRAM_FIRST
     return heap_caps_malloc_prefer(size, 2, MALLOC_CAP_DEFAULT | MALLOC_CAP_SPIRAM,
                                             MALLOC_CAP_DEFAULT | MALLOC_CAP_INTERNAL);
@@ -33,6 +35,8 @@ void ff_memfree (
     void* mblock    /* Pointer to the memory block to free (nothing to do for null) */
 )
 {
+    printf("FUNC=ff_memfree");
+
     free(mblock);   /* Free the memory block with POSIX API */
 }
 
@@ -55,6 +59,8 @@ int ff_cre_syncobj (    /* 1:Function succeeded, 0:Could not create the sync obj
     FF_SYNC_t *sobj     /* Pointer to return the created sync object */
 )
 {
+    printf("FUNC=ff_cre_syncobj");
+
     *sobj = xSemaphoreCreateMutex();
     return (*sobj != NULL) ? 1 : 0;
 }
@@ -72,6 +78,8 @@ int ff_del_syncobj (    /* 1:Function succeeded, 0:Could not delete due to an er
     FF_SYNC_t sobj      /* Sync object tied to the logical drive to be deleted */
 )
 {
+    printf("FUNC=ff_del_syncobj");
+
     vSemaphoreDelete(sobj);
     return 1;
 }
@@ -88,6 +96,8 @@ int ff_req_grant (    /* 1:Got a grant to access the volume, 0:Could not get a g
     FF_SYNC_t sobj    /* Sync object to wait */
 )
 {
+    printf("FUNC=ff_req_grant");
+
     return (xSemaphoreTake(sobj, FF_FS_TIMEOUT) == pdTRUE) ? 1 : 0;
 }
 
@@ -102,6 +112,8 @@ void ff_rel_grant (
     FF_SYNC_t sobj    /* Sync object to be signaled */
 )
 {
+    printf("FUNC=ff_rel_grant");
+
     xSemaphoreGive(sobj);
 }
 

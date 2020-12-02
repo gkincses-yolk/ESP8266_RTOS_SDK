@@ -48,7 +48,10 @@ static const char* TAG = "secure_boot";
  *
  *  @inputs:        image_len - length of image to calculate digest for
  */
-static bool secure_boot_generate(uint32_t image_len){
+static bool secure_boot_generate(uint32_t image_len)
+{
+    printf("FUNC=secure_boot_generate");
+
     esp_err_t err;
     esp_secure_boot_iv_digest_t digest;
     const uint32_t *image;
@@ -99,6 +102,8 @@ static bool secure_boot_generate(uint32_t image_len){
 /* Burn values written to the efuse write registers */
 static inline void burn_efuses()
 {
+    printf("FUNC=burn_efuses");
+
 #ifdef CONFIG_SECURE_BOOT_TEST_MODE
     ESP_LOGE(TAG, "SECURE BOOT TEST MODE. Not really burning any efuses! NOT SECURE");
 #else
@@ -106,7 +111,10 @@ static inline void burn_efuses()
 #endif
 }
 
-esp_err_t esp_secure_boot_permanently_enable(void) {
+esp_err_t esp_secure_boot_permanently_enable(void)
+{
+    printf("FUNC=esp_secure_boot_permanently_enable");
+
     esp_err_t err;
     uint32_t image_len = 0;
     if (esp_secure_boot_enabled())

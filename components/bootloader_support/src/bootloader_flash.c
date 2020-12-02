@@ -32,6 +32,8 @@ static spi_flash_mmap_handle_t map;
 
 const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 {
+    printf("FUNC=bootloader_mmap");
+
     if (map) {
         ESP_LOGE(TAG, "tried to bootloader_mmap twice");
         return NULL; /* existing mapping in use... */
@@ -49,6 +51,8 @@ const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 
 void bootloader_munmap(const void *mapping)
 {
+    printf("FUNC=bootloader_munmap");
+
     if(mapping && map) {
         spi_flash_munmap(map);
     }
@@ -57,6 +61,8 @@ void bootloader_munmap(const void *mapping)
 
 esp_err_t bootloader_flash_read(size_t src, void *dest, size_t size, bool allow_decrypt)
 {
+    printf("FUNC=bootloader_flash_read");
+
     if (allow_decrypt && esp_flash_encryption_enabled()) {
         return spi_flash_read_encrypted(src, dest, size);
     } else {
@@ -66,6 +72,8 @@ esp_err_t bootloader_flash_read(size_t src, void *dest, size_t size, bool allow_
 
 esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
 {
+    printf("FUNC=bootloader_flash_write");
+
     if (write_encrypted) {
         return spi_flash_write_encrypted(dest_addr, src, size);
     } else {
@@ -75,6 +83,8 @@ esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool 
 
 esp_err_t bootloader_flash_erase_sector(size_t sector)
 {
+    printf("FUNC=bootloader_flash_erase_sector");
+
     return spi_flash_erase_sector(sector);
 }
 
@@ -101,6 +111,8 @@ static uint32_t current_read_mapping = UINT32_MAX;
 
 const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 {
+    printf("FUNC=bootloader_mmap");
+
     if (mapped) {
         ESP_LOGE(TAG, "tried to bootloader_mmap twice");
         return NULL; /* can't map twice */
@@ -131,6 +143,8 @@ const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 
 void bootloader_munmap(const void *mapping)
 {
+    printf("FUNC=bootloader_munmap");
+
     if (mapped)  {
         /* Full MMU reset */
         Cache_Read_Disable(0);
@@ -143,6 +157,8 @@ void bootloader_munmap(const void *mapping)
 
 static esp_err_t spi_to_esp_err(esp_rom_spiflash_result_t r)
 {
+    printf("FUNC=spi_to_esp_err");
+
     switch(r) {
     case ESP_ROM_SPIFLASH_RESULT_OK:
         return ESP_OK;
@@ -157,6 +173,8 @@ static esp_err_t spi_to_esp_err(esp_rom_spiflash_result_t r)
 
 static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, size_t size)
 {
+    printf("FUNC=bootloader_flash_read_no_decrypt");
+
     Cache_Read_Disable(0);
     Cache_Flush(0);
     esp_rom_spiflash_result_t r = esp_rom_spiflash_read(src_addr, dest, size);
@@ -167,6 +185,8 @@ static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, s
 
 static esp_err_t bootloader_flash_read_allow_decrypt(size_t src_addr, void *dest, size_t size)
 {
+    printf("FUNC=bootloader_flash_read_allow_decrypt");
+
     uint32_t *dest_words = (uint32_t *)dest;
 
     /* Use the 51st MMU mapping to read from flash in 64KB blocks.
@@ -198,6 +218,8 @@ static esp_err_t bootloader_flash_read_allow_decrypt(size_t src_addr, void *dest
 
 esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool allow_decrypt)
 {
+    printf("FUNC=bootloader_flash_read");
+
     if (src_addr & 3) {
         ESP_LOGE(TAG, "bootloader_flash_read src_addr 0x%x not 4-byte aligned", src_addr);
         return ESP_FAIL;
@@ -220,6 +242,8 @@ esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool a
 
 esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
 {
+    printf("FUNC=bootloader_flash_write");
+
     esp_err_t err;
     size_t alignment = write_encrypted ? 32 : 4;
     if ((dest_addr % alignment) != 0) {
@@ -249,6 +273,8 @@ esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool 
 
 esp_err_t bootloader_flash_erase_sector(size_t sector)
 {
+    printf("FUNC=bootloader_flash_erase_sector");
+
     return spi_to_esp_err(esp_rom_spiflash_erase_sector(sector));
 }
 
@@ -291,6 +317,8 @@ static bool mapped;
 
 const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 {
+    printf("FUNC=bootloader_mmap");
+
     if (mapped) {
         ESP_LOGE(TAG, "tried to bootloader_mmap twice");
         return NULL; /* can't map twice */
@@ -342,6 +370,8 @@ const void *bootloader_mmap(uint32_t src_addr, uint32_t size)
 
 void bootloader_munmap(const void *mapping)
 {
+    printf("FUNC=bootloader_munmap");
+
     if (mapped)  {
         Cache_Read_Disable();
         mapped = false;
@@ -350,6 +380,8 @@ void bootloader_munmap(const void *mapping)
 
 static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, size_t size)
 {
+    printf("FUNC=bootloader_flash_read_no_decrypt");
+
 #ifdef BOOTLOADER_BUILD
     SPIRead(src_addr, dest, size);
 #else
@@ -361,6 +393,8 @@ static esp_err_t bootloader_flash_read_no_decrypt(size_t src_addr, void *dest, s
 
 esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool allow_decrypt)
 {
+    printf("FUNC=bootloader_flash_read");
+
     if (src_addr & 3) {
         ESP_LOGE(TAG, "bootloader_flash_read src_addr 0x%x not 4-byte aligned", src_addr);
         return ESP_FAIL;
@@ -379,6 +413,8 @@ esp_err_t bootloader_flash_read(size_t src_addr, void *dest, size_t size, bool a
 
 esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool write_encrypted)
 {
+    printf("FUNC=bootloader_flash_write");
+
     size_t alignment = write_encrypted ? 32 : 4;
     if ((dest_addr % alignment) != 0) {
         ESP_LOGE(TAG, "bootloader_flash_write dest_addr 0x%x not %d-byte aligned", dest_addr, alignment);
@@ -401,6 +437,8 @@ esp_err_t bootloader_flash_write(size_t dest_addr, void *src, size_t size, bool 
 
 esp_err_t bootloader_flash_erase_sector(size_t sector)
 {
+    printf("FUNC=bootloader_flash_erase_sector");
+
     SPIEraseSector(sector);
 
     return ESP_OK;

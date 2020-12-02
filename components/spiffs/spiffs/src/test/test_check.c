@@ -18,14 +18,23 @@
 
 
 SUITE(check_tests)
-static void setup() {
+static void setup()
+{
+    printf("FUNC=setup");
+
   _setup();
 }
-static void teardown() {
+static void teardown()
+{
+    printf("FUNC=teardown");
+
   _teardown();
 }
 
-TEST(evil_write) {
+TEST(evil_write)
+{
+    printf("FUNC=TEST");
+
   fs_set_validate_flashing(0);
   printf("writing corruption to block 1 data range (leaving lu intact)\n");
   u32_t data_range = SPIFFS_CFG_LOG_BLOCK_SZ(FS) -
@@ -53,7 +62,10 @@ TEST(evil_write) {
 } TEST_END
 
 
-TEST(lu_check1) {
+TEST(lu_check1)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -90,7 +102,10 @@ TEST(lu_check1) {
 } TEST_END
 
 
-TEST(page_cons1) {
+TEST(page_cons1)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -130,7 +145,10 @@ TEST(page_cons1) {
 } TEST_END
 
 
-TEST(page_cons2) {
+TEST(page_cons2)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -176,7 +194,10 @@ TEST(page_cons2) {
 
 
 
-TEST(page_cons3) {
+TEST(page_cons3)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -216,7 +237,10 @@ TEST(page_cons3) {
 } TEST_END
 
 
-TEST(page_cons_final) {
+TEST(page_cons_final)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -257,7 +281,10 @@ TEST(page_cons_final) {
 } TEST_END
 
 
-TEST(index_cons1) {
+TEST(index_cons1)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*SPIFFS_PAGES_PER_BLOCK(FS);
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -298,7 +325,10 @@ TEST(index_cons1) {
 } TEST_END
 
 
-TEST(index_cons2) {
+TEST(index_cons2)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*SPIFFS_PAGES_PER_BLOCK(FS);
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -338,7 +368,10 @@ TEST(index_cons2) {
 } TEST_END
 
 
-TEST(index_cons3) {
+TEST(index_cons3)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*SPIFFS_PAGES_PER_BLOCK(FS);
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -378,7 +411,10 @@ TEST(index_cons3) {
   return TEST_RES_OK;
 } TEST_END
 
-TEST(index_cons4) {
+TEST(index_cons4)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*SPIFFS_PAGES_PER_BLOCK(FS);
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);

@@ -46,6 +46,8 @@ static const char message[] = "Hello world!";
 
 static int open_dummy_socket(void)
 {
+    printf("FUNC=open_dummy_socket");
+
     const struct addrinfo hints = {
         .ai_family = AF_INET,
         .ai_socktype = SOCK_DGRAM,
@@ -64,6 +66,8 @@ static int open_dummy_socket(void)
 
 static int socket_init(void)
 {
+    printf("FUNC=socket_init");
+
     const struct addrinfo hints = {
         .ai_family = AF_INET,
         .ai_socktype = SOCK_DGRAM,
@@ -96,6 +100,8 @@ static int socket_init(void)
 
 static void uart1_init(void)
 {
+    printf("FUNC=uart1_init");
+
     uart_config_t uart_config = {
         .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,
@@ -110,6 +116,8 @@ static void uart1_init(void)
 
 static void send_task(void *param)
 {
+    printf("FUNC=send_task");
+
     const test_task_param_t *test_task_param = param;
     vTaskDelay(test_task_param->delay_ms / portTICK_PERIOD_MS);
     write(test_task_param->fd, message, sizeof(message));
@@ -121,11 +129,15 @@ static void send_task(void *param)
 
 static inline void start_task(const test_task_param_t *test_task_param)
 {
+    printf("FUNC=start_task");
+
     xTaskCreate(send_task, "send_task", 4*1024, (void *) test_task_param, 5, NULL);
 }
 
 static void init(int *uart_fd, int *socket_fd)
 {
+    printf("FUNC=init");
+
     test_case_uses_tcpip();
 
     uart1_init();
@@ -141,6 +153,8 @@ static void init(int *uart_fd, int *socket_fd)
 
 static void deinit(int uart_fd, int socket_fd)
 {
+    printf("FUNC=deinit");
+
     esp_vfs_dev_uart_use_nonblocking(1);
     close(uart_fd);
     uart_driver_delete(UART_NUM_1);
@@ -207,6 +221,8 @@ TEST_CASE("UART can do select()", "[vfs]")
 
 TEST_CASE("UART can do poll()", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd;
     int socket_fd;
     char recv_message[sizeof(message)];
@@ -268,6 +284,8 @@ TEST_CASE("UART can do poll()", "[vfs]")
 
 TEST_CASE("socket can do select()", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd;
     int socket_fd;
     struct timeval tv = {
@@ -312,6 +330,8 @@ TEST_CASE("socket can do select()", "[vfs]")
 
 TEST_CASE("socket can do poll()", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd;
     int socket_fd;
     char recv_message[sizeof(message)];
@@ -364,6 +384,8 @@ TEST_CASE("socket can do poll()", "[vfs]")
 
 TEST_CASE("select() timeout", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd;
     int socket_fd;
     struct timeval tv = {
@@ -395,6 +417,8 @@ TEST_CASE("select() timeout", "[vfs]")
 
 TEST_CASE("poll() timeout", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd;
     int socket_fd;
 
@@ -433,6 +457,8 @@ TEST_CASE("poll() timeout", "[vfs]")
 
 static void select_task(void *task_param)
 {
+    printf("FUNC=select_task");
+
     const test_select_task_param_t *param = task_param;
 
     int s = select(param->maxfds, param->rdfds, param->wrfds, param->errfds, param->tv);
@@ -446,11 +472,15 @@ static void select_task(void *task_param)
 
 static void inline start_select_task(test_select_task_param_t *param)
 {
+    printf("FUNC=start_select_task");
+
     xTaskCreate(select_task, "select_task", 4*1024, (void *) param, 5, NULL);
 }
 
 TEST_CASE("concurrent selects work", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int uart_fd, socket_fd;
     init(&uart_fd, &socket_fd);
     const int dummy_socket_fd = open_dummy_socket();
@@ -553,6 +583,8 @@ TEST_CASE("concurrent selects work", "[vfs]")
 
 TEST_CASE("select() works with concurrent mount", "[vfs][fatfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     wl_handle_t test_wl_handle;
     int uart_fd, socket_fd;
 

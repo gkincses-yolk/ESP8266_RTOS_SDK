@@ -50,6 +50,8 @@ spi_ram_obj_t *spi_ram_obj[SPI_RAM_NUM_MAX] = {NULL};
 
 static esp_err_t IRAM_ATTR spi_ram_write_cmd(spi_ram_num_t num, uint8_t cmd)
 {
+    printf("FUNC=spi_ram_write_cmd");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
 
@@ -95,6 +97,8 @@ static esp_err_t IRAM_ATTR spi_ram_write_cmd(spi_ram_num_t num, uint8_t cmd)
 
 esp_err_t IRAM_ATTR spi_ram_write(spi_ram_num_t num, uint32_t addr, uint8_t *data, int len)
 {
+    printf("FUNC=spi_ram_write");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
     SPI_RAM_CHECK(data, "param null", ESP_ERR_INVALID_ARG);
@@ -157,6 +161,8 @@ esp_err_t IRAM_ATTR spi_ram_write(spi_ram_num_t num, uint32_t addr, uint8_t *dat
 
 esp_err_t IRAM_ATTR spi_ram_read(spi_ram_num_t num, uint32_t addr, uint8_t *data, int len)
 {
+    printf("FUNC=spi_ram_read");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
     SPI_RAM_CHECK(data, "param null", ESP_ERR_INVALID_ARG);
@@ -248,6 +254,8 @@ esp_err_t IRAM_ATTR spi_ram_read(spi_ram_num_t num, uint32_t addr, uint8_t *data
 
 esp_err_t spi_ram_check(spi_ram_num_t num)
 {
+    printf("FUNC=spi_ram_check");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
     int x;
@@ -291,6 +299,8 @@ esp_err_t spi_ram_check(spi_ram_num_t num)
 
 esp_err_t spi_ram_set_clk_div(spi_ram_num_t num, spi_ram_clk_div_t *clk_div)
 {
+    printf("FUNC=spi_ram_set_clk_div");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
     SPI_RAM_CHECK(clk_div && *clk_div > 0, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -325,6 +335,8 @@ esp_err_t spi_ram_set_clk_div(spi_ram_num_t num, spi_ram_clk_div_t *clk_div)
 
 esp_err_t spi_ram_deinit(spi_ram_num_t num)
 {
+    printf("FUNC=spi_ram_deinit");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(spi_ram_obj[num], "spi ram not installed yet", ESP_FAIL);
 
@@ -346,6 +358,8 @@ esp_err_t spi_ram_deinit(spi_ram_num_t num)
 
 esp_err_t spi_ram_init(spi_ram_num_t num, spi_ram_config_t *config)
 {
+    printf("FUNC=spi_ram_init");
+
     SPI_RAM_CHECK((num < SPI_RAM_NUM_MAX), "spi ram num error", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(config, "param null", ESP_ERR_INVALID_ARG);
     SPI_RAM_CHECK(config->cmd.val != 0, "cmd error", ESP_ERR_INVALID_ARG);

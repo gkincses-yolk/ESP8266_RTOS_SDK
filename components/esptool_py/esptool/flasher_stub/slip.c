@@ -18,11 +18,17 @@
 #include "rom_functions.h"
 #include "slip.h"
 
-void SLIP_send_frame_delimiter(void) {
+void SLIP_send_frame_delimiter(void)
+{
+    printf("FUNC=SLIP_send_frame_delimiter");
+
   uart_tx_one_char('\xc0');
 }
 
-void SLIP_send_frame_data(char ch) {
+void SLIP_send_frame_data(char ch)
+{
+    printf("FUNC=SLIP_send_frame_data");
+
   if(ch == '\xc0') {
 	uart_tx_one_char('\xdb');
 	uart_tx_one_char('\xdc');
@@ -34,14 +40,20 @@ void SLIP_send_frame_data(char ch) {
   }
 }
 
-void SLIP_send_frame_data_buf(const void *buf, uint32_t size) {
+void SLIP_send_frame_data_buf(const void *buf, uint32_t size)
+{
+    printf("FUNC=SLIP_send_frame_data_buf");
+
   const uint8_t *buf_c = (const uint8_t *)buf;
   for(int i = 0; i < size; i++) {
 	SLIP_send_frame_data(buf_c[i]);
   }
 }
 
-void SLIP_send(const void *pkt, uint32_t size) {
+void SLIP_send(const void *pkt, uint32_t size)
+{
+    printf("FUNC=SLIP_send");
+
   SLIP_send_frame_delimiter();
   SLIP_send_frame_data_buf(pkt, size);
   SLIP_send_frame_delimiter();
@@ -49,6 +61,8 @@ void SLIP_send(const void *pkt, uint32_t size) {
 
 int16_t SLIP_recv_byte(char byte, slip_state_t *state)
 {
+    printf("FUNC=SLIP_recv_byte");
+
   if (byte == '\xc0') {
 	if (*state == SLIP_NO_FRAME) {
 	  *state = SLIP_FRAME;
@@ -82,7 +96,10 @@ int16_t SLIP_recv_byte(char byte, slip_state_t *state)
   return SLIP_NO_BYTE; /* actually a framing error */
 }
 
-uint32_t SLIP_recv(void *pkt, uint32_t max_len) {
+uint32_t SLIP_recv(void *pkt, uint32_t max_len)
+{
+    printf("FUNC=SLIP_recv");
+
   uint32_t len = 0;
   slip_state_t state = SLIP_NO_FRAME;
   uint8_t *p = (uint8_t *) pkt;

@@ -75,6 +75,8 @@ static void wdt_reset_check(void);
 
 esp_err_t bootloader_init()
 {
+    printf("FUNC=bootloader_init");
+
     cpu_configure_region_protection();
 
     /* Sanity check that static RAM is after the stack */
@@ -122,6 +124,8 @@ esp_err_t bootloader_init()
 
 static esp_err_t bootloader_main()
 {
+    printf("FUNC=bootloader_main");
+
     vddsdio_configure();
     /* Read and keep flash ID, for further use. */
     g_rom_flashchip.device_id = bootloader_read_flash_id();
@@ -176,6 +180,8 @@ static esp_err_t bootloader_main()
 
 static void update_flash_config(const esp_image_header_t* pfhdr)
 {
+    printf("FUNC=update_flash_config");
+
     uint32_t size;
     switch(pfhdr->spi_size) {
         case ESP_IMAGE_FLASH_SIZE_1MB:
@@ -207,6 +213,8 @@ static void update_flash_config(const esp_image_header_t* pfhdr)
 
 static void print_flash_info(const esp_image_header_t* phdr)
 {
+    printf("FUNC=print_flash_info");
+
 #if (BOOT_LOG_LEVEL >= BOOT_LOG_LEVEL_NOTICE)
 
     ESP_LOGD(TAG, "magic %02x", phdr->magic );
@@ -284,6 +292,8 @@ static void print_flash_info(const esp_image_header_t* phdr)
 
 static void vddsdio_configure()
 {
+    printf("FUNC=vddsdio_configure");
+
 #if CONFIG_BOOTLOADER_VDDSDIO_BOOST_1_9V
     rtc_vddsdio_config_t cfg = rtc_vddsdio_get_config();
     if (cfg.enable == 1 && cfg.tieh == RTC_VDDSDIO_TIEH_1_8V) {    // VDDSDIO regulator is enabled @ 1.8V
@@ -313,6 +323,8 @@ static void vddsdio_configure()
  */
 static void IRAM_ATTR flash_gpio_configure(const esp_image_header_t* pfhdr)
 {
+    printf("FUNC=flash_gpio_configure");
+
     int spi_cache_dummy = 0;
     int drv = 2;
     switch (pfhdr->spi_mode) {
@@ -408,6 +420,8 @@ static void IRAM_ATTR flash_gpio_configure(const esp_image_header_t* pfhdr)
 
 static void uart_console_configure(void)
 {
+    printf("FUNC=uart_console_configure");
+
 #if CONFIG_CONSOLE_UART_NONE
     ets_install_putc1(NULL);
     ets_install_putc2(NULL);
@@ -453,6 +467,8 @@ static void uart_console_configure(void)
 
 static void wdt_reset_cpu0_info_enable(void)
 {
+    printf("FUNC=wdt_reset_cpu0_info_enable");
+
     //We do not reset core1 info here because it didn't work before cpu1 was up. So we put it into call_start_cpu1.
     DPORT_REG_SET_BIT(DPORT_PRO_CPU_RECORD_CTRL_REG, DPORT_PRO_CPU_PDEBUG_ENABLE | DPORT_PRO_CPU_RECORD_ENABLE);
     DPORT_REG_CLR_BIT(DPORT_PRO_CPU_RECORD_CTRL_REG, DPORT_PRO_CPU_RECORD_ENABLE);
@@ -460,6 +476,8 @@ static void wdt_reset_cpu0_info_enable(void)
 
 static void wdt_reset_info_dump(int cpu)
 {
+    printf("FUNC=wdt_reset_info_dump");
+
     uint32_t inst = 0, pid = 0, stat = 0, data = 0, pc = 0,
              lsstat = 0, lsaddr = 0, lsdata = 0, dstat = 0;
     const char *cpu_name = cpu ? "APP" : "PRO";
@@ -505,6 +523,8 @@ static void wdt_reset_info_dump(int cpu)
 
 static void wdt_reset_check(void)
 {
+    printf("FUNC=wdt_reset_check");
+
     int wdt_rst = 0;
     RESET_REASON rst_reas[2];
 
@@ -530,6 +550,8 @@ static void wdt_reset_check(void)
 
 void __assert_func(const char *file, int line, const char *func, const char *expr)
 {
+    printf("FUNC=__assert_func");
+
     ESP_LOGE(TAG, "Assert failed in %s, %s:%d (%s)", func, file, line, expr);
     while(1) {}
 }
@@ -568,6 +590,8 @@ static void update_flash_config(const esp_image_header_t* pfhdr);
 
 static void uart_console_configure(void)
 {
+    printf("FUNC=uart_console_configure");
+
 #if CONFIG_ESP_UART0_SWAP_IO
     while (READ_PERI_REG(UART_STATUS(0)) & (UART_TXFIFO_CNT << UART_TXFIFO_CNT_S));
 
@@ -602,6 +626,8 @@ static void uart_console_configure(void)
 
 esp_err_t bootloader_init()
 {
+    printf("FUNC=bootloader_init");
+
     //Clear bss
     memset(&_bss_start, 0, (&_bss_end - &_bss_start) * sizeof(_bss_start));
 
@@ -613,6 +639,8 @@ esp_err_t bootloader_init()
 
 static esp_err_t bootloader_main()
 {
+    printf("FUNC=bootloader_main");
+
 #ifdef CONFIG_BOOTLOADER_DISABLE_JTAG_IO
     /* Set GPIO 12-15 to be normal GPIO  */
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTDI_U, FUNC_GPIO12);
@@ -652,6 +680,8 @@ static esp_err_t bootloader_main()
 
 static void update_flash_config(const esp_image_header_t* pfhdr)
 {
+    printf("FUNC=update_flash_config");
+
 #ifdef CONFIG_BOOTLOADER_INIT_SPI_FLASH
     extern void esp_spi_flash_init(uint32_t spi_speed, uint32_t spi_mode);
 
@@ -665,6 +695,8 @@ static void update_flash_config(const esp_image_header_t* pfhdr)
 
 static void print_flash_info(const esp_image_header_t* phdr)
 {
+    printf("FUNC=print_flash_info");
+
 #if (BOOT_LOG_LEVEL >= BOOT_LOG_LEVEL_NOTICE)
 
     ESP_LOGD(TAG, "magic %02x", phdr->magic );

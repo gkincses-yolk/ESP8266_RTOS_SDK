@@ -15228,6 +15228,8 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_uni2oem");
+
 	WCHAR c = 0;
 	const WCHAR *p = CVTBL(uc, FF_CODE_PAGE);
 
@@ -15250,6 +15252,8 @@ WCHAR ff_oem2uni (	/* Returns Unicode character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_oem2uni");
+
 	WCHAR c = 0;
 	const WCHAR *p = CVTBL(uc, FF_CODE_PAGE);
 
@@ -15281,6 +15285,8 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_uni2oem");
+
 	const WCHAR *p;
 	WCHAR c = 0, uc;
 	UINT i = 0, n, li, hi;
@@ -15317,6 +15323,8 @@ WCHAR ff_oem2uni (	/* Returns Unicode character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_oem2uni");
+
 	const WCHAR *p;
 	WCHAR c = 0;
 	UINT i = 0, n, li, hi;
@@ -15364,6 +15372,8 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_uni2oem");
+
 	const WCHAR *p;
 	WCHAR c = 0, uc;
 	UINT i, n, li, hi;
@@ -15416,6 +15426,8 @@ WCHAR ff_oem2uni (	/* Returns Unicode character, zero on error */
 	WORD	cp		/* Code page for the conversion */
 )
 {
+    printf("FUNC=ff_oem2uni");
+
 	const WCHAR *p;
 	WCHAR c = 0;
 	UINT i, n, li, hi;
@@ -15469,6 +15481,8 @@ DWORD ff_wtoupper (	/* Returns up-converted code point */
 	DWORD uni		/* Unicode code point to be up-converted */
 )
 {
+    printf("FUNC=ff_wtoupper");
+
 	const WORD *p;
 	WORD uc, bc, nc, cmd;
 	static const WORD cvt1[] = {	/* Compressed up conversion table for U+0000 - U+0FFF */

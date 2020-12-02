@@ -17,15 +17,23 @@
 #include <unistd.h>
 
 SUITE(hydrogen_tests)
-static void setup() {
+static void setup()
+{
+    printf("FUNC=setup");
+
   _setup();
 }
-static void teardown() {
+static void teardown()
+{
+    printf("FUNC=teardown");
+
   _teardown();
 }
 
 TEST(info)
 {
+    printf("FUNC=TEST");
+
   u32_t used, total;
   int res = SPIFFS_info(FS, &total, &used);
   TEST_CHECK(res == SPIFFS_OK);
@@ -38,6 +46,8 @@ TEST_END
 #if SPIFFS_USE_MAGIC
 TEST(magic)
 {
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 65536*16, 65536, 65536, 256);
   SPIFFS_unmount(FS);
 
@@ -58,6 +68,8 @@ TEST_END
 #if SPIFFS_USE_MAGIC_LENGTH
 TEST(magic_length)
 {
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 65536*16, 65536, 65536, 256);
   SPIFFS_unmount(FS);
 
@@ -83,6 +95,8 @@ TEST_END
 #if SPIFFS_SINGLETON==0
 TEST(magic_length_probe)
 {
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 65536*16, 65536, 65536, 256);
   TEST_CHECK_EQ(SPIFFS_probe_fs(&__fs.cfg), 65536*16);
 
@@ -161,6 +175,8 @@ TEST_END
 
 TEST(missing_file)
 {
+    printf("FUNC=TEST");
+
   spiffs_file fd = SPIFFS_open(FS, "this_wont_exist", SPIFFS_RDONLY, 0);
   TEST_CHECK(fd < 0);
   return TEST_RES_OK;
@@ -170,6 +186,8 @@ TEST_END
 
 TEST(bad_fd)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   spiffs_file fd = SPIFFS_open(FS, "this_wont_exist", SPIFFS_RDONLY, 0);
@@ -202,6 +220,8 @@ TEST_END
 
 TEST(closed_fd)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   res = test_create_file("file");
@@ -237,6 +257,8 @@ TEST_END
 
 TEST(deleted_same_fd)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   spiffs_file fd;
@@ -271,6 +293,8 @@ TEST_END
 
 TEST(deleted_other_fd)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   spiffs_file fd, fd_orig;
@@ -306,6 +330,8 @@ TEST_END
 
 TEST(file_by_open)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   spiffs_file fd = SPIFFS_open(FS, "filebopen", SPIFFS_CREAT, 0);
@@ -330,6 +356,8 @@ TEST_END
 
 TEST(file_by_creat)
 {
+    printf("FUNC=TEST");
+
   int res;
   res = test_create_file("filebcreat");
   TEST_CHECK(res >= 0);
@@ -342,6 +370,8 @@ TEST_END
 
 TEST(file_by_open_excl)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_stat s;
   spiffs_file fd = SPIFFS_open(FS, "filebexcl", SPIFFS_CREAT | SPIFFS_EXCL, 0);
@@ -363,6 +393,8 @@ TEST_END
 #if SPIFFS_FILEHDL_OFFSET
 TEST(open_fh_offs)
 {
+    printf("FUNC=TEST");
+
   spiffs_file fd1, fd2, fd3;
   fd1 = SPIFFS_open(FS, "1", SPIFFS_CREAT | SPIFFS_EXCL, 0);
   fd2 = SPIFFS_open(FS, "2", SPIFFS_CREAT | SPIFFS_EXCL, 0);
@@ -396,6 +428,8 @@ TEST_END
 
 TEST(list_dir)
 {
+    printf("FUNC=TEST");
+
   int res;
 
   char *files[4] = {
@@ -448,7 +482,10 @@ TEST(list_dir)
 TEST_END
 
 
-TEST(open_by_dirent) {
+TEST(open_by_dirent)
+{
+    printf("FUNC=TEST");
+
   int res;
 
   char *files[4] = {
@@ -503,7 +540,10 @@ TEST(open_by_dirent) {
 } TEST_END
 
 
-TEST(open_by_page) {
+TEST(open_by_page)
+{
+    printf("FUNC=TEST");
+
   int res;
 
   char *files[4] = {
@@ -574,7 +614,10 @@ static struct {
   spiffs_page_ix pix;
 } ucb;
 
-void test_cb(spiffs *fs, spiffs_fileop_type op, spiffs_obj_id obj_id, spiffs_page_ix pix) {
+void test_cb(spiffs *fs, spiffs_fileop_type op, spiffs_obj_id obj_id, spiffs_page_ix pix)
+{
+    printf("FUNC=test_cb");
+
   ucb.calls++;
   ucb.op = op;
   ucb.obj_id = obj_id;
@@ -582,7 +625,10 @@ void test_cb(spiffs *fs, spiffs_fileop_type op, spiffs_obj_id obj_id, spiffs_pag
   //printf("%4i  op:%i objid:%04x pix:%04x\n", ucb.calls, ucb.op, ucb.obj_id, ucb.pix);
 }
 
-TEST(user_callback_basic) {
+TEST(user_callback_basic)
+{
+    printf("FUNC=TEST");
+
   SPIFFS_set_file_callback_func(FS, test_cb);
   int res;
   memset(&ucb, 0, sizeof(ucb));
@@ -616,7 +662,10 @@ TEST(user_callback_basic) {
 } TEST_END
 
 
-TEST(user_callback_gc) {
+TEST(user_callback_gc)
+{
+    printf("FUNC=TEST");
+
   SPIFFS_set_file_callback_func(FS, test_cb);
 
   char name[32];
@@ -692,7 +741,10 @@ TEST(user_callback_gc) {
 } TEST_END
 
 
-TEST(name_too_long) {
+TEST(name_too_long)
+{
+    printf("FUNC=TEST");
+
   char name[SPIFFS_OBJ_NAME_LEN*2];
   memset(name, 0, sizeof(name));
   int i;
@@ -723,7 +775,10 @@ TEST(name_too_long) {
 } TEST_END
 
 
-TEST(rename) {
+TEST(rename)
+{
+    printf("FUNC=TEST");
+
   int res;
 
   char *src_name = "baah";
@@ -749,7 +804,10 @@ TEST(rename) {
 } TEST_END
 
 #if SPIFFS_OBJ_META_LEN
-TEST(update_meta) {
+TEST(update_meta)
+{
+    printf("FUNC=TEST");
+
   s32_t i, res, fd;
   spiffs_stat s;
   u8_t new_meta[SPIFFS_OBJ_META_LEN], new_meta2[SPIFFS_OBJ_META_LEN];
@@ -798,6 +856,8 @@ TEST(update_meta) {
 
 TEST(remove_single_by_path)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   res = test_create_file("remove");
@@ -815,6 +875,8 @@ TEST_END
 
 TEST(remove_single_by_fd)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   res = test_create_file("remove");
@@ -835,6 +897,8 @@ TEST_END
 
 TEST(write_cache)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   u8_t buf[1024*8];
@@ -869,6 +933,8 @@ TEST_END
 
 TEST(write_big_file_chunks_page)
 {
+    printf("FUNC=TEST");
+
   int size = ((50*SPIFFS_CFG_PHYS_SZ(FS))/100);
   printf("  filesize %i\n", size);
   int res = test_create_and_write_file("bigfile", size, SPIFFS_DATA_PAGE_SIZE(FS));
@@ -883,6 +949,8 @@ TEST_END
 
 TEST(write_big_files_chunks_page)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int files = 10;
@@ -907,6 +975,8 @@ TEST_END
 
 TEST(write_big_file_chunks_index)
 {
+    printf("FUNC=TEST");
+
   int size = ((50*SPIFFS_CFG_PHYS_SZ(FS))/100);
   printf("  filesize %i\n", size);
   int res = test_create_and_write_file("bigfile", size, SPIFFS_DATA_PAGE_SIZE(FS) * SPIFFS_OBJ_HDR_IX_LEN(FS));
@@ -921,6 +991,8 @@ TEST_END
 
 TEST(write_big_files_chunks_index)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int files = 10;
@@ -945,6 +1017,8 @@ TEST_END
 
 TEST(write_big_file_chunks_huge)
 {
+    printf("FUNC=TEST");
+
   int size = (FS_PURE_DATA_PAGES(FS) / 2) * SPIFFS_DATA_PAGE_SIZE(FS);
   printf("  filesize %i\n", size);
   int res = test_create_and_write_file("bigfile", size, size);
@@ -959,6 +1033,8 @@ TEST_END
 
 TEST(write_big_files_chunks_huge)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int files = 10;
@@ -983,6 +1059,8 @@ TEST_END
 
 TEST(truncate_big_file)
 {
+    printf("FUNC=TEST");
+
   int size = (FS_PURE_DATA_PAGES(FS) / 2) * SPIFFS_DATA_PAGE_SIZE(FS);
   printf("  filesize %i\n", size);
   int res = test_create_and_write_file("bigfile", size, size);
@@ -1004,7 +1082,10 @@ TEST(truncate_big_file)
 TEST_END
 
 
-TEST(simultaneous_write) {
+TEST(simultaneous_write)
+{
+    printf("FUNC=TEST");
+
   int res = SPIFFS_creat(FS, "simul1", 0);
   TEST_CHECK(res >= 0);
 
@@ -1048,7 +1129,10 @@ TEST(simultaneous_write) {
 TEST_END
 
 
-TEST(simultaneous_write_append) {
+TEST(simultaneous_write_append)
+{
+    printf("FUNC=TEST");
+
   int res = SPIFFS_creat(FS, "simul2", 0);
   TEST_CHECK(res >= 0);
 
@@ -1095,6 +1179,8 @@ TEST_END
 
 TEST(file_uniqueness)
 {
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char fname[32];
@@ -1168,7 +1254,10 @@ TEST(file_uniqueness)
 }
 TEST_END
 
-int create_and_read_back(int size, int chunk) {
+int create_and_read_back(int size, int chunk)
+{
+    printf("FUNC=create_and_read_back");
+
   char *name = "file";
   spiffs_file fd;
   s32_t res;
@@ -1216,6 +1305,8 @@ int create_and_read_back(int size, int chunk) {
 
 TEST(read_chunk_1)
 {
+    printf("FUNC=TEST");
+
   TEST_CHECK(create_and_read_back(SPIFFS_DATA_PAGE_SIZE(FS)*8, 1) == 0);
   return TEST_RES_OK;
 }
@@ -1224,6 +1315,8 @@ TEST_END
 
 TEST(read_chunk_page)
 {
+    printf("FUNC=TEST");
+
   TEST_CHECK(create_and_read_back(SPIFFS_DATA_PAGE_SIZE(FS)*(SPIFFS_PAGES_PER_BLOCK(FS) - SPIFFS_OBJ_LOOKUP_PAGES(FS))*2,
       SPIFFS_DATA_PAGE_SIZE(FS)) == 0);
   return TEST_RES_OK;
@@ -1233,6 +1326,8 @@ TEST_END
 
 TEST(read_chunk_index)
 {
+    printf("FUNC=TEST");
+
   TEST_CHECK(create_and_read_back(SPIFFS_DATA_PAGE_SIZE(FS)*(SPIFFS_PAGES_PER_BLOCK(FS) - SPIFFS_OBJ_LOOKUP_PAGES(FS))*4,
       SPIFFS_DATA_PAGE_SIZE(FS)*(SPIFFS_PAGES_PER_BLOCK(FS) - SPIFFS_OBJ_LOOKUP_PAGES(FS))) == 0);
   return TEST_RES_OK;
@@ -1242,6 +1337,8 @@ TEST_END
 
 TEST(read_chunk_huge)
 {
+    printf("FUNC=TEST");
+
   int sz = (2*SPIFFS_CFG_PHYS_SZ(FS))/3;
   TEST_CHECK(create_and_read_back(sz, sz) == 0);
   return TEST_RES_OK;
@@ -1251,6 +1348,8 @@ TEST_END
 
 TEST(read_beyond)
 {
+    printf("FUNC=TEST");
+
   char *name = "file";
   spiffs_file fd;
   s32_t res;
@@ -1292,6 +1391,8 @@ TEST_END
 
 TEST(read_beyond2)
 {
+    printf("FUNC=TEST");
+
   char *name = "file";
   spiffs_file fd;
   s32_t res;
@@ -1333,7 +1434,10 @@ TEST(read_beyond2)
 TEST_END
 
 
-TEST(bad_index_1) {
+TEST(bad_index_1)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -1370,7 +1474,10 @@ TEST(bad_index_1) {
 } TEST_END
 
 
-TEST(bad_index_2) {
+TEST(bad_index_2)
+{
+    printf("FUNC=TEST");
+
   int size = SPIFFS_DATA_PAGE_SIZE(FS)*3;
   int res = test_create_and_write_file("file", size, size);
   TEST_CHECK(res >= 0);
@@ -1407,7 +1514,10 @@ TEST(bad_index_2) {
 } TEST_END
 
 
-TEST(lseek_simple_modification) {
+TEST(lseek_simple_modification)
+{
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char *fname = "seekfile";
@@ -1446,7 +1556,10 @@ TEST(lseek_simple_modification) {
 TEST_END
 
 
-TEST(lseek_modification_append) {
+TEST(lseek_modification_append)
+{
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char *fname = "seekfile";
@@ -1485,7 +1598,10 @@ TEST(lseek_modification_append) {
 TEST_END
 
 
-TEST(lseek_modification_append_multi) {
+TEST(lseek_modification_append_multi)
+{
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char *fname = "seekfile";
@@ -1528,7 +1644,10 @@ TEST(lseek_modification_append_multi) {
 TEST_END
 
 
-TEST(lseek_read) {
+TEST(lseek_read)
+{
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char *fname = "seekfile";
@@ -1590,7 +1709,10 @@ TEST_END
 
 
 
-TEST(lseek_oob) {
+TEST(lseek_oob)
+{
+    printf("FUNC=TEST");
+
   int res;
   spiffs_file fd;
   char *fname = "seekfile";
@@ -1618,6 +1740,8 @@ TEST_END
 
 TEST(gc_quick)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int size = SPIFFS_DATA_PAGE_SIZE(FS);
@@ -1690,6 +1814,8 @@ TEST_END
 
 TEST(write_small_file_chunks_1)
 {
+    printf("FUNC=TEST");
+
   int res = test_create_and_write_file("smallfile", 256, 1);
   TEST_CHECK(res >= 0);
   res = read_and_verify("smallfile");
@@ -1702,6 +1828,8 @@ TEST_END
 
 TEST(write_small_files_chunks_1)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int size = 512;
@@ -1724,6 +1852,8 @@ TEST_END
 
 TEST(write_big_file_chunks_1)
 {
+    printf("FUNC=TEST");
+
   int size = ((50*SPIFFS_CFG_PHYS_SZ(FS))/100);
   printf("  filesize %i\n", size);
   int res = test_create_and_write_file("bigfile", size, 1);
@@ -1737,6 +1867,8 @@ TEST_END
 
 TEST(write_big_files_chunks_1)
 {
+    printf("FUNC=TEST");
+
   char name[32];
   int f;
   int files = 10;
@@ -1761,6 +1893,8 @@ TEST_END
 
 TEST(long_run_config_many_small_one_long)
 {
+    printf("FUNC=TEST");
+
   tfile_conf cfgs[] = {
       {   .tsize = LARGE,     .ttype = MODIFIED,      .tlife = LONG
       },
@@ -1802,6 +1936,8 @@ TEST_END
 
 TEST(long_run_config_many_medium)
 {
+    printf("FUNC=TEST");
+
   tfile_conf cfgs[] = {
       {   .tsize = MEDIUM,    .ttype = MODIFIED,      .tlife = LONG
       },
@@ -1844,6 +1980,8 @@ TEST_END
 
 TEST(long_run_config_many_small)
 {
+    printf("FUNC=TEST");
+
   tfile_conf cfgs[] = {
       {   .tsize = SMALL,     .ttype = APPENDED,      .tlife = LONG
       },
@@ -1988,6 +2126,8 @@ TEST_END
 
 TEST(long_run)
 {
+    printf("FUNC=TEST");
+
   tfile_conf cfgs[] = {
       {   .tsize = EMPTY,     .ttype = APPENDED,      .tlife = NORMAL
       },
@@ -2032,6 +2172,8 @@ TEST_END
 #if SPIFFS_IX_MAP
 TEST(ix_map_basic)
 {
+    printf("FUNC=TEST");
+
   // create a scattered file
   s32_t res;
   spiffs_file fd1, fd2;
@@ -2155,6 +2297,8 @@ TEST_END
 
 TEST(ix_map_remap)
 {
+    printf("FUNC=TEST");
+
   // create a file, 10 data pages long
   s32_t res;
   spiffs_file fd1;
@@ -2261,6 +2405,8 @@ TEST_END
 
 TEST(ix_map_partial)
 {
+    printf("FUNC=TEST");
+
   // create a file, 10 data pages long
   s32_t res;
   spiffs_file fd;
@@ -2323,6 +2469,8 @@ TEST_END
 
 TEST(ix_map_beyond)
 {
+    printf("FUNC=TEST");
+
   // create a file, 10 data pages long
   s32_t res;
   spiffs_file fd;

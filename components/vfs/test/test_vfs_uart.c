@@ -35,6 +35,8 @@
 
 static void fwrite_str_loopback(const char* str, size_t size)
 {
+    printf("FUNC=fwrite_str_loopback");
+
     uart_tx_wait_idle(CONFIG_ESP_CONSOLE_UART_NUM);
     UART0.conf0.loopback = 1;
     fwrite(str, 1, size, stdout);
@@ -46,6 +48,8 @@ static void fwrite_str_loopback(const char* str, size_t size)
 
 static void flush_stdin_stdout(void)
 {
+    printf("FUNC=flush_stdin_stdout");
+
     vTaskDelay(10 / portTICK_PERIOD_MS);
     char bitbucket[UART_FIFO_LEN];
     while (fread(bitbucket, 1, UART_FIFO_LEN, stdin) > 0) {
@@ -57,6 +61,8 @@ static void flush_stdin_stdout(void)
 
 TEST_CASE("can read from stdin", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     flush_stdin_stdout();
 
     const size_t count = 12;
@@ -81,6 +87,8 @@ TEST_CASE("can read from stdin", "[vfs]")
 
 TEST_CASE("CRs are removed from the stdin correctly", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     esp_vfs_dev_uart_set_rx_line_endings(ESP_LINE_ENDINGS_CRLF);
     esp_vfs_dev_uart_set_tx_line_endings(ESP_LINE_ENDINGS_CRLF);
 
@@ -137,6 +145,8 @@ TEST_CASE("CRs are removed from the stdin correctly", "[vfs]")
 
 TEST_CASE("can write to UART while another task is reading", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     struct read_task_arg_t {
         char* out_buffer;
         size_t out_buffer_len;
@@ -209,6 +219,8 @@ TEST_CASE("can write to UART while another task is reading", "[vfs]")
 
 TEST_CASE("fcntl supported in UART VFS", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     TEST_ASSERT_NOT_EQUAL(-1, flags);
     int res = fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -221,6 +233,8 @@ TEST_CASE("fcntl supported in UART VFS", "[vfs]")
 #ifdef CONFIG_VFS_SUPPORT_TERMIOS
 TEST_CASE("Can use termios for UART", "[vfs]")
 {
+    printf("FUNC=TEST_CASE");
+
     uart_config_t uart_config = {
         .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,

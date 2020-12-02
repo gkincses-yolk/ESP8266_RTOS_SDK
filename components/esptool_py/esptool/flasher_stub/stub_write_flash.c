@@ -49,11 +49,15 @@ static const uint32_t STATUS_QIE_BIT = (1 << 9); /* Quad Enable */
 
 bool is_in_flash_mode(void)
 {
+    printf("FUNC=is_in_flash_mode");
+
   return fs.in_flash_mode;
 }
 
 esp_command_error get_flash_error(void)
 {
+    printf("FUNC=get_flash_error");
+
   return fs.last_error;
 }
 
@@ -62,6 +66,8 @@ esp_command_error get_flash_error(void)
 */
 inline static void spi_wait_ready(void)
 {
+    printf("FUNC=spi_wait_ready");
+
   /* Wait for SPI state machine ready */
   while((REG_READ(SPI_EXT2_REG(SPI_IDX)) & SPI_ST))
     { }
@@ -79,6 +85,8 @@ inline static void spi_wait_ready(void)
 */
 static bool spiflash_is_ready(void)
 {
+    printf("FUNC=spiflash_is_ready");
+
   spi_wait_ready();
   REG_WRITE(SPI_RD_STATUS_REG(SPI_IDX), 0);
   /* Issue read status command */
@@ -91,6 +99,8 @@ static bool spiflash_is_ready(void)
 
 static void spi_write_enable(void)
 {
+    printf("FUNC=spi_write_enable");
+
   while(!spiflash_is_ready())
     { }
   REG_WRITE(SPI_CMD_REG(SPI_IDX), SPI_FLASH_WREN);
@@ -110,6 +120,8 @@ static esp_rom_spiflash_chip_t *flashchip = (esp_rom_spiflash_chip_t *)0x3ffae27
  */
 SpiFlashOpResult SPIUnlock(void)
 {
+    printf("FUNC=SPIUnlock");
+
   uint32_t status;
 
   spi_wait_ready(); /* ROM SPI_read_status_high() doesn't wait for this */
@@ -168,6 +180,8 @@ esp_command_error handle_flash_deflated_begin(uint32_t uncompressed_size, uint32
  */
 static void start_next_erase(void)
 {
+    printf("FUNC=start_next_erase");
+
   if(fs.remaining_erase_sector == 0)
     return; /* nothing left to erase */
   if(!spiflash_is_ready())
@@ -199,7 +213,10 @@ static void start_next_erase(void)
 
    Updates fs.remaining_erase_sector, fs.next_write, and fs.remaining
 */
-void handle_flash_data(void *data_buf, uint32_t length) {
+void handle_flash_data(void *data_buf, uint32_t length)
+{
+    printf("FUNC=handle_flash_data");
+
   int last_sector;
 
   if (length > fs.remaining) {
@@ -230,7 +247,10 @@ void handle_flash_data(void *data_buf, uint32_t length) {
   fs.remaining -= length;
 }
 
-void handle_flash_deflated_data(void *data_buf, uint32_t length) {
+void handle_flash_deflated_data(void *data_buf, uint32_t length)
+{
+    printf("FUNC=handle_flash_deflated_data");
+
   static uint8_t out_buf[32768];
   static uint8_t *next_out = out_buf;
   int status = TINFL_STATUS_NEEDS_MORE_INPUT;
@@ -279,6 +299,8 @@ void handle_flash_deflated_data(void *data_buf, uint32_t length) {
 
 esp_command_error handle_flash_end(void)
 {
+    printf("FUNC=handle_flash_end");
+
   if (!fs.in_flash_mode) {
     return ESP_NOT_IN_FLASH_MODE;
   }

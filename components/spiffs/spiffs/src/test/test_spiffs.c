@@ -63,6 +63,8 @@ static int check_valid_flash = 1;
 
 static int do_mkdir(const char *path, mode_t mode)
 {
+    printf("FUNC=do_mkdir");
+
   struct stat st;
   int status = 0;
 
@@ -85,7 +87,10 @@ static int do_mkdir(const char *path, mode_t mode)
 ** each directory in path exists, rather than optimistically creating
 ** the last element and working backwards.
 */
-static int mkpath(const char *path, mode_t mode) {
+static int mkpath(const char *path, mode_t mode)
+{
+    printf("FUNC=mkpath");
+
   char *pp;
   char *sp;
   int status;
@@ -112,19 +117,28 @@ static int mkpath(const char *path, mode_t mode) {
 // end take
 //
 //
-char *make_test_fname(const char *name) {
+char *make_test_fname(const char *name)
+{
+    printf("FUNC=make_test_fname");
+
   sprintf(_path, "%s/%s", TEST_PATH, name);
   return _path;
 }
 
-void create_test_path(void) {
+void create_test_path(void)
+{
+    printf("FUNC=create_test_path");
+
   if (mkpath(TEST_PATH, 0755)) {
     printf("could not create path %s\n", TEST_PATH);
     exit(1);
   }
 }
 
-void clear_test_path() {
+void clear_test_path()
+{
+    printf("FUNC=clear_test_path");
+
   DIR *dp;
   struct dirent *ep;
   dp = opendir(TEST_PATH);
@@ -144,7 +158,10 @@ static s32_t _read(
 #if SPIFFS_HAL_CALLBACK_EXTRA
     spiffs *fs,
 #endif
-    u32_t addr, u32_t size, u8_t *dst) {
+    u32_t addr, u32_t size, u8_t *dst)
+{
+    printf("FUNC=_read");
+
   //printf("rd @ addr %08x => %p\n", addr, &AREA(addr));
   if (log_flash_ops) {
     bytes_rd += size;
@@ -606,20 +623,32 @@ u32_t get_flash_ops_log_write_bytes() {
   return bytes_wr;
 }
 
-void invoke_error_after_read_bytes(u32_t b, char once_only) {
+void invoke_error_after_read_bytes(u32_t b, char once_only)
+{
+    printf("FUNC=invoke_error_after_read_bytes");
+
   error_after_bytes_read = b;
   error_after_bytes_read_once_only = once_only;
 }
-void invoke_error_after_write_bytes(u32_t b, char once_only) {
+void invoke_error_after_write_bytes(u32_t b, char once_only)
+{
+    printf("FUNC=invoke_error_after_write_bytes");
+
   error_after_bytes_written = b;
   error_after_bytes_written_once_only = once_only;
 }
 
-void fs_set_validate_flashing(int i) {
+void fs_set_validate_flashing(int i)
+{
+    printf("FUNC=fs_set_validate_flashing");
+
   check_valid_flash = i;
 }
 
-void real_assert(int c, const char *n, const char *file, int l) {
+void real_assert(int c, const char *n, const char *file, int l)
+{
+    printf("FUNC=real_assert");
+
   if (c == 0) {
     printf("ASSERT: %s %s @ %i\n", (n ? n : ""), file, l);
     printf("fs errno:%i\n", __fs.err_code);
@@ -627,7 +656,10 @@ void real_assert(int c, const char *n, const char *file, int l) {
   }
 }
 
-int read_and_verify(char *name) {
+int read_and_verify(char *name)
+{
+    printf("FUNC=read_and_verify");
+
   int fd = SPIFFS_open(&__fs, name, SPIFFS_RDONLY, 0);
   if (fd < 0) {
     printf("  read_and_verify: could not open file %s\n", name);
@@ -636,7 +668,10 @@ int read_and_verify(char *name) {
   return read_and_verify_fd(fd, name);
 }
 
-int read_and_verify_fd(spiffs_file fd, char *name) {
+int read_and_verify_fd(spiffs_file fd, char *name)
+{
+    printf("FUNC=read_and_verify_fd");
+
   s32_t res;
   int pfd = open(make_test_fname(name), O_RDONLY);
   spiffs_stat s;
@@ -709,7 +744,10 @@ int read_and_verify_fd(spiffs_file fd, char *name) {
   return 0;
 }
 
-static void test_on_stop(test *t) {
+static void test_on_stop(test *t)
+{
+    printf("FUNC=test_on_stop");
+
   printf("  spiffs errno:%i\n", SPIFFS_errno(&__fs));
 #if SPIFFS_TEST_VISUALISATION
   if (_area) SPIFFS_vis(FS);
@@ -717,14 +755,20 @@ static void test_on_stop(test *t) {
 
 }
 
-void memrand(u8_t *b, int len) {
+void memrand(u8_t *b, int len)
+{
+    printf("FUNC=memrand");
+
   int i;
   for (i = 0; i < len; i++) {
     b[i] = rand();
   }
 }
 
-int test_create_file(char *name) {
+int test_create_file(char *name)
+{
+    printf("FUNC=test_create_file");
+
   spiffs_stat s;
   spiffs_file fd;
   int res = SPIFFS_creat(FS, name, 0);
@@ -747,7 +791,10 @@ int test_create_file(char *name) {
   return 0;
 }
 
-int test_create_and_write_file(char *name, int size, int chunk_size) {
+int test_create_and_write_file(char *name, int size, int chunk_size)
+{
+    printf("FUNC=test_create_and_write_file");
+
   int res;
   spiffs_file fd;
   printf("    create and write %s", name);
@@ -848,6 +895,8 @@ static u32_t crc32_tab[] = {
 
 static u32_t crc32(u32_t crc, const void *buf, size_t size)
 {
+    printf("FUNC=crc32");
+
   const u8_t *p;
 
   p = buf;
@@ -859,7 +908,10 @@ static u32_t crc32(u32_t crc, const void *buf, size_t size)
   return crc ^ ~0U;
 }
 
-u32_t get_spiffs_file_crc_by_fd(spiffs_file fd) {
+u32_t get_spiffs_file_crc_by_fd(spiffs_file fd)
+{
+    printf("FUNC=get_spiffs_file_crc_by_fd");
+
   s32_t res;
   u32_t crc = 0;
   u8_t buf[256];
@@ -874,7 +926,10 @@ u32_t get_spiffs_file_crc_by_fd(spiffs_file fd) {
   return crc;
 }
 
-u32_t get_spiffs_file_crc(char *name) {
+u32_t get_spiffs_file_crc(char *name)
+{
+    printf("FUNC=get_spiffs_file_crc");
+
   s32_t res;
   spiffs_file fd;
   fd = SPIFFS_open(FS, name, SPIFFS_O_RDONLY, 0);
@@ -892,19 +947,28 @@ static u32_t cmiss_tot = 0;
 #endif
 #endif
 
-void _setup_test_only() {
+void _setup_test_only()
+{
+    printf("FUNC=_setup_test_only");
+
   create_test_path();
   fs_set_validate_flashing(1);
   test_init(test_on_stop);
 }
 
-void _setup() {
+void _setup()
+{
+    printf("FUNC=_setup");
+
   _fs_locks = 0;
   fs_reset();
   _setup_test_only();
 }
 
-void _teardown() {
+void _teardown()
+{
+    printf("FUNC=_teardown");
+
   printf("  free blocks     : %i of %i\n", (FS)->free_blocks, (FS)->block_count);
   printf("  pages allocated : %i\n", (FS)->stats_p_allocated);
   printf("  pages deleted   : %i\n", (FS)->stats_p_deleted);
@@ -947,7 +1011,10 @@ void _teardown() {
   }
 }
 
-u32_t tfile_get_size(tfile_size s) {
+u32_t tfile_get_size(tfile_size s)
+{
+    printf("FUNC=tfile_get_size");
+
   switch (s) {
   case EMPTY:
     return 0;
@@ -961,7 +1028,10 @@ u32_t tfile_get_size(tfile_size s) {
   return 0;
 }
 
-int run_file_config(int cfg_count, tfile_conf* cfgs, int max_runs, int max_concurrent_files, int dbg) {
+int run_file_config(int cfg_count, tfile_conf* cfgs, int max_runs, int max_concurrent_files, int dbg)
+{
+    printf("FUNC=run_file_config");
+
   int res;
   tfile *tfiles = malloc(sizeof(tfile) * max_concurrent_files);
   memset(tfiles, 0, sizeof(tfile) * max_concurrent_files);
@@ -1099,7 +1169,10 @@ int run_file_config(int cfg_count, tfile_conf* cfgs, int max_runs, int max_concu
   return 0;
 }
 
-int count_taken_fds(spiffs *fs) {
+int count_taken_fds(spiffs *fs)
+{
+    printf("FUNC=count_taken_fds");
+
   int i;
   spiffs_fd *fds = (spiffs_fd *)fs->fd_space;
   int taken = 0;

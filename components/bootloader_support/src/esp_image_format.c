@@ -82,6 +82,8 @@ static esp_err_t __attribute__((unused)) verify_simple_hash(bootloader_sha256_ha
 
 esp_err_t esp_image_load(esp_image_load_mode_t mode, const esp_partition_pos_t *part, esp_image_metadata_t *data)
 {
+    printf("FUNC=esp_image_load");
+
 #ifdef BOOTLOADER_BUILD
     bool do_load = (mode == ESP_IMAGE_LOAD);
 #else
@@ -231,6 +233,8 @@ goto err;
 
 static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t *image, bool silent)
 {
+    printf("FUNC=verify_image_header");
+
     esp_err_t err = ESP_OK;
 
     if (image->magic != ESP_IMAGE_HEADER_MAGIC) {
@@ -255,6 +259,8 @@ static esp_err_t verify_image_header(uint32_t src_addr, const esp_image_header_t
 
 static esp_err_t process_segment(int index, uint32_t flash_addr, esp_image_segment_header_t *header, bool silent, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
+    printf("FUNC=process_segment");
+
     esp_err_t err;
 
     /* read segment header */
@@ -334,6 +340,8 @@ err:
 
 static esp_err_t process_segment_data(intptr_t load_addr, uint32_t data_addr, uint32_t data_len, bool do_load, bootloader_sha256_handle_t sha_handle, uint32_t *checksum)
 {
+    printf("FUNC=process_segment_data");
+
     const uint32_t *data = (const uint32_t *)bootloader_mmap(data_addr, data_len);
     if(!data) {
         ESP_LOGE(TAG, "bootloader_mmap(0x%x, 0x%x) failed",
@@ -380,6 +388,8 @@ static esp_err_t process_segment_data(intptr_t load_addr, uint32_t data_addr, ui
 
 static esp_err_t verify_segment_header(int index, const esp_image_segment_header_t *segment, uint32_t segment_data_offs, bool silent)
 {
+    printf("FUNC=verify_segment_header");
+
     if ((segment->data_len & 3) != 0
         || segment->data_len >= SIXTEEN_MB) {
         if (!silent) {
@@ -410,12 +420,16 @@ static esp_err_t verify_segment_header(int index, const esp_image_segment_header
 
 static bool should_map(uint32_t load_addr)
 {
+    printf("FUNC=should_map");
+
     return (load_addr >= SOC_IROM_LOW && load_addr < SOC_IROM_HIGH)
         || (load_addr >= SOC_DROM_LOW && load_addr < SOC_DROM_HIGH);
 }
 
 static bool should_load(uint32_t load_addr)
 {
+    printf("FUNC=should_load");
+
     /* Reload the RTC memory segments whenever a non-deepsleep reset
        is occurring */
     bool load_rtc_memory = rtc_get_reset_reason(0) != DEEPSLEEP_RESET;
@@ -448,6 +462,8 @@ static bool should_load(uint32_t load_addr)
 
 esp_err_t esp_image_verify_bootloader(uint32_t *length)
 {
+    printf("FUNC=esp_image_verify_bootloader");
+
     esp_image_metadata_t data;
     const esp_partition_pos_t bootloader_part = {
         .offset = ESP_BOOTLOADER_OFFSET,
@@ -464,6 +480,8 @@ esp_err_t esp_image_verify_bootloader(uint32_t *length)
 
 static esp_err_t verify_checksum(bootloader_sha256_handle_t sha_handle, uint32_t checksum_word, esp_image_metadata_t *data)
 {
+    printf("FUNC=verify_checksum");
+
     uint32_t unpadded_length = data->image_len;
     uint32_t length = unpadded_length + 1; // Add a byte for the checksum
     length = (length + 15) & ~15; // Pad to next full 16 byte block
@@ -498,6 +516,8 @@ static void debug_log_hash(const uint8_t *image_hash, const char *caption);
 #ifdef CONFIG_SECURE_BOOT_ENABLED
 static esp_err_t verify_secure_boot_signature(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
 {
+    printf("FUNC=verify_secure_boot_signature");
+
     uint8_t image_hash[HASH_LEN] = { 0 };
 
     // For secure boot, we calculate the signature hash over the whole file, which includes any "simple" hash
@@ -542,6 +562,8 @@ static esp_err_t verify_secure_boot_signature(bootloader_sha256_handle_t sha_han
 
 static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_image_metadata_t *data)
 {
+    printf("FUNC=verify_simple_hash");
+
     uint8_t image_hash[HASH_LEN] = { 0 };
     bootloader_sha256_finish(sha_handle, image_hash);
 
@@ -564,6 +586,8 @@ static esp_err_t verify_simple_hash(bootloader_sha256_handle_t sha_handle, esp_i
 // Log a hash as a hex string
 static void debug_log_hash(const uint8_t *image_hash, const char *label)
 {
+    printf("FUNC=debug_log_hash");
+
 #if BOOT_LOG_LEVEL >= LOG_LEVEL_DEBUG
         char hash_print[sizeof(image_hash)*2 + 1];
         hash_print[sizeof(image_hash)*2] = 0;

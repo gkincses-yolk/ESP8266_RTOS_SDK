@@ -26,14 +26,23 @@
 #define NO_FORCE_CHECK
 
 SUITE(bug_tests)
-static void setup() {
+static void setup()
+{
+    printf("FUNC=setup");
+
   _setup_test_only();
 }
-static void teardown() {
+static void teardown()
+{
+    printf("FUNC=teardown");
+
   _teardown();
 }
 
-TEST(nodemcu_full_fs_1) {
+TEST(nodemcu_full_fs_1)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 4096*20, 4096, 4096, 256);
 
   int res;
@@ -92,7 +101,10 @@ TEST(nodemcu_full_fs_1) {
 
 } TEST_END
 
-TEST(nodemcu_full_fs_2) {
+TEST(nodemcu_full_fs_2)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 4096*22, 4096, 4096, 256);
 
   int res;
@@ -171,7 +183,10 @@ TEST(nodemcu_full_fs_2) {
 
 } TEST_END
 
-TEST(magic_test) {
+TEST(magic_test)
+{
+    printf("FUNC=TEST");
+
   // this test only works on default sizes
   TEST_ASSERT(sizeof(spiffs_obj_id) == sizeof(u16_t));
 
@@ -189,7 +204,10 @@ TEST(magic_test) {
 
 } TEST_END
 
-TEST(nodemcu_309) {
+TEST(nodemcu_309)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 4096*20, 4096, 4096, 256);
 
   int res;
@@ -242,7 +260,10 @@ TEST(nodemcu_309) {
 } TEST_END
 
 
-TEST(robert) {
+TEST(robert)
+{
+    printf("FUNC=TEST");
+
   // create a clean file system starting at address 0, 2 megabytes big,
   // sector size 65536, block size 65536, page size 256
   fs_reset_specific(0, 0, 1024*1024*2, 65536, 65536, 256);
@@ -284,7 +305,10 @@ TEST(robert) {
 } TEST_END
 
 
-TEST(spiffs_12) {
+TEST(spiffs_12)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0x4024c000, 0x4024c000 + 0, 192*1024, 4096, 4096*2, 256);
 
   int res;
@@ -337,7 +361,10 @@ TEST(spiffs_12) {
 } TEST_END
 
 
-TEST(zero_sized_file_44) {
+TEST(zero_sized_file_44)
+{
+    printf("FUNC=TEST");
+
   fs_reset();
 
   spiffs_file fd = SPIFFS_open(FS, "zero", SPIFFS_RDWR | SPIFFS_CREAT, 0);
@@ -386,7 +413,10 @@ TEST(zero_sized_file_44) {
 } TEST_END
 
 #if !SPIFFS_READ_ONLY
-TEST(truncate_48) {
+TEST(truncate_48)
+{
+    printf("FUNC=TEST");
+
   fs_reset();
 
   u32_t len = SPIFFS_DATA_PAGE_SIZE(FS)/2;
@@ -433,7 +463,10 @@ TEST(truncate_48) {
 } TEST_END
 #endif
 
-TEST(eof_tell_72) {
+TEST(eof_tell_72)
+{
+    printf("FUNC=TEST");
+
   fs_reset();
 
   s32_t res;
@@ -501,7 +534,10 @@ TEST(eof_tell_72) {
   return TEST_RES_OK;
 } TEST_END
 
-TEST(spiffs_dup_file_74) {
+TEST(spiffs_dup_file_74)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 64*1024, 4096, 4096*2, 256);
   {
     spiffs_file fd = SPIFFS_open(FS, "/config", SPIFFS_CREAT | SPIFFS_TRUNC | SPIFFS_WRONLY, 0);
@@ -546,7 +582,10 @@ TEST(spiffs_dup_file_74) {
   return TEST_RES_OK;
 } TEST_END
 
-TEST(temporal_fd_cache) {
+TEST(temporal_fd_cache)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 1024*1024, 4096, 2*4096, 256);
   (FS)->fd_count = 4;
 
@@ -599,7 +638,10 @@ TEST(temporal_fd_cache) {
   return TEST_RES_OK;
 } TEST_END
 
-static int run_fuzz_test(FILE *f, int maxfds, int debuglog) {
+static int run_fuzz_test(FILE *f, int maxfds, int debuglog)
+{
+    printf("FUNC=run_fuzz_test");
+
   // There are a bunch of arbitrary constants in this test case. Changing them will
   // almost certainly change the effets of an input file. It *may* be worth
   // making some of these constants to come from the input file. 
@@ -835,19 +877,31 @@ static int run_fuzz_test(FILE *f, int maxfds, int debuglog) {
 
 #define FMEMARGS(x)	x, sizeof(x) - 1
 
-TEST(fuzzer_found_1) {
+TEST(fuzzer_found_1)
+{
+    printf("FUNC=TEST");
+
   return run_fuzz_test(fmemopen(FMEMARGS("\021OlWkd5O4W4W0O5OlWkO5OlW0O5O4W0"), "r"), 4, 1);
 } TEST_END
 
-TEST(fuzzer_found_2) {
+TEST(fuzzer_found_2)
+{
+    printf("FUNC=TEST");
+
   return run_fuzz_test(fmemopen(FMEMARGS("bO4W6W0d\036O4W6"), "r"), 4, 1);
 } TEST_END
 
-TEST(fuzzer_found_3) {
+TEST(fuzzer_found_3)
+{
+    printf("FUNC=TEST");
+
   return run_fuzz_test(fmemopen(FMEMARGS("\264O4OqWeWWWWW@O4WWW\027"), "r"), 4, 1);
 } TEST_END
 
-TEST(fuzzer_found_4) {
+TEST(fuzzer_found_4)
+{
+    printf("FUNC=TEST");
+
   unsigned char smalltest[] = {
       0x62, 0x4f, 0x24, 0x57, 0x3f, 0x57, 0x3f, 0x57, 0x3f, 0x57, 0x3f, 0x57,
       0x3f, 0x4f, 0x34, 0x57, 0x3f, 0x55, 0x4f, 0x61, 0x57, 0x61, 0x4f, 0x61,
@@ -858,32 +912,47 @@ TEST(fuzzer_found_4) {
   return run_fuzz_test(fmemopen(smalltest, smalltest_len, "r"), 4, 1);
 } TEST_END
 
-TEST(fuzzer_found_single_1) {
+TEST(fuzzer_found_single_1)
+{
+    printf("FUNC=TEST");
+
   return run_fuzz_test(fmemopen(FMEMARGS("\000O\004Odr4d\356Okr0WWUO;WWWWd\035W4"), "r"), 1, 1);
 } TEST_END
 
-TEST(log_afl_test) {
+TEST(log_afl_test)
+{
+    printf("FUNC=TEST");
+
   u32_t old_val = set_abort_on_error(1);
   int rc = run_fuzz_test(stdin, 4, 1);
   set_abort_on_error(old_val);
   return rc;
 } TEST_END
 
-TEST(afl_test) {
+TEST(afl_test)
+{
+    printf("FUNC=TEST");
+
   u32_t old_val = set_abort_on_error(1);
   int rc = run_fuzz_test(stdin, 4, 0);
   set_abort_on_error(old_val);
   return rc;
 } TEST_END
 
-TEST(afl_single) {
+TEST(afl_single)
+{
+    printf("FUNC=TEST");
+
   u32_t old_val = set_abort_on_error(1);
   int rc = run_fuzz_test(stdin, 1, 0);
   set_abort_on_error(old_val);
   return rc;
 } TEST_END
 
-TEST(small_free_space) {
+TEST(small_free_space)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 400*1024, 4096, 2*4096, 256);
   spiffs_file fd;
   int res;
@@ -974,7 +1043,10 @@ TEST(small_free_space) {
   return TEST_RES_OK;
 } TEST_END
 
-TEST(lots_of_overwrite) {
+TEST(lots_of_overwrite)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 3000*1024, 4096, 2*4096, 256);
   spiffs_file fd;
   int res;
@@ -1055,7 +1127,10 @@ TEST(lots_of_overwrite) {
 
 
 #if 0
-TEST(spiffs_hidden_file_90) {
+TEST(spiffs_hidden_file_90)
+{
+    printf("FUNC=TEST");
+
   fs_mount_dump("imgs/90.hidden_file.spiffs", 0, 0, 1*1024*1024, 4096, 4096, 128);
 
   SPIFFS_vis(FS);
@@ -1088,7 +1163,10 @@ TEST(spiffs_hidden_file_90) {
 } TEST_END
 #endif
 #if 0
-TEST(null_deref_check_93) {
+TEST(null_deref_check_93)
+{
+    printf("FUNC=TEST");
+
   fs_mount_dump("imgs/93.dump.bin", 0, 0, 2*1024*1024, 4096, 4096, 256);
 
   //int res = SPIFFS_open(FS, "d43.fw", SPIFFS_TRUNC | SPIFFS_CREAT | SPIFFS_WRONLY, 0);
@@ -1116,7 +1194,10 @@ TEST(null_deref_check_93) {
 } TEST_END
 #endif
 
-TEST(spiffs_145) {
+TEST(spiffs_145)
+{
+    printf("FUNC=TEST");
+
   int res;
   fs_reset_specific(0, 0, 1024*1024, 65536, 65536, 1024);
   {
@@ -1160,7 +1241,10 @@ TEST(spiffs_145) {
 } TEST_END
 
 
-TEST(seek_bug_148) {
+TEST(seek_bug_148)
+{
+    printf("FUNC=TEST");
+
   int res;
 #define MAGIC_SIZE_THAT_FAILS 26355 // happens to be SPIFFS_DATA_PAGE_SIZE(FS) * SPIFFS_OBJ_HDR_IX_LEN(FS)
   fs_reset_specific(0, 0, 64*1024, 4096, 4096, 256);
@@ -1176,7 +1260,10 @@ TEST(seek_bug_148) {
 } TEST_END
 
 
-TEST(remove_release_fd_152) {
+TEST(remove_release_fd_152)
+{
+    printf("FUNC=TEST");
+
   int res;
   fs_reset_specific(0, 0, 64*1024, 4096, 4096, 256);
   u8_t buf[1024];
@@ -1199,7 +1286,10 @@ TEST(remove_release_fd_152) {
   return TEST_RES_OK;
 } TEST_END
 
-TEST(certain_file_size_fail_165) {
+TEST(certain_file_size_fail_165)
+{
+    printf("FUNC=TEST");
+
   fs_reset_specific(0, 0, 512*1024, 4*1024, 64*1024, 256);
   const int NUM = 134;
   const int SIZ = 200;

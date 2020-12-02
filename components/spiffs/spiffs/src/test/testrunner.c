@@ -32,14 +32,20 @@ static struct {
   char excl_filter[256];
 } test_main;
 
-void test_init(void (*on_stop)(test *t)) {
+void test_init(void (*on_stop)(test *t))
+{
+    printf("FUNC=test_init");
+
   test_main.on_stop = on_stop;
 }
 
 static int abort_on_error = 0;
 static int error_count = 0;
 
-static char check_spec(char *name) {
+static char check_spec(char *name)
+{
+    printf("FUNC=check_spec");
+
   if (test_main.spec) {
     fseek(test_main.spec, 0, SEEK_SET);
     char *line = NULL;
@@ -58,17 +64,26 @@ static char check_spec(char *name) {
   }
 }
 
-static char check_incl_filter(char *name) {
+static char check_incl_filter(char *name)
+{
+    printf("FUNC=check_incl_filter");
+
   if (strlen(test_main.incl_filter)== 0) return 1;
   return strstr(name, test_main.incl_filter) == 0 ? 0 : 2;
 }
 
-static char check_excl_filter(char *name) {
+static char check_excl_filter(char *name)
+{
+    printf("FUNC=check_excl_filter");
+
   if (strlen(test_main.excl_filter)== 0) return 1;
   return strstr(name, test_main.excl_filter) == 0 ? 1 : 0;
 }
 
-void _add_test(test_f f, char *name, void (*setup)(test *t), void (*teardown)(test *t), int non_default) {
+void _add_test(test_f f, char *name, void (*setup)(test *t), void (*teardown)(test *t), int non_default)
+{
+    printf("FUNC=add_test");
+
   if (f == 0) return;
   if (!check_spec(name)) return;
   if (check_incl_filter(name) <= non_default) return;
@@ -89,7 +104,10 @@ void _add_test(test_f f, char *name, void (*setup)(test *t), void (*teardown)(te
   test_main.test_count++;
 }
 
-static void add_res(test *t, test_res **head, test_res **last) {
+static void add_res(test *t, test_res **head, test_res **last)
+{
+    printf("FUNC=add_res");
+
   test_res *tr = malloc(sizeof(test_res));
   memset(tr,0,sizeof(test_res));
   strcpy(tr->name, t->name);
@@ -101,7 +119,10 @@ static void add_res(test *t, test_res **head, test_res **last) {
   *last = tr;
 }
 
-static void dump_res(test_res **head) {
+static void dump_res(test_res **head)
+{
+    printf("FUNC=dump_res");
+
   test_res *tr = (*head);
   while (tr) {
     test_res *next_tr = tr->_next;
@@ -111,26 +132,41 @@ static void dump_res(test_res **head) {
   }
 }
 
-int get_error_count(void) {
+int get_error_count(void)
+{
+    printf("FUNC=get_error_count");
+
   return error_count;
 }
 
-void inc_error_count(void) {
+void inc_error_count(void)
+{
+    printf("FUNC=inc_error_count");
+
   error_count++;
 }
 
-int set_abort_on_error(int val) {
+int set_abort_on_error(int val)
+{
+    printf("FUNC=set_abort_on_error");
+
   int old_val = abort_on_error;
   abort_on_error = val;
 
   return old_val;
 }
 
-int get_abort_on_error(void) {
+int get_abort_on_error(void)
+{
+    printf("FUNC=get_abort_on_error");
+
   return abort_on_error;
 }
 
-int run_tests(int argc, char **args) {
+int run_tests(int argc, char **args)
+{
+    printf("FUNC=run_tests");
+
   memset(&test_main, 0, sizeof(test_main));
   int arg;
   int incl_filter = 0;
