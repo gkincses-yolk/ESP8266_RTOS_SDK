@@ -23,6 +23,8 @@
 
 void tls_alert(struct tlsv1_client *conn, u8 level, u8 description)
 {
+    ESP_LOGV("FUNC", "tls_alert");
+
 	conn->alert_level = level;
 	conn->alert_description = description;
 }
@@ -30,6 +32,8 @@ void tls_alert(struct tlsv1_client *conn, u8 level, u8 description)
 
 void tlsv1_client_free_dh(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_free_dh");
+
 	os_free(conn->dh_p);
 	os_free(conn->dh_g);
 	os_free(conn->dh_ys);
@@ -39,6 +43,8 @@ void tlsv1_client_free_dh(struct tlsv1_client *conn)
 
 int tls_derive_pre_master_secret(u8 *pre_master_secret)
 {
+    ESP_LOGV("FUNC", "tls_derive_pre_master_secret");
+
 	WPA_PUT_BE16(pre_master_secret, TLS_VERSION);
 	if (os_get_random(pre_master_secret + 2,
 			  TLS_PRE_MASTER_SECRET_LEN - 2))
@@ -50,6 +56,8 @@ int tls_derive_pre_master_secret(u8 *pre_master_secret)
 int tls_derive_keys(struct tlsv1_client *conn,
 		    const u8 *pre_master_secret, size_t pre_master_secret_len)
 {
+    ESP_LOGV("FUNC", "tls_derive_keys");
+
 	u8 seed[2 * TLS_RANDOM_LEN];
 	u8 key_block[TLS_MAX_KEY_BLOCK_LEN];
 	u8 *pos;
@@ -141,6 +149,8 @@ u8 * tlsv1_client_handshake(struct tlsv1_client *conn,
 			    size_t *out_len, u8 **appl_data,
 			    size_t *appl_data_len, int *need_more_data)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_handshake");
+
 	const u8 *pos, *end;
 	u8 *msg = NULL, *in_msg = NULL, *in_pos, *in_end, alert, ct;
 	size_t in_msg_len;
@@ -274,6 +284,8 @@ int tlsv1_client_encrypt(struct tlsv1_client *conn,
 			 const u8 *in_data, size_t in_len,
 			 u8 *out_data, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_encrypt");
+
 	size_t rlen;
 
 	wpa_hexdump_key(MSG_MSGDUMP, "TLSv1: Plaintext AppData",
@@ -307,6 +319,8 @@ struct wpabuf * tlsv1_client_decrypt(struct tlsv1_client *conn,
 				     const u8 *in_data, size_t in_len,
 				     int *need_more_data)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_decrypt");
+
 	const u8 *in_end, *pos;
 	int used;
 	u8 alert, *out_pos, ct;
@@ -417,6 +431,8 @@ fail:
  */
 int tlsv1_client_global_init(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_global_init");
+
 	return crypto_global_init();
 }
 
@@ -430,6 +446,8 @@ int tlsv1_client_global_init(void)
  */
 void tlsv1_client_global_deinit(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_global_deinit");
+
 	crypto_global_deinit();
 }
 
@@ -440,6 +458,8 @@ void tlsv1_client_global_deinit(void)
  */
 struct tlsv1_client * tlsv1_client_init(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_init");
+
 	struct tlsv1_client *conn;
 	size_t count;
 	u16 *suites;
@@ -482,6 +502,8 @@ struct tlsv1_client * tlsv1_client_init(void)
  */
 void tlsv1_client_deinit(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_deinit");
+
 	crypto_public_key_free(conn->server_rsa_key);
 	tlsv1_record_set_cipher_suite(&conn->rl, TLS_NULL_WITH_NULL_NULL);
 	tlsv1_record_change_write_cipher(&conn->rl);
@@ -502,6 +524,8 @@ void tlsv1_client_deinit(struct tlsv1_client *conn)
  */
 int tlsv1_client_established(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_established");
+
 	return conn->state == ESTABLISHED;
 }
 
@@ -519,6 +543,8 @@ int tlsv1_client_established(struct tlsv1_client *conn)
 int tlsv1_client_prf(struct tlsv1_client *conn, const char *label,
 		     int server_random_first, u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_prf");
+
 	u8 seed[2 * TLS_RANDOM_LEN];
 
 	if (conn->state != ESTABLISHED)
@@ -552,6 +578,8 @@ int tlsv1_client_prf(struct tlsv1_client *conn, const char *label,
 int tlsv1_client_get_cipher(struct tlsv1_client *conn, char *buf,
 			    size_t buflen)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_get_cipher");
+
 #ifndef ESPRESSIF_USE	
 	char *cipher;
 
@@ -653,6 +681,8 @@ int tlsv1_client_get_cipher(struct tlsv1_client *conn, char *buf,
  */
 int tlsv1_client_shutdown(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_shutdown");
+
 	conn->state = CLIENT_HELLO;
 
 	if (tls_verify_hash_init(&conn->verify) < 0) {
@@ -681,6 +711,8 @@ int tlsv1_client_shutdown(struct tlsv1_client *conn)
  */
 int tlsv1_client_resumed(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_resumed");
+
 	return !!conn->session_resumed;
 }
 
@@ -696,6 +728,8 @@ int tlsv1_client_resumed(struct tlsv1_client *conn)
 int tlsv1_client_hello_ext(struct tlsv1_client *conn, int ext_type,
 			   const u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_hello_ext");
+
 	u8 *pos;
 
 	conn->session_ticket_included = 0;
@@ -736,6 +770,8 @@ int tlsv1_client_hello_ext(struct tlsv1_client *conn, int ext_type,
  */
 int tlsv1_client_get_random(struct tlsv1_client *conn, struct tls_random *keys)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_get_random");
+
 	os_memset(keys, 0, sizeof(*keys));
 	if (conn->state == CLIENT_HELLO)
 		return -1;
@@ -760,6 +796,8 @@ int tlsv1_client_get_random(struct tlsv1_client *conn, struct tls_random *keys)
  */
 int tlsv1_client_get_keyblock_size(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_get_keyblock_size");
+
 	if (conn->state == CLIENT_HELLO || conn->state == SERVER_HELLO)
 		return -1;
 
@@ -777,6 +815,8 @@ int tlsv1_client_get_keyblock_size(struct tlsv1_client *conn)
  */
 int tlsv1_client_set_cipher_list(struct tlsv1_client *conn, u8 *ciphers)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_set_cipher_list");
+
 	size_t count;
 	u16 *suites;
 
@@ -826,6 +866,8 @@ int tlsv1_client_set_cipher_list(struct tlsv1_client *conn, u8 *ciphers)
 int tlsv1_client_set_cred(struct tlsv1_client *conn,
 			  struct tlsv1_credentials *cred)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_set_cred");
+
 	tlsv1_cred_free(conn->cred);
 	conn->cred = cred;
 	return 0;
@@ -834,6 +876,8 @@ int tlsv1_client_set_cred(struct tlsv1_client *conn,
 
 void tlsv1_client_set_time_checks(struct tlsv1_client *conn, int enabled)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_set_time_checks");
+
 	conn->disable_time_checks = !enabled;
 }
 
@@ -842,6 +886,8 @@ void tlsv1_client_set_session_ticket_cb(struct tlsv1_client *conn,
 					tlsv1_client_session_ticket_cb cb,
 					void *ctx)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_set_session_ticket_cb");
+
 	wpa_printf(MSG_DEBUG, "TLSv1: SessionTicket callback set %p (ctx %p)",
 		   cb, ctx);
 	conn->session_ticket_cb = cb;

@@ -38,6 +38,8 @@
  */
 static int  rijndaelKeySetupDec(u32 rk[], const u8 cipherKey[], int keyBits)
 {
+    ESP_LOGV("FUNC", "rijndaelKeySetupDec");
+
 	int Nr, i, j;
 	u32 temp;
 
@@ -69,6 +71,8 @@ static int  rijndaelKeySetupDec(u32 rk[], const u8 cipherKey[], int keyBits)
 
 void *  aes_decrypt_init(const u8 *key, size_t len)
 {
+    ESP_LOGV("FUNC", "aes_decrypt_init");
+
 	u32 *rk;
 	int res;
 	rk = os_malloc(AES_PRIV_SIZE);
@@ -86,6 +90,8 @@ void *  aes_decrypt_init(const u8 *key, size_t len)
 static void  rijndaelDecrypt(const u32 rk[/*44*/], int Nr, const u8 ct[16],
 			    u8 pt[16])
 {
+    ESP_LOGV("FUNC", "rijndaelDecrypt");
+
 	u32 s0, s1, s2, s3, t0, t1, t2, t3;
 #ifndef FULL_UNROLL
 	int r;
@@ -160,6 +166,8 @@ d##3 = TD0(s##3) ^ TD1(s##2) ^ TD2(s##1) ^ TD3(s##0) ^ rk[4 * i + 3]
 
 void  aes_decrypt(void *ctx, const u8 *crypt, u8 *plain)
 {
+    ESP_LOGV("FUNC", "aes_decrypt");
+
 	u32 *rk = ctx;
 	rijndaelDecrypt(ctx, rk[AES_PRIV_NR_POS], crypt, plain);
 }
@@ -167,6 +175,8 @@ void  aes_decrypt(void *ctx, const u8 *crypt, u8 *plain)
 
 void  aes_decrypt_deinit(void *ctx)
 {
+    ESP_LOGV("FUNC", "aes_decrypt_deinit");
+
 	os_memset(ctx, 0, AES_PRIV_SIZE);
 	os_free(ctx);
 }

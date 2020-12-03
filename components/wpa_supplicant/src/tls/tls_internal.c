@@ -34,6 +34,8 @@ struct tls_connection {
 
 void * tls_init(void)
 {
+    ESP_LOGV("FUNC", "tls_init");
+
 	struct tls_global *global;
 
 	if (tls_ref_count == 0) {
@@ -57,6 +59,8 @@ void * tls_init(void)
 
 void tls_deinit(void *ssl_ctx)
 {
+    ESP_LOGV("FUNC", "tls_deinit");
+
 	struct tls_global *global = ssl_ctx;
 	tls_ref_count--;
 	if (tls_ref_count == 0) {
@@ -74,12 +78,16 @@ void tls_deinit(void *ssl_ctx)
 
 int tls_get_errors(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_get_errors");
+
 	return 0;
 }
 
 
 struct tls_connection * tls_connection_init(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_connection_init");
+
 	struct tls_connection *conn;
 	struct tls_global *global = tls_ctx;
 
@@ -111,6 +119,8 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 
 void tls_connection_deinit(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_deinit");
+
 	if (conn == NULL)
 		return;
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
@@ -127,6 +137,8 @@ void tls_connection_deinit(void *tls_ctx, struct tls_connection *conn)
 
 int tls_connection_established(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_established");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_established(conn->client);
@@ -141,6 +153,8 @@ int tls_connection_established(void *tls_ctx, struct tls_connection *conn)
 
 int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_shutdown");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_shutdown(conn->client);
@@ -156,6 +170,8 @@ int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_set_params(void *tls_ctx, struct tls_connection *conn,
 			      const struct tls_connection_params *params)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_params");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	struct tlsv1_credentials *cred;
 
@@ -211,6 +227,8 @@ int tls_connection_set_params(void *tls_ctx, struct tls_connection *conn,
 int tls_global_set_params(void *tls_ctx,
 			  const struct tls_connection_params *params)
 {
+    ESP_LOGV("FUNC", "tls_global_set_params");
+
 #ifdef CONFIG_TLS_INTERNAL_SERVER
 	struct tls_global *global = tls_ctx;
 	struct tlsv1_credentials *cred;
@@ -260,6 +278,8 @@ int tls_global_set_params(void *tls_ctx,
 
 int tls_global_set_verify(void *tls_ctx, int check_crl)
 {
+    ESP_LOGV("FUNC", "tls_global_set_verify");
+
 	struct tls_global *global = tls_ctx;
 	global->check_crl = check_crl;
 	return 0;
@@ -269,6 +289,8 @@ int tls_global_set_verify(void *tls_ctx, int check_crl)
 int tls_connection_set_verify(void *tls_ctx, struct tls_connection *conn,
 			      int verify_peer)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_verify");
+
 #ifdef CONFIG_TLS_INTERNAL_SERVER
 	if (conn->server)
 		return tlsv1_server_set_verify(conn->server, verify_peer);
@@ -279,6 +301,8 @@ int tls_connection_set_verify(void *tls_ctx, struct tls_connection *conn,
 int tls_connection_get_random(void *tls_ctx, struct tls_connection *conn,
 			    struct tls_random *data)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_random");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_get_random(conn->client, data);
@@ -292,6 +316,8 @@ int tls_connection_get_random(void *tls_ctx, struct tls_connection *conn,
 
 static int tls_get_keyblock_size(struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_get_keyblock_size");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_get_keyblock_size(conn->client);
@@ -307,6 +333,8 @@ static int tls_connection_prf(void *tls_ctx, struct tls_connection *conn,
 			      const char *label, int server_random_first,
 			      int skip_keyblock, u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tls_connection_prf");
+
 	int ret = -1, skip = 0;
 	u8 *tmp_out = NULL;
 	u8 *_out = out;
@@ -344,6 +372,8 @@ static int tls_connection_prf(void *tls_ctx, struct tls_connection *conn,
 int tls_connection_export_key(void *tls_ctx, struct tls_connection *conn,
 			      const char *label, u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tls_connection_export_key");
+
 	return tls_connection_prf(tls_ctx, conn, label, 0, 0, out, out_len);
 }
 
@@ -352,6 +382,8 @@ struct wpabuf * tls_connection_handshake(void *tls_ctx,
 					 const struct wpabuf *in_data,
 					 struct wpabuf **appl_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_handshake");
+
 	return tls_connection_handshake2(tls_ctx, conn, in_data, appl_data,
 					 NULL);
 }
@@ -363,6 +395,8 @@ struct wpabuf * tls_connection_handshake2(void *tls_ctx,
 					  struct wpabuf **appl_data,
 					  int *need_more_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_handshake2");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	u8 *res, *ad;
 	size_t res_len, ad_len;
@@ -407,6 +441,8 @@ struct wpabuf * tls_connection_server_handshake(void *tls_ctx,
 						const struct wpabuf *in_data,
 						struct wpabuf **appl_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_server_handshake");
+
 #ifdef CONFIG_TLS_INTERNAL_SERVER
 	u8 *res;
 	size_t res_len;
@@ -441,6 +477,8 @@ struct wpabuf * tls_connection_encrypt(void *tls_ctx,
 				       struct tls_connection *conn,
 				       const struct wpabuf *in_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_encrypt");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client) {
 		struct wpabuf *buf;
@@ -487,6 +525,8 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 				       struct tls_connection *conn,
 				       const struct wpabuf *in_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_decrypt");
+
 	return tls_connection_decrypt2(tls_ctx, conn, in_data, NULL);
 }
 
@@ -496,6 +536,8 @@ struct wpabuf * tls_connection_decrypt2(void *tls_ctx,
 					const struct wpabuf *in_data,
 					int *need_more_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_decrypt2");
+
 	if (need_more_data)
 		*need_more_data = 0;
 
@@ -531,6 +573,8 @@ struct wpabuf * tls_connection_decrypt2(void *tls_ctx,
 
 int tls_connection_resumed(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_resumed");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_resumed(conn->client);
@@ -546,6 +590,8 @@ int tls_connection_resumed(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 				   u8 *ciphers)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_cipher_list");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client)
 		return tlsv1_client_set_cipher_list(conn->client, ciphers);
@@ -561,6 +607,8 @@ int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
 		   char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "tls_get_cipher");
+
 	if (conn == NULL)
 		return -1;
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
@@ -578,6 +626,8 @@ int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
 int tls_connection_enable_workaround(void *tls_ctx,
 				     struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_enable_workaround");
+
 	return -1;
 }
 
@@ -586,6 +636,8 @@ int tls_connection_client_hello_ext(void *tls_ctx, struct tls_connection *conn,
 				    int ext_type, const u8 *data,
 				    size_t data_len)
 {
+    ESP_LOGV("FUNC", "tls_connection_client_hello_ext");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client) {
 		return tlsv1_client_hello_ext(conn->client, ext_type,
@@ -598,12 +650,16 @@ int tls_connection_client_hello_ext(void *tls_ctx, struct tls_connection *conn,
 
 int tls_connection_get_failed(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_failed");
+
 	return 0;
 }
 
 
 int tls_connection_get_read_alerts(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_read_alerts");
+
 	return 0;
 }
 
@@ -611,11 +667,15 @@ int tls_connection_get_read_alerts(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_get_write_alerts(void *tls_ctx,
 				    struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_write_alerts");
+
 	return 0;
 }
 
 unsigned int tls_capabilities(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_capabilities");
+
 	return 0;
 }
 
@@ -624,6 +684,8 @@ int tls_connection_set_session_ticket_cb(void *tls_ctx,
 					 tls_session_ticket_cb cb,
 					 void *ctx)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_session_ticket_cb");
+
 #ifdef CONFIG_TLS_INTERNAL_CLIENT
 	if (conn->client) {
 		tlsv1_client_set_session_ticket_cb(conn->client, cb, ctx);

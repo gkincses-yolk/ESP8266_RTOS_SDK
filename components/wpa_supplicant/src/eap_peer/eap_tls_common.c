@@ -19,6 +19,8 @@
 static struct wpabuf * eap_tls_msg_alloc(EapType type, size_t payload_len,
 					 u8 code, u8 identifier)
 {
+    ESP_LOGV("FUNC", "eap_tls_msg_alloc");
+
 	if (type == EAP_UNAUTH_TLS_TYPE)
 		return eap_msg_alloc(EAP_VENDOR_UNAUTH_TLS,
 				     EAP_VENDOR_TYPE_UNAUTH_TLS, payload_len,
@@ -31,6 +33,8 @@ static struct wpabuf * eap_tls_msg_alloc(EapType type, size_t payload_len,
 static int eap_tls_check_blob(struct eap_sm *sm, const char **name,
 			      const u8 **data, size_t *data_len)
 {
+    ESP_LOGV("FUNC", "eap_tls_check_blob");
+
 	const struct wpa_config_blob *blob;
 
 	if (*name == NULL)// || os_strncmp(*name, "blob://", 7) != 0)
@@ -54,6 +58,8 @@ static int eap_tls_check_blob(struct eap_sm *sm, const char **name,
 static void eap_tls_params_flags(struct tls_connection_params *params,
 				 const char *txt)
 {
+    ESP_LOGV("FUNC", "eap_tls_params_flags");
+
 	if (txt == NULL)
 		return;
 	if (os_strstr(txt, "tls_allow_md5=1"))
@@ -69,6 +75,8 @@ static void eap_tls_params_flags(struct tls_connection_params *params,
 static void eap_tls_params_from_conf1(struct tls_connection_params *params,
 				      struct eap_peer_config *config)
 {
+    ESP_LOGV("FUNC", "eap_tls_params_from_conf1");
+
 	params->ca_cert = (char *) config->ca_cert;
 	params->ca_path = (char *) config->ca_path;
 	params->client_cert = (char *) config->client_cert;
@@ -86,6 +94,8 @@ static int eap_tls_params_from_conf(struct eap_sm *sm,
 				    struct tls_connection_params *params,
 				    struct eap_peer_config *config)
 {
+    ESP_LOGV("FUNC", "eap_tls_params_from_conf");
+
 	os_memset(params, 0, sizeof(*params));
 	if (sm->workaround && data->eap_type != EAP_TYPE_FAST) {
 		/*
@@ -128,6 +138,8 @@ static int eap_tls_init_connection(struct eap_sm *sm,
 				   struct eap_peer_config *config,
 				   struct tls_connection_params *params)
 {
+    ESP_LOGV("FUNC", "eap_tls_init_connection");
+
 	int res;
 
 	if (config->ocsp)
@@ -188,6 +200,8 @@ static int eap_tls_init_connection(struct eap_sm *sm,
 int eap_peer_tls_ssl_init(struct eap_sm *sm, struct eap_ssl_data *data,
 			  struct eap_peer_config *config, u8 eap_type)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_ssl_init");
+
 	struct tls_connection_params params;
 
 	if (config == NULL)
@@ -225,6 +239,8 @@ int eap_peer_tls_ssl_init(struct eap_sm *sm, struct eap_ssl_data *data,
  */
 void eap_peer_tls_ssl_deinit(struct eap_sm *sm, struct eap_ssl_data *data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_ssl_deinit");
+
 	tls_connection_deinit(data->ssl_ctx, data->conn);
 	eap_peer_tls_reset_input(data);
 	eap_peer_tls_reset_output(data);
@@ -248,6 +264,8 @@ void eap_peer_tls_ssl_deinit(struct eap_sm *sm, struct eap_ssl_data *data)
 u8 * eap_peer_tls_derive_key(struct eap_sm *sm, struct eap_ssl_data *data,
 			     const char *label, size_t len)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_derive_key");
+
 	u8 *out;
 
 	out = os_malloc(len);
@@ -280,6 +298,8 @@ u8 * eap_peer_tls_derive_session_id(struct eap_sm *sm,
 				    struct eap_ssl_data *data, u8 eap_type,
 				    size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_derive_session_id");
+
 	struct tls_random keys;
 	u8 *out;
 
@@ -318,6 +338,8 @@ u8 * eap_peer_tls_derive_session_id(struct eap_sm *sm,
 static int eap_peer_tls_reassemble_fragment(struct eap_ssl_data *data,
 					    const struct wpabuf *in_data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_reassemble_fragment");
+
 	size_t tls_in_len, in_len;
 
 	tls_in_len = data->tls_in ? wpabuf_len(data->tls_in) : 0;
@@ -389,6 +411,8 @@ static const struct wpabuf * eap_peer_tls_data_reassemble(
 	struct eap_ssl_data *data, const struct wpabuf *in_data,
 	int *need_more_input)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_data_reassemble");
+
 	*need_more_input = 0;
 
 	if (data->tls_in_left > wpabuf_len(in_data) || data->tls_in) {
@@ -427,6 +451,8 @@ static int eap_tls_process_input(struct eap_sm *sm, struct eap_ssl_data *data,
 				 const u8 *in_data, size_t in_len,
 				 struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_tls_process_input");
+
 	const struct wpabuf *msg;
 	int need_more_input;
 	struct wpabuf *appl_data;
@@ -479,6 +505,8 @@ static int eap_tls_process_output(struct eap_ssl_data *data, EapType eap_type,
 				  int peap_version, u8 id, int ret,
 				  struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_tls_process_output");
+
 	size_t len;
 	u8 *flags;
 	int more_fragments, length_included;
@@ -579,6 +607,8 @@ int eap_peer_tls_process_helper(struct eap_sm *sm, struct eap_ssl_data *data,
 				u8 id, const u8 *in_data, size_t in_len,
 				struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_process_helper");
+
 	int ret = 0;
 
 	*out_data = NULL;
@@ -656,6 +686,8 @@ int eap_peer_tls_process_helper(struct eap_sm *sm, struct eap_ssl_data *data,
 struct wpabuf * eap_peer_tls_build_ack(u8 id, EapType eap_type,
 				       int peap_version)
 {	
+    ESP_LOGV("FUNC", "eap_peer_tls_build_ack");
+
 	struct wpabuf *resp;
 
 	resp = eap_tls_msg_alloc(eap_type, 1, EAP_CODE_RESPONSE, id);
@@ -676,6 +708,8 @@ struct wpabuf * eap_peer_tls_build_ack(u8 id, EapType eap_type,
  */
 int eap_peer_tls_reauth_init(struct eap_sm *sm, struct eap_ssl_data *data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_reauth_init");
+
 	eap_peer_tls_reset_input(data);
 	eap_peer_tls_reset_output(data);
 	return tls_connection_shutdown(data->ssl_ctx, data->conn);
@@ -694,6 +728,8 @@ int eap_peer_tls_reauth_init(struct eap_sm *sm, struct eap_ssl_data *data)
 int eap_peer_tls_status(struct eap_sm *sm, struct eap_ssl_data *data,
 			char *buf, size_t buflen, int verbose)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_status");
+
 	char name[128];
 	int len = 0, ret;
 
@@ -741,6 +777,8 @@ const u8 * eap_peer_tls_process_init(struct eap_sm *sm,
 				     const struct wpabuf *reqData,
 				     size_t *len, u8 *flags)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_process_init");
+
 	const u8 *pos;
 	size_t left;
 	unsigned int tls_msg_len;
@@ -827,6 +865,8 @@ const u8 * eap_peer_tls_process_init(struct eap_sm *sm,
  */
 void eap_peer_tls_reset_input(struct eap_ssl_data *data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_reset_input");
+
 	data->tls_in_left = data->tls_in_total = 0;
 	wpabuf_free(data->tls_in);
 	data->tls_in = NULL;
@@ -842,6 +882,8 @@ void eap_peer_tls_reset_input(struct eap_ssl_data *data)
  */
 void eap_peer_tls_reset_output(struct eap_ssl_data *data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_reset_output");
+
 	data->tls_out_pos = 0;
 	wpabuf_free(data->tls_out);
 	data->tls_out = NULL;
@@ -860,6 +902,8 @@ int eap_peer_tls_decrypt(struct eap_sm *sm, struct eap_ssl_data *data,
 			 const struct wpabuf *in_data,
 			 struct wpabuf **in_decrypted)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_decrypt");
+
 	const struct wpabuf *msg;
 	int need_more_input;
 
@@ -893,6 +937,8 @@ int eap_peer_tls_encrypt(struct eap_sm *sm, struct eap_ssl_data *data,
 			 const struct wpabuf *in_data,
 			 struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_encrypt");
+
 	if (in_data) {
 		eap_peer_tls_reset_output(data);
 		data->tls_out = tls_connection_encrypt(data->ssl_ctx,
@@ -926,6 +972,8 @@ int eap_peer_select_phase2_methods(struct eap_peer_config *config,
 				   struct eap_method_type **types,
 				   size_t *num_types)
 {
+    ESP_LOGV("FUNC", "eap_peer_select_phase2_methods");
+
 	char *start, *pos, *buf;
 	struct eap_method_type *methods = NULL, *_methods;
 	u8 method;
@@ -1005,6 +1053,8 @@ get_defaults:
 int eap_peer_tls_phase2_nak(struct eap_method_type *types, size_t num_types,
 			    struct eap_hdr *hdr, struct wpabuf **resp)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_phase2_nak");
+
 #ifdef DEBUG_PRINT
 	u8 *pos = (u8 *) (hdr + 1);
 #endif

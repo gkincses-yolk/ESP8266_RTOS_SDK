@@ -19,6 +19,8 @@ static const u8 zero[AES_BLOCK_SIZE];
 
 static void dbl(u8 *pad)
 {
+    ESP_LOGV("FUNC", "dbl");
+
 	int i, carry;
 
 	carry = pad[0] & 0x80;
@@ -32,6 +34,8 @@ static void dbl(u8 *pad)
 
 static void xor(u8 *a, const u8 *b)
 {
+    ESP_LOGV("FUNC", "xor");
+
 	int i;
 
 	for (i = 0; i < AES_BLOCK_SIZE; i++)
@@ -41,6 +45,8 @@ static void xor(u8 *a, const u8 *b)
 
 static void xorend(u8 *a, int alen, const u8 *b, int blen)
 {
+    ESP_LOGV("FUNC", "xorend");
+
 	int i;
 
 	if (alen < blen)
@@ -53,6 +59,8 @@ static void xorend(u8 *a, int alen, const u8 *b, int blen)
 
 static void pad_block(u8 *pad, const u8 *addr, size_t len)
 {
+    ESP_LOGV("FUNC", "pad_block");
+
 	os_memset(pad, 0, AES_BLOCK_SIZE);
 	os_memcpy(pad, addr, len);
 
@@ -64,6 +72,8 @@ static void pad_block(u8 *pad, const u8 *addr, size_t len)
 static int aes_s2v(const u8 *key, size_t key_len,
 		   size_t num_elem, const u8 *addr[], size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "aes_s2v");
+
 	u8 tmp[AES_BLOCK_SIZE], tmp2[AES_BLOCK_SIZE];
 	u8 *buf = NULL;
 	int ret;
@@ -121,6 +131,8 @@ int aes_siv_encrypt(const u8 *key, size_t key_len,
 		    size_t num_elem, const u8 *addr[], const size_t *len,
 		    u8 *out)
 {
+    ESP_LOGV("FUNC", "aes_siv_encrypt");
+
 	const u8 *_addr[6];
 	size_t _len[6];
 	const u8 *k1, *k2;
@@ -164,6 +176,8 @@ int aes_siv_decrypt(const u8 *key, size_t key_len,
 		    size_t num_elem, const u8 *addr[], const size_t *len,
 		    u8 *out)
 {
+    ESP_LOGV("FUNC", "aes_siv_decrypt");
+
 	const u8 *_addr[6];
 	size_t _len[6];
 	const u8 *k1, *k2;

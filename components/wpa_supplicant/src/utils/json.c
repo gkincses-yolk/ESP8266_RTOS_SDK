@@ -18,6 +18,8 @@
 
 void json_escape_string(char *txt, size_t maxlen, const char *data, size_t len)
 {
+    ESP_LOGV("FUNC", "json_escape_string");
+
 	char *end = txt + maxlen;
 	size_t i;
 
@@ -63,6 +65,8 @@ void json_escape_string(char *txt, size_t maxlen, const char *data, size_t len)
 
 static char * json_parse_string(const char **json_pos, const char *end)
 {
+    ESP_LOGV("FUNC", "json_parse_string");
+
 	const char *pos = *json_pos;
 	char *str, *spos, *s_end;
 	size_t max_len, buf_len;
@@ -160,6 +164,8 @@ fail:
 static int json_parse_number(const char **json_pos, const char *end,
 			     int *ret_val)
 {
+    ESP_LOGV("FUNC", "json_parse_number");
+
 	const char *pos = *json_pos;
 	size_t len;
 	char *str;
@@ -190,6 +196,8 @@ static int json_parse_number(const char **json_pos, const char *end,
 
 static int json_check_tree_state(struct json_token *token)
 {
+    ESP_LOGV("FUNC", "json_check_tree_state");
+
 	if (!token)
 		return 0;
 	if (json_check_tree_state(token->child) < 0 ||
@@ -208,6 +216,8 @@ static int json_check_tree_state(struct json_token *token)
 
 static struct json_token * json_alloc_token(unsigned int *tokens)
 {
+    ESP_LOGV("FUNC", "json_alloc_token");
+
 	(*tokens)++;
 	if (*tokens > JSON_MAX_TOKENS) {
 		wpa_printf(MSG_DEBUG, "JSON: Maximum token limit exceeded");
@@ -219,6 +229,8 @@ static struct json_token * json_alloc_token(unsigned int *tokens)
 
 struct json_token * json_parse(const char *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "json_parse");
+
 	struct json_token *root = NULL, *curr_token = NULL, *token = NULL;
 	const char *pos, *end;
 	char *str;
@@ -480,6 +492,8 @@ fail:
 
 void json_free(struct json_token *json)
 {
+    ESP_LOGV("FUNC", "json_free");
+
 	if (!json)
 		return;
 	json_free(json->child);
@@ -492,6 +506,8 @@ void json_free(struct json_token *json)
 
 struct json_token * json_get_member(struct json_token *json, const char *name)
 {
+    ESP_LOGV("FUNC", "json_get_member");
+
 	struct json_token *token, *ret = NULL;
 
 	if (!json || json->type != JSON_OBJECT)
@@ -508,6 +524,8 @@ struct json_token * json_get_member(struct json_token *json, const char *name)
 struct wpabuf * json_get_member_base64url(struct json_token *json,
 					  const char *name)
 {
+    ESP_LOGV("FUNC", "json_get_member_base64url");
+
 	struct json_token *token;
 	unsigned char *buf;
 	size_t buflen;
@@ -530,6 +548,8 @@ struct wpabuf * json_get_member_base64url(struct json_token *json,
 
 static const char * json_type_str(enum json_type type)
 {
+    ESP_LOGV("FUNC", "json_type_str");
+
 	switch (type) {
 	case JSON_VALUE:
 		return "VALUE";
@@ -553,6 +573,8 @@ static const char * json_type_str(enum json_type type)
 static void json_print_token(struct json_token *token, int depth,
 			     char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "json_print_token");
+
 	size_t len;
 	int ret;
 
@@ -573,6 +595,8 @@ static void json_print_token(struct json_token *token, int depth,
 
 void json_print_tree(struct json_token *root, char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "json_print_tree");
+
 	buf[0] = '\0';
 	json_print_token(root, 1, buf, buflen);
 }
@@ -580,12 +604,16 @@ void json_print_tree(struct json_token *root, char *buf, size_t buflen)
 
 void json_add_int(struct wpabuf *json, const char *name, int val)
 {
+    ESP_LOGV("FUNC", "json_add_int");
+
 	wpabuf_printf(json, "\"%s\":%d", name, val);
 }
 
 
 void json_add_string(struct wpabuf *json, const char *name, const char *val)
 {
+    ESP_LOGV("FUNC", "json_add_string");
+
 	wpabuf_printf(json, "\"%s\":\"%s\"", name, val);
 }
 
@@ -593,6 +621,8 @@ void json_add_string(struct wpabuf *json, const char *name, const char *val)
 int json_add_string_escape(struct wpabuf *json, const char *name,
 			   const void *val, size_t len)
 {
+    ESP_LOGV("FUNC", "json_add_string_escape");
+
 	char *tmp;
 	size_t tmp_len = 6 * len + 1;
 
@@ -609,6 +639,8 @@ int json_add_string_escape(struct wpabuf *json, const char *name,
 int json_add_base64url(struct wpabuf *json, const char *name, const void *val,
 		       size_t len)
 {
+    ESP_LOGV("FUNC", "json_add_base64url");
+
 	char *b64;
 
 	b64 = base64_url_encode(val, len, NULL);
@@ -622,6 +654,8 @@ int json_add_base64url(struct wpabuf *json, const char *name, const void *val,
 
 void json_start_object(struct wpabuf *json, const char *name)
 {
+    ESP_LOGV("FUNC", "json_start_object");
+
 	if (name)
 		wpabuf_printf(json, "\"%s\":", name);
 	wpabuf_put_u8(json, '{');
@@ -630,12 +664,16 @@ void json_start_object(struct wpabuf *json, const char *name)
 
 void json_end_object(struct wpabuf *json)
 {
+    ESP_LOGV("FUNC", "json_end_object");
+
 	wpabuf_put_u8(json, '}');
 }
 
 
 void json_start_array(struct wpabuf *json, const char *name)
 {
+    ESP_LOGV("FUNC", "json_start_array");
+
 	if (name)
 		wpabuf_printf(json, "\"%s\":", name);
 	wpabuf_put_u8(json, '[');
@@ -644,11 +682,15 @@ void json_start_array(struct wpabuf *json, const char *name)
 
 void json_end_array(struct wpabuf *json)
 {
+    ESP_LOGV("FUNC", "json_end_array");
+
 	wpabuf_put_u8(json, ']');
 }
 
 
 void json_value_sep(struct wpabuf *json)
 {
+    ESP_LOGV("FUNC", "json_value_sep");
+
 	wpabuf_put_u8(json, ',');
 }

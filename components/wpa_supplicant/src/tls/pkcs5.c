@@ -29,6 +29,8 @@ struct pkcs5_params {
 
 static enum pkcs5_alg pkcs5_get_alg(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "pkcs5_get_alg");
+
 	if (oid->len == 7 &&
 	    oid->oid[0] == 1 /* iso */ &&
 	    oid->oid[1] == 2 /* member-body */ &&
@@ -46,6 +48,8 @@ static enum pkcs5_alg pkcs5_get_alg(struct asn1_oid *oid)
 static int pkcs5_get_params(const u8 *enc_alg, size_t enc_alg_len,
 			    struct pkcs5_params *params)
 {
+    ESP_LOGV("FUNC", "pkcs5_get_params");
+
 	struct asn1_hdr hdr;
 	const u8 *enc_alg_end, *pos, *end;
 	struct asn1_oid oid;
@@ -140,6 +144,8 @@ static int pkcs5_get_params(const u8 *enc_alg, size_t enc_alg_len,
 static struct crypto_cipher * pkcs5_crypto_init(struct pkcs5_params *params,
 						const char *passwd)
 {
+    ESP_LOGV("FUNC", "pkcs5_crypto_init");
+
 	unsigned int i;
 	u8 hash[MD5_MAC_LEN];
 	const u8 *addr[2];
@@ -173,6 +179,8 @@ u8 * pkcs5_decrypt(const u8 *enc_alg, size_t enc_alg_len,
 		   const u8 *enc_data, size_t enc_data_len,
 		   const char *passwd, size_t *data_len)
 {
+    ESP_LOGV("FUNC", "pkcs5_decrypt");
+
 	struct crypto_cipher *ctx = NULL;
 	u8 *eb, pad;
 	struct pkcs5_params params;

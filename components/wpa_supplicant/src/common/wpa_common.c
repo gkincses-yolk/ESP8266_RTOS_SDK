@@ -29,6 +29,8 @@
 #ifndef CONFIG_NO_WPA2
 static int rsn_selector_to_bitfield(const u8 *s)
 {
+    ESP_LOGV("FUNC", "rsn_selector_to_bitfield");
+
 	if (RSN_SELECTOR_GET(s) == RSN_CIPHER_SUITE_NONE)
 		return WPA_CIPHER_NONE;
 	if (RSN_SELECTOR_GET(s) == RSN_CIPHER_SUITE_WEP40)
@@ -48,6 +50,8 @@ static int rsn_selector_to_bitfield(const u8 *s)
 
 static int rsn_key_mgmt_to_bitfield(const u8 *s)
 {
+    ESP_LOGV("FUNC", "rsn_key_mgmt_to_bitfield");
+
 	if (RSN_SELECTOR_GET(s) == RSN_AUTH_KEY_MGMT_UNSPEC_802_1X)
 		return WPA_KEY_MGMT_IEEE8021X;
 	if (RSN_SELECTOR_GET(s) == RSN_AUTH_KEY_MGMT_PSK_OVER_802_1X)
@@ -73,6 +77,8 @@ static int rsn_key_mgmt_to_bitfield(const u8 *s)
 
 static int wpa_selector_to_bitfield(const u8 *s)
 {
+    ESP_LOGV("FUNC", "wpa_selector_to_bitfield");
+
 	if (RSN_SELECTOR_GET(s) == WPA_CIPHER_SUITE_NONE)
 		return WPA_CIPHER_NONE;
 	if (RSN_SELECTOR_GET(s) == WPA_CIPHER_SUITE_WEP40)
@@ -88,6 +94,8 @@ static int wpa_selector_to_bitfield(const u8 *s)
 
 static int wpa_key_mgmt_to_bitfield(const u8 *s)
 {
+    ESP_LOGV("FUNC", "wpa_key_mgmt_to_bitfield");
+
 	if (RSN_SELECTOR_GET(s) == WPA_AUTH_KEY_MGMT_UNSPEC_802_1X)
 		return WPA_KEY_MGMT_IEEE8021X;
 	if (RSN_SELECTOR_GET(s) == WPA_AUTH_KEY_MGMT_PSK_OVER_802_1X)
@@ -107,6 +115,8 @@ static int wpa_key_mgmt_to_bitfield(const u8 *s)
 int wpa_parse_wpa_ie_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 			 struct wpa_ie_data *data)
 {
+    ESP_LOGV("FUNC", "wpa_parse_wpa_ie_rsn");
+
 #ifndef CONFIG_NO_WPA2
 	const struct rsn_ie_hdr *hdr;
 	const u8 *pos;
@@ -255,6 +265,8 @@ int wpa_parse_wpa_ie_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 int wpa_parse_wpa_ie_wpa(const u8 *wpa_ie, size_t wpa_ie_len,
 			 struct wpa_ie_data *data)
 {
+    ESP_LOGV("FUNC", "wpa_parse_wpa_ie_wpa");
+
 	const struct wpa_ie_hdr *hdr;
 	const u8 *pos;
 	int left;
@@ -383,6 +395,8 @@ int wpa_parse_wpa_ie_wpa(const u8 *wpa_ie, size_t wpa_ie_len,
 int wpa_eapol_key_mic(const u8 *key, int ver, const u8 *buf, size_t len,
 		      u8 *mic)
 {
+    ESP_LOGV("FUNC", "wpa_eapol_key_mic");
+
 	u8 hash[SHA1_MAC_LEN];
 
 	switch (ver) {
@@ -411,6 +425,8 @@ int wpa_compare_rsn_ie(int ft_initial_assoc,
 		       const u8 *ie1, size_t ie1len,
 		       const u8 *ie2, size_t ie2len)
 {
+    ESP_LOGV("FUNC", "wpa_compare_rsn_ie");
+
 	if (ie1 == NULL || ie2 == NULL)
 		return -1;
 
@@ -451,6 +467,8 @@ int wpa_compare_rsn_ie(int ft_initial_assoc,
  */
 const char * wpa_cipher_txt(int cipher)
 {
+    ESP_LOGV("FUNC", "wpa_cipher_txt");
+
 	switch (cipher) {
 	case WPA_CIPHER_NONE:
 		return "NONE";
@@ -497,6 +515,8 @@ void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
 		    const u8 *nonce1, const u8 *nonce2,
 		    u8 *ptk, size_t ptk_len, int use_sha256)
 {
+    ESP_LOGV("FUNC", "wpa_pmk_to_ptk");
+
 	u8 data[2 * ETH_ALEN + 2 * WPA_NONCE_LEN];
 
 	if (memcmp(addr1, addr2, ETH_ALEN) < 0) {
@@ -547,6 +567,8 @@ void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
 void rsn_pmkid(const u8 *pmk, size_t pmk_len, const u8 *aa, const u8 *spa,
 	       u8 *pmkid, int use_sha256)
 {
+    ESP_LOGV("FUNC", "rsn_pmkid");
+
 	char title[9];
 	const u8 *addr[3];
 	const size_t len[3] = { 8, ETH_ALEN, ETH_ALEN };
@@ -569,6 +591,8 @@ void rsn_pmkid(const u8 *pmk, size_t pmk_len, const u8 *aa, const u8 *spa,
 
 int wpa_cipher_key_len(int cipher)
 {
+    ESP_LOGV("FUNC", "wpa_cipher_key_len");
+
 	switch (cipher) {
 	case WPA_CIPHER_CCMP:
 	case WPA_CIPHER_GCMP:
@@ -586,6 +610,8 @@ int wpa_cipher_key_len(int cipher)
 
 int wpa_cipher_to_alg(int cipher)
 {
+    ESP_LOGV("FUNC", "wpa_cipher_to_alg");
+
 	switch (cipher) {
 	case WPA_CIPHER_CCMP:
 		return WPA_ALG_CCMP;
@@ -602,6 +628,8 @@ int wpa_cipher_to_alg(int cipher)
 
 u32 wpa_cipher_to_suite(int proto, int cipher)
 {
+    ESP_LOGV("FUNC", "wpa_cipher_to_suite");
+
 	if (cipher & WPA_CIPHER_CCMP)
 		return (proto == WPA_PROTO_RSN ?
 			RSN_CIPHER_SUITE_CCMP : WPA_CIPHER_SUITE_CCMP);
@@ -624,6 +652,8 @@ u32 wpa_cipher_to_suite(int proto, int cipher)
 
 int rsn_cipher_put_suites(u8 *pos, int ciphers)
 {
+    ESP_LOGV("FUNC", "rsn_cipher_put_suites");
+
 	int num_suites = 0;
 
 	if (ciphers & WPA_CIPHER_CCMP) {
@@ -652,6 +682,8 @@ int rsn_cipher_put_suites(u8 *pos, int ciphers)
 
 int wpa_cipher_put_suites(u8 *pos, int ciphers)
 {
+    ESP_LOGV("FUNC", "wpa_cipher_put_suites");
+
 	int num_suites = 0;
 
 	if (ciphers & WPA_CIPHER_CCMP) {

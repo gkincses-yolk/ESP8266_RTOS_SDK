@@ -34,9 +34,10 @@ typedef struct MD5Context MD5_CTX;
  * @mac: Buffer for the hash
  * Returns: 0 on success, -1 of failure
  */
-int 
-md5_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
+int md5_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "md5_vector");
+
 	MD5_CTX ctx;
 	size_t i;
 
@@ -74,6 +75,8 @@ md5_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
  */
 static void byteReverse(unsigned char *buf, unsigned longs)
 {
+    ESP_LOGV("FUNC", "byteReverse");
+
     u32 t;
     do {
 	t = (u32) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
@@ -88,9 +91,10 @@ static void byteReverse(unsigned char *buf, unsigned longs)
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void 
-MD5Init(struct MD5Context *ctx)
+void MD5Init(struct MD5Context *ctx)
 {
+    ESP_LOGV("FUNC", "MD5Init");
+
     ctx->buf[0] = 0x67452301;
     ctx->buf[1] = 0xefcdab89;
     ctx->buf[2] = 0x98badcfe;
@@ -104,9 +108,10 @@ MD5Init(struct MD5Context *ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void 
-MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
+void MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
 {
+    ESP_LOGV("FUNC", "MD5Update");
+
     u32 t;
 
     /* Update bitcount */
@@ -153,9 +158,10 @@ MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void 
-MD5Final(unsigned char digest[16], struct MD5Context *ctx)
+void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
 {
+    ESP_LOGV("FUNC", "MD5Final");
+
     unsigned count;
     unsigned char *p;
 
@@ -212,9 +218,10 @@ MD5Final(unsigned char digest[16], struct MD5Context *ctx)
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-static void 
-MD5Transform(u32 buf[4], u32 const in[16])
+static void MD5Transform(u32 buf[4], u32 const in[16])
 {
+    ESP_LOGV("FUNC", "MD5Transform");
+
     register u32 a, b, c, d;
 
     a = buf[0];

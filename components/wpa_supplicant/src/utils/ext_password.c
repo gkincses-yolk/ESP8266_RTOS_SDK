@@ -33,6 +33,8 @@ struct ext_password_data {
 struct ext_password_data * ext_password_init(const char *backend,
 					     const char *params)
 {
+    ESP_LOGV("FUNC", "ext_password_init");
+
 	struct ext_password_data *data;
 	int i;
 
@@ -64,6 +66,8 @@ struct ext_password_data * ext_password_init(const char *backend,
 
 void ext_password_deinit(struct ext_password_data *data)
 {
+    ESP_LOGV("FUNC", "ext_password_deinit");
+
 	if (data && data->backend && data->priv)
 		data->backend->deinit(data->priv);
 	os_free(data);
@@ -73,6 +77,8 @@ void ext_password_deinit(struct ext_password_data *data)
 struct wpabuf * ext_password_get(struct ext_password_data *data,
 				 const char *name)
 {
+    ESP_LOGV("FUNC", "ext_password_get");
+
 	if (data == NULL)
 		return NULL;
 	return data->backend->get(data->priv, name);
@@ -81,6 +87,8 @@ struct wpabuf * ext_password_get(struct ext_password_data *data,
 
 struct wpabuf * ext_password_alloc(size_t len)
 {
+    ESP_LOGV("FUNC", "ext_password_alloc");
+
 	struct wpabuf *buf;
 
 	buf = wpabuf_alloc(len);
@@ -100,6 +108,8 @@ struct wpabuf * ext_password_alloc(size_t len)
 #ifdef CONFIG_EXT_PASSWORD
 void ext_password_free(struct wpabuf *pw)
 {
+    ESP_LOGV("FUNC", "ext_password_free");
+
 	if (pw == NULL)
 		return;
 	os_memset(wpabuf_mhead(pw), 0, wpabuf_len(pw));

@@ -35,6 +35,8 @@ extern struct wpa_supplicant g_wpa_supp;
 static void esp_scan_done_event_handler(void* arg, esp_event_base_t event_base,
 					int event_id, void* event_data)
 {
+    ESP_LOGV("FUNC", "esp_scan_done_event_handler");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 	if (!wpa_s->scanning) {
 		/* update last scan time */
@@ -50,6 +52,8 @@ static void esp_scan_done_event_handler(void* arg, esp_event_base_t event_base,
 
 static void esp_supp_handle_wnm_scan_done(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_supp_handle_wnm_scan_done");
+
 	struct wpa_bss *bss = wpa_bss_get_next_bss(wpa_s, wpa_s->current_bss);
 
 	if (wpa_s->wnm_neighbor_report_elements) {
@@ -67,6 +71,8 @@ static void esp_supp_handle_wnm_scan_done(struct wpa_supplicant *wpa_s)
 
 static void esp_supp_scan_done_cleanup(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_supp_scan_done_cleanup");
+
 	uint16_t number = 1;
 	wifi_ap_record_t ap_records;
 
@@ -78,6 +84,8 @@ static void esp_supp_scan_done_cleanup(struct wpa_supplicant *wpa_s)
 
 void esp_supplicant_handle_scan_done_evt(void)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_handle_scan_done_evt");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 
 	wpa_printf(MSG_INFO, "scan done received");
@@ -96,6 +104,8 @@ void esp_supplicant_handle_scan_done_evt(void)
 
 void esp_scan_init(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_scan_init");
+
 	wpa_s->scanning = 0;
 	wpa_bss_init(wpa_s);
 	wpa_s->last_scan_res = NULL;
@@ -105,12 +115,16 @@ void esp_scan_init(struct wpa_supplicant *wpa_s)
 
 void esp_scan_deinit(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_scan_deinit");
+
 	wpa_bss_deinit(wpa_s);
 }
 
 int esp_handle_beacon_probe(u8 type, u8 *frame, size_t len, u8 *sender,
 			    u32 rssi, u8 channel, u64 current_tsf)
 {
+    ESP_LOGV("FUNC", "esp_handle_beacon_probe");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 	struct os_reltime now;
 	struct wpa_scan_res *res;
@@ -171,6 +185,8 @@ int esp_handle_beacon_probe(u8 type, u8 *frame, size_t len, u8 *sender,
 static int esp_issue_scan(struct wpa_supplicant *wpa_s,
 			       struct wpa_driver_scan_params *scan_params)
 {
+    ESP_LOGV("FUNC", "esp_issue_scan");
+
 	wifi_scan_config_t *params = NULL;
 	int ret = 0;
 	u64 scan_start_tsf = esp_wifi_get_tsf_time(ESP_IF_WIFI_STA);
@@ -253,11 +269,15 @@ cleanup:
 int wpa_supplicant_trigger_scan(struct wpa_supplicant *wpa_s,
 				struct wpa_driver_scan_params *params)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_trigger_scan");
+
 	return esp_issue_scan(wpa_s, params);
 }
 
 void wpa_scan_results_free(struct wpa_scan_results *res)
 {
+    ESP_LOGV("FUNC", "wpa_scan_results_free");
+
 	size_t i;
 
 	if (res == NULL)

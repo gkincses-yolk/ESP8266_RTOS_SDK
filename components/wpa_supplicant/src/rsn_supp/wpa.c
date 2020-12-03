@@ -66,21 +66,29 @@ void wpa_set_passphrase(char * passphrase, u8 *ssid, size_t ssid_len);
 void wpa_sm_set_pmk_from_pmksa(struct wpa_sm *sm);
 static inline enum wpa_states   wpa_sm_get_state(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_sm_get_state");
+
     return sm->wpa_state;;
 }
 
 static inline void   wpa_sm_cancel_auth_timeout(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_sm_cancel_auth_timeout");
+
 
 }
 
 void   eapol_sm_notify_eap_success(Boolean success)
 {
+    ESP_LOGV("FUNC", "eapol_sm_notify_eap_success");
+
 
 }
 
 wifi_cipher_type_t cipher_type_map_supp_to_public(uint32_t wpa_cipher)
 {
+    ESP_LOGV("FUNC", "cipher_type_map_supp_to_public");
+
     switch (wpa_cipher) {
     case WPA_CIPHER_NONE:
         return WIFI_CIPHER_TYPE_NONE;
@@ -110,6 +118,8 @@ wifi_cipher_type_t cipher_type_map_supp_to_public(uint32_t wpa_cipher)
 
 uint32_t cipher_type_map_public_to_supp(wifi_cipher_type_t cipher)
 {
+    ESP_LOGV("FUNC", "cipher_type_map_public_to_supp");
+
     switch (cipher) {
     case WIFI_CIPHER_TYPE_NONE:
         return WPA_CIPHER_NONE;
@@ -150,6 +160,8 @@ uint32_t cipher_type_map_public_to_supp(wifi_cipher_type_t cipher)
  */
 static inline int   wpa_sm_get_bssid(struct wpa_sm *sm, u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wpa_sm_get_bssid");
+
     memcpy(bssid, sm->bssid, ETH_ALEN);
     return 0;
 }
@@ -166,6 +178,8 @@ static inline int   wpa_sm_get_bssid(struct wpa_sm *sm, u8 *bssid)
 static inline int   wpa_sm_ether_send( struct wpa_sm *sm, const u8 *dest, u16 proto,
         const u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "wpa_sm_ether_send");
+
     void *buffer = (void *)(data - sizeof(struct l2_ethhdr));
     struct l2_ethhdr *eth = (struct l2_ethhdr *)buffer;
 
@@ -192,6 +206,8 @@ void   wpa_eapol_key_send(struct wpa_sm *sm, const u8 *kck,
             int ver, const u8 *dest, u16 proto,
             u8 *msg, size_t msg_len, u8 *key_mic)
 {
+    ESP_LOGV("FUNC", "wpa_eapol_key_send");
+
     if (is_zero_ether_addr(dest) && is_zero_ether_addr(sm->bssid)) {
         /*
          * Association event was not yet received; try to fetch
@@ -237,6 +253,8 @@ out:
  */
 void   wpa_sm_key_request(struct wpa_sm *sm, int error, int pairwise)
 {
+    ESP_LOGV("FUNC", "wpa_sm_key_request");
+
     size_t rlen;
     struct wpa_eapol_key *reply;
     int key_info, ver;
@@ -294,6 +312,8 @@ void   wpa_sm_key_request(struct wpa_sm *sm, int error, int pairwise)
 /*
 int   wpa_supplicant_get_pmk(struct wpa_sm *sm)
 {   
+    ESP_LOGV("FUNC", "wpa_supplicant_get_pmk");
+
        if(sm->pmk_len >0) {
         return 0;
        } else {
@@ -306,6 +326,8 @@ int   wpa_supplicant_get_pmk(struct wpa_sm *sm)
 static void wpa_sm_pmksa_free_cb(struct rsn_pmksa_cache_entry *entry,
         void *ctx, enum pmksa_free_reason reason)
 {
+    ESP_LOGV("FUNC", "wpa_sm_pmksa_free_cb");
+
     struct wpa_sm *sm = ctx;
     int deauth = 0;
 
@@ -351,6 +373,8 @@ static int wpa_supplicant_get_pmk(struct wpa_sm *sm,
         const unsigned char *src_addr,
         const u8 *pmkid)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_get_pmk");
+
     int abort_cached = 0;
 
     if (pmkid && !sm->cur_pmksa) {
@@ -488,6 +512,8 @@ int   wpa_supplicant_send_2_of_4(struct wpa_sm *sm, const unsigned char *dst,
                    const u8 *wpa_ie, size_t wpa_ie_len,
                    struct wpa_ptk *ptk)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_send_2_of_4");
+
     size_t rlen;
     struct wpa_eapol_key *reply;
     u8 *rbuf;
@@ -539,6 +565,8 @@ int   wpa_derive_ptk(struct wpa_sm *sm, const unsigned char *src_addr,
               const struct wpa_eapol_key *key,
               struct wpa_ptk *ptk)
 {
+    ESP_LOGV("FUNC", "wpa_derive_ptk");
+
     size_t ptk_len = sm->pairwise_cipher == WPA_CIPHER_CCMP ? 48 : 64;
 
     wpa_pmk_to_ptk(sm->pmk, sm->pmk_len, "Pairwise key expansion",
@@ -553,6 +581,8 @@ void   wpa_supplicant_process_1_of_4(struct wpa_sm *sm,
                       const struct wpa_eapol_key *key,
                       u16 ver)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_process_1_of_4");
+
     struct wpa_eapol_ie_parse ie;
     struct wpa_ptk *ptk;
     int res;
@@ -629,6 +659,8 @@ failed:
 
   void   wpa_sm_rekey_ptk(void *eloop_ctx, void *timeout_ctx)
 {
+    ESP_LOGV("FUNC", "wpa_sm_rekey_ptk");
+
     struct wpa_sm *sm = eloop_ctx;
 
    #ifdef DEBUG_PRINT    
@@ -640,6 +672,8 @@ failed:
 
 int   wpa_supplicant_install_ptk(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_install_ptk");
+
     int keylen;
     enum wpa_alg alg;
 
@@ -697,6 +731,8 @@ int   wpa_supplicant_check_group_cipher(int group_cipher,
                          int *key_rsc_len,
                          enum wpa_alg *alg)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_check_group_cipher");
+
     int ret = 0;
 
     switch (group_cipher) {
@@ -754,6 +790,8 @@ int   wpa_supplicant_check_group_cipher(int group_cipher,
 void   wpa_supplicant_key_neg_complete(struct wpa_sm *sm,
                         const u8 *addr, int secure)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_key_neg_complete");
+
 #ifdef DEBUG_PRINT
     wpa_printf(MSG_DEBUG, "WPA: Key negotiation completed with "
           MACSTR " [PTK=%s GTK=%s]\n", MAC2STR(addr),
@@ -787,6 +825,8 @@ void   wpa_supplicant_key_neg_complete(struct wpa_sm *sm,
 int   wpa_supplicant_install_gtk(struct wpa_sm *sm,
                       struct wpa_gtk_data *gd)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_install_gtk");
+
     u8 *_gtk = gd->gtk;
     u8 gtk_buf[32];
        u8 *key_rsc=(sm->install_gtk).seq;
@@ -836,6 +876,8 @@ int   wpa_supplicant_install_gtk(struct wpa_sm *sm,
 
 bool wpa_supplicant_gtk_in_use(struct wpa_sm *sm, struct wpa_gtk_data *gd)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_gtk_in_use");
+
     u8 *_gtk = gd->gtk;
     u8 gtk_buf[32];
     u8 gtk_get[32] = {0};
@@ -881,6 +923,8 @@ bool wpa_supplicant_gtk_in_use(struct wpa_sm *sm, struct wpa_gtk_data *gd)
 int wpa_supplicant_gtk_tx_bit_workaround(const struct wpa_sm *sm,
                         int tx)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_gtk_tx_bit_workaround");
+
     if (tx && sm->pairwise_cipher != WPA_CIPHER_NONE) {
         /* Ignore Tx bit for GTK if a pairwise key is used. One AP
          * seemed to set this bit (incorrectly, since Tx is only when
@@ -900,6 +944,8 @@ int wpa_supplicant_pairwise_gtk(struct wpa_sm *sm,
                        const u8 *gtk, size_t gtk_len,
                        int key_info)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_pairwise_gtk");
+
 #ifndef CONFIG_NO_WPA2
     struct wpa_gtk_data *gd=&(sm->gd);
 
@@ -952,6 +998,8 @@ void wpa_report_ie_mismatch(struct wpa_sm *sm, const u8 *src_addr,
                    const u8 *rsn_ie, size_t rsn_ie_len)
 #endif
 {
+    ESP_LOGV("FUNC", "wpa_report_ie_mismatch");
+
     #ifdef DEBUG_PRINT    
     wpa_printf(MSG_DEBUG, "WPA: %s (src=" MACSTR ")",
         reason, MAC2STR(src_addr));
@@ -992,6 +1040,8 @@ void wpa_report_ie_mismatch(struct wpa_sm *sm, const u8 *src_addr,
 int   ieee80211w_set_keys(struct wpa_sm *sm,
                    struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "ieee80211w_set_keys");
+
 #ifdef CONFIG_IEEE80211W
 	if (sm->mgmt_group_cipher != WPA_CIPHER_AES_128_CMAC) {
 		return -1;
@@ -1021,6 +1071,8 @@ int   ieee80211w_set_keys(struct wpa_sm *sm,
                       const unsigned char *src_addr,
                       struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_validate_ie");
+
     if (sm->ap_wpa_ie == NULL && sm->ap_rsn_ie == NULL) {
         #ifdef DEBUG_PRINT    
         wpa_printf(MSG_DEBUG, "WPA: No WPA/RSN IE for this AP known. "
@@ -1112,6 +1164,8 @@ int   ieee80211w_set_keys(struct wpa_sm *sm,
                    const u8 *kde, size_t kde_len,
                    struct wpa_ptk *ptk)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_send_4_of_4");
+
     size_t rlen;
     struct wpa_eapol_key *reply;
     u8 *rbuf;
@@ -1154,6 +1208,8 @@ int   ieee80211w_set_keys(struct wpa_sm *sm,
 
   void   wpa_sm_set_seq(struct wpa_sm *sm, struct wpa_eapol_key *key, u8 isptk)
 {    
+    ESP_LOGV("FUNC", "wpa_sm_set_seq");
+
     u8 *key_rsc, *seq;
     u8 null_rsc[WPA_KEY_RSC_LEN];
     
@@ -1174,6 +1230,8 @@ int   ieee80211w_set_keys(struct wpa_sm *sm,
                       struct wpa_eapol_key *key,
                       u16 ver)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_process_3_of_4");
+
     u16 key_info, keylen, len;
     const u8 *pos;
     struct wpa_eapol_ie_parse ie;
@@ -1273,6 +1331,8 @@ failed:
 
   int   wpa_supplicant_send_4_of_4_txcallback(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_send_4_of_4_txcallback");
+
        u16 key_info=sm->key_info;
 
     if (sm->key_install && key_info & WPA_KEY_INFO_INSTALL) {
@@ -1319,6 +1379,8 @@ failed:
                          u16 key_info,
                          struct wpa_gtk_data *gd)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_process_1_of_2_rsn");
+
     int maxkeylen;
     struct wpa_eapol_ie_parse ie;
 
@@ -1372,6 +1434,8 @@ failed:
                          size_t extra_len, u16 ver,
                          struct wpa_gtk_data *gd)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_process_1_of_2_wpa");
+
     size_t maxkeylen;
     u8 ek[32];
 
@@ -1463,6 +1527,8 @@ failed:
                       const struct wpa_eapol_key *key,
                       int ver, u16 key_info)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_send_2_of_2");
+
     size_t rlen;
     struct wpa_eapol_key *reply;
     u8 *rbuf;
@@ -1503,6 +1569,8 @@ failed:
                       struct wpa_eapol_key *key,
                       int extra_len, u16 ver)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_process_1_of_2");
+
     u16 key_info, keydatalen;
     int  ret;
     struct wpa_gtk_data *gd=&(sm->gd);
@@ -1545,6 +1613,8 @@ failed:
 
   int   wpa_supplicant_send_2_of_2_txcallback(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_send_2_of_2_txcallback");
+
     u16 key_info=sm->key_info;
     u16 rekey= (WPA_SM_STATE(sm) == WPA_COMPLETED);
 
@@ -1579,6 +1649,8 @@ failed:
                            u16 ver,
                            const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_verify_eapol_key_mic");
+
     u8 mic[16];
     int ok = 0;
 
@@ -1636,6 +1708,8 @@ failed:
   int   wpa_supplicant_decrypt_key_data(struct wpa_sm *sm,
                        struct wpa_eapol_key *key, u16 ver)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_decrypt_key_data");
+
     u16 keydatalen = WPA_GET_BE16(key->key_data_length);
 
     wpa_hexdump(MSG_DEBUG, "RSN: encrypted key data",
@@ -1710,6 +1784,8 @@ failed:
 
   void   wpa_eapol_key_dump(int level, const struct wpa_eapol_key *key)
 {
+    ESP_LOGV("FUNC", "wpa_eapol_key_dump");
+
 #ifdef DEBUG_PRINT
     if (level < MSG_MSGDUMP)
         return;
@@ -1756,6 +1832,8 @@ failed:
  */
 int   wpa_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len)
 {
+    ESP_LOGV("FUNC", "wpa_sm_rx_eapol");
+
     struct wpa_sm *sm = &gWpaSm;
     u32 plen, data_len, extra_len;
     struct ieee802_1x_hdr *hdr;
@@ -1980,6 +2058,8 @@ out:
  */
 void wpa_sm_set_state(enum wpa_states state)
 {
+    ESP_LOGV("FUNC", "wpa_sm_set_state");
+
        struct wpa_sm *sm = &gWpaSm;
     if(WPA_MIC_FAILURE==WPA_SM_STATE(sm))
         ets_timer_disarm(&(sm->cm_timer));
@@ -1999,6 +2079,8 @@ void wpa_sm_set_state(enum wpa_states state)
 void wpa_sm_set_pmk(struct wpa_sm *sm, const u8 *pmk, size_t pmk_len,
                     const u8 *pmkid, const u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wpa_sm_set_pmk");
+
 	if (sm == NULL)
 		return;
 
@@ -2028,6 +2110,8 @@ void wpa_sm_set_pmk(struct wpa_sm *sm, const u8 *pmk, size_t pmk_len,
  */
 void wpa_sm_set_pmk_from_pmksa(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_sm_set_pmk_from_pmksa");
+
 	if (sm == NULL)
 		return;
 
@@ -2048,6 +2132,8 @@ bool wpa_sm_init(char * payload, WPA_SEND_FUNC snd_func,
                    WPA_SET_ASSOC_IE set_assoc_ie_func, WPA_INSTALL_KEY ppinstallkey, WPA_GET_KEY ppgetkey, WPA_DEAUTH_FUNC wpa_deauth,
                    WPA_NEG_COMPLETE wpa_neg_complete)
 {
+    ESP_LOGV("FUNC", "wpa_sm_init");
+
     struct wpa_sm *sm = &gWpaSm;
 
     sm->eapol_version = 0x1;   /* DEFAULT_EAPOL_VERSION */    
@@ -2075,6 +2161,8 @@ bool wpa_sm_init(char * payload, WPA_SEND_FUNC snd_func,
  *    */ 
 void wpa_sm_deinit(void)
 {
+    ESP_LOGV("FUNC", "wpa_sm_deinit");
+
     struct wpa_sm *sm = &gWpaSm;
     pmksa_cache_deinit(sm->pmksa);
 }
@@ -2082,6 +2170,8 @@ void wpa_sm_deinit(void)
 
 void wpa_set_profile(u32 wpa_proto, u8 auth_mode)
 {
+    ESP_LOGV("FUNC", "wpa_set_profile");
+
     struct wpa_sm *sm = &gWpaSm;
 
     sm->proto = wpa_proto;
@@ -2098,6 +2188,8 @@ void wpa_set_profile(u32 wpa_proto, u8 auth_mode)
 
 void wpa_set_pmk(uint8_t *pmk, const u8 *pmkid, bool cache_pmksa)
 {
+    ESP_LOGV("FUNC", "wpa_set_pmk");
+
     struct wpa_sm *sm = &gWpaSm;
     
     memcpy(sm->pmk, pmk, PMK_LEN);
@@ -2112,6 +2204,8 @@ void wpa_set_pmk(uint8_t *pmk, const u8 *pmkid, bool cache_pmksa)
 
 int wpa_set_bss(char *macddr, char * bssid, u8 pairwise_cipher, u8 group_cipher, char *passphrase, u8 *ssid, size_t ssid_len)
 {
+    ESP_LOGV("FUNC", "wpa_set_bss");
+
     int res = 0;
     struct wpa_sm *sm = &gWpaSm;
     
@@ -2157,9 +2251,10 @@ int wpa_set_bss(char *macddr, char * bssid, u8 pairwise_cipher, u8 group_cipher,
 /*
  *  Call after set ssid since we calc pmk inside this routine directly
  */
-  void  
-wpa_set_passphrase(char * passphrase, u8 *ssid, size_t ssid_len)
+  void  wpa_set_passphrase(char * passphrase, u8 *ssid, size_t ssid_len)
 {
+    ESP_LOGV("FUNC", "wpa_set_passphrase");
+
     struct wifi_ssid *sta_ssid = esp_wifi_sta_get_prof_ssid_internal();
     struct wpa_sm *sm = &gWpaSm;
    
@@ -2193,9 +2288,10 @@ wpa_set_passphrase(char * passphrase, u8 *ssid, size_t ssid_len)
     }
 }
 
-  void  
-set_assoc_ie(u8 * assoc_buf)
+  void  set_assoc_ie(u8 * assoc_buf)
 {
+    ESP_LOGV("FUNC", "set_assoc_ie");
+
     struct wpa_sm *sm = &gWpaSm;
     
     sm->assoc_wpa_ie = assoc_buf + 2;
@@ -2209,13 +2305,14 @@ set_assoc_ie(u8 * assoc_buf)
     sm->config_assoc_ie(sm->proto, assoc_buf, sm->assoc_wpa_ie_len);    
 }
 
-  int  
-wpa_sm_set_key(struct install_key *key_sm, enum wpa_alg alg,
+  int  wpa_sm_set_key(struct install_key *key_sm, enum wpa_alg alg,
         u8 *addr, int key_idx, int set_tx,
         u8 *seq, size_t seq_len,
         u8 *key, size_t key_len,
         int  key_entry_valid)
 {
+    ESP_LOGV("FUNC", "wpa_sm_set_key");
+
     struct wpa_sm *sm = &gWpaSm;
 
     /*gtk or ptk both need check countermeasures*/
@@ -2235,15 +2332,18 @@ wpa_sm_set_key(struct install_key *key_sm, enum wpa_alg alg,
     return 0;
 }
 
-  int  
-wpa_sm_get_key(uint8_t *ifx, int *alg, u8 *addr, int *key_idx, u8 *key, size_t key_len, int key_entry_valid)
+  int  wpa_sm_get_key(uint8_t *ifx, int *alg, u8 *addr, int *key_idx, u8 *key, size_t key_len, int key_entry_valid)
 {
+    ESP_LOGV("FUNC", "wpa_sm_get_key");
+
     struct wpa_sm *sm = &gWpaSm;
     return sm->get_ppkey(ifx, alg, addr, key_idx, key, key_len, key_entry_valid);
 }
 
 void wpa_supplicant_clr_countermeasures(u16 *pisunicast)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_clr_countermeasures");
+
        struct wpa_sm *sm = &gWpaSm;
        (sm->install_ptk).mic_errors_seen=0;
     (sm->install_gtk).mic_errors_seen=0;
@@ -2256,6 +2356,8 @@ void wpa_supplicant_clr_countermeasures(u16 *pisunicast)
 */
 void wpa_supplicant_stop_countermeasures(u16 *pisunicast)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_stop_countermeasures");
+
        struct wpa_sm *sm = &gWpaSm;
 
        ets_timer_done(&(sm->cm_timer));
@@ -2271,6 +2373,8 @@ void wpa_supplicant_stop_countermeasures(u16 *pisunicast)
 
 int wpa_michael_mic_failure(u16 isunicast)
 {
+    ESP_LOGV("FUNC", "wpa_michael_mic_failure");
+
        struct wpa_sm *sm = &gWpaSm;
        int32_t *pmic_errors_seen=(isunicast)? &((sm->install_ptk).mic_errors_seen) : &((sm->install_gtk).mic_errors_seen);
     
@@ -2324,6 +2428,8 @@ int wpa_michael_mic_failure(u16 isunicast)
 */
 void eapol_txcb(void *eb)
 {    
+    ESP_LOGV("FUNC", "eapol_txcb");
+
     struct wpa_sm *sm = &gWpaSm;
     u8 isdeauth = 0;  //no_zero value is the reason for deauth
 
@@ -2362,6 +2468,8 @@ void eapol_txcb(void *eb)
 
 bool wpa_sta_in_4way_handshake(void)
 {
+    ESP_LOGV("FUNC", "wpa_sta_in_4way_handshake");
+
     struct wpa_sm *sm = &gWpaSm;
     if ( WPA_SM_STATE(sm) == WPA_MIC_FAILURE || WPA_SM_STATE(sm) == WPA_FIRST_HALF_4WAY_HANDSHAKE
         || WPA_SM_STATE(sm) == WPA_LAST_HALF_4WAY_HANDSHAKE) {

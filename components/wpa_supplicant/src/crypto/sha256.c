@@ -47,6 +47,8 @@
 int hmac_sha256_vector(const u8 *key, size_t key_len, size_t num_elem,
 		       const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "hmac_sha256_vector");
+
 	unsigned char k_pad[64]; /* padding - key XORd with ipad/opad */
 	unsigned char tk[32];
 	const u8 *_addr[11];
@@ -120,5 +122,7 @@ int hmac_sha256_vector(const u8 *key, size_t key_len, size_t num_elem,
 int hmac_sha256(const u8 *key, size_t key_len, const u8 *data,
 		size_t data_len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "hmac_sha256");
+
 	return hmac_sha256_vector(key, key_len, 1, &data, &data_len, mac);
 }

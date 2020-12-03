@@ -12,6 +12,8 @@
 int chap_md5(u8 id, const u8 *secret, size_t secret_len, const u8 *challenge,
 	     size_t challenge_len, u8 *response)
 {
+    ESP_LOGV("FUNC", "chap_md5");
+
 	const u8 *addr[3];
 	size_t len[3];
 

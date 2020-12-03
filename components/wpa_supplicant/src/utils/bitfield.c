@@ -20,6 +20,8 @@ struct bitfield {
 
 struct bitfield * bitfield_alloc(size_t max_bits)
 {
+    ESP_LOGV("FUNC", "bitfield_alloc");
+
 	struct bitfield *bf;
 
 	bf = os_zalloc(sizeof(*bf) + (max_bits + 7) / 8);
@@ -33,12 +35,16 @@ struct bitfield * bitfield_alloc(size_t max_bits)
 
 void bitfield_free(struct bitfield *bf)
 {
+    ESP_LOGV("FUNC", "bitfield_free");
+
 	os_free(bf);
 }
 
 
 void bitfield_set(struct bitfield *bf, size_t bit)
 {
+    ESP_LOGV("FUNC", "bitfield_set");
+
 	if (bit >= bf->max_bits)
 		return;
 	bf->bits[bit / 8] |= BIT(bit % 8);
@@ -47,6 +53,8 @@ void bitfield_set(struct bitfield *bf, size_t bit)
 
 void bitfield_clear(struct bitfield *bf, size_t bit)
 {
+    ESP_LOGV("FUNC", "bitfield_clear");
+
 	if (bit >= bf->max_bits)
 		return;
 	bf->bits[bit / 8] &= ~BIT(bit % 8);
@@ -55,6 +63,8 @@ void bitfield_clear(struct bitfield *bf, size_t bit)
 
 int bitfield_is_set(struct bitfield *bf, size_t bit)
 {
+    ESP_LOGV("FUNC", "bitfield_is_set");
+
 	if (bit >= bf->max_bits)
 		return 0;
 	return !!(bf->bits[bit / 8] & BIT(bit % 8));
@@ -63,6 +73,8 @@ int bitfield_is_set(struct bitfield *bf, size_t bit)
 
 static int first_zero(u8 val)
 {
+    ESP_LOGV("FUNC", "first_zero");
+
 	int i;
 	for (i = 0; i < 8; i++) {
 		if (!(val & 0x01))
@@ -75,6 +87,8 @@ static int first_zero(u8 val)
 
 int bitfield_get_first_zero(struct bitfield *bf)
 {
+    ESP_LOGV("FUNC", "bitfield_get_first_zero");
+
 	size_t i;
 	for (i = 0; i < (bf->max_bits + 7) / 8; i++) {
 		if (bf->bits[i] != 0xff)

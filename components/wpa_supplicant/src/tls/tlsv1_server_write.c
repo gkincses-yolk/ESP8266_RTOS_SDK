@@ -24,6 +24,8 @@
 
 static size_t tls_server_cert_chain_der_len(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tls_server_cert_chain_der_len");
+
 	size_t len = 0;
 	struct x509_certificate *cert;
 
@@ -43,6 +45,8 @@ static size_t tls_server_cert_chain_der_len(struct tlsv1_server *conn)
 static int tls_write_server_hello(struct tlsv1_server *conn,
 				  u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_hello");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length;
 	struct os_time now;
 	size_t rlen;
@@ -157,6 +161,8 @@ static int tls_write_server_hello(struct tlsv1_server *conn,
 static int tls_write_server_certificate(struct tlsv1_server *conn,
 					u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_certificate");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length, *cert_start;
 	size_t rlen;
 	struct x509_certificate *cert;
@@ -244,6 +250,8 @@ static int tls_write_server_certificate(struct tlsv1_server *conn,
 static int tls_write_server_key_exchange(struct tlsv1_server *conn,
 					 u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_key_exchange");
+
 	tls_key_exchange keyx;
 	const struct tls_cipher_suite *suite;
 	u8 *pos, *rhdr, *hs_start, *hs_length;
@@ -437,6 +445,8 @@ static int tls_write_server_key_exchange(struct tlsv1_server *conn,
 static int tls_write_server_certificate_request(struct tlsv1_server *conn,
 						u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_certificate_request");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length;
 	size_t rlen;
 
@@ -503,6 +513,8 @@ static int tls_write_server_certificate_request(struct tlsv1_server *conn,
 static int tls_write_server_hello_done(struct tlsv1_server *conn,
 				       u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_hello_done");
+
 	u8 *pos;
 	size_t rlen;
 	u8 payload[4];
@@ -540,6 +552,8 @@ static int tls_write_server_hello_done(struct tlsv1_server *conn,
 static int tls_write_server_change_cipher_spec(struct tlsv1_server *conn,
 					       u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_change_cipher_spec");
+
 	size_t rlen;
 	u8 payload[1];
 
@@ -573,6 +587,8 @@ static int tls_write_server_change_cipher_spec(struct tlsv1_server *conn,
 static int tls_write_server_finished(struct tlsv1_server *conn,
 				     u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_server_finished");
+
 	u8 *pos, *hs_start;
 	size_t rlen, hlen;
 	u8 verify_data[1 + 3 + TLS_VERIFY_DATA_LEN];
@@ -665,6 +681,8 @@ static int tls_write_server_finished(struct tlsv1_server *conn,
 
 static u8 * tls_send_server_hello(struct tlsv1_server *conn, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tls_send_server_hello");
+
 	u8 *msg, *end, *pos;
 	size_t msglen;
 
@@ -719,6 +737,8 @@ static u8 * tls_send_server_hello(struct tlsv1_server *conn, size_t *out_len)
 static u8 * tls_send_change_cipher_spec(struct tlsv1_server *conn,
 					size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tls_send_change_cipher_spec");
+
 	u8 *msg, *end, *pos;
 
 	*out_len = 0;
@@ -747,6 +767,8 @@ static u8 * tls_send_change_cipher_spec(struct tlsv1_server *conn,
 
 u8 * tlsv1_server_handshake_write(struct tlsv1_server *conn, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_handshake_write");
+
 	switch (conn->state) {
 	case SERVER_HELLO:
 		return tls_send_server_hello(conn, out_len);
@@ -767,6 +789,8 @@ u8 * tlsv1_server_handshake_write(struct tlsv1_server *conn, size_t *out_len)
 u8 * tlsv1_server_send_alert(struct tlsv1_server *conn, u8 level,
 			     u8 description, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_send_alert");
+
 	u8 *alert, *pos, *length;
 
 	wpa_printf(MSG_DEBUG, "TLSv1: Send Alert(%d:%d)", level, description);

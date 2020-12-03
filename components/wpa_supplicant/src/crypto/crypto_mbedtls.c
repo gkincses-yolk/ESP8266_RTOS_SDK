@@ -32,6 +32,8 @@
 int mbedtls_hmac_vector(mbedtls_md_type_t md_type, const u8 *key, size_t key_len,
 		        size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 {
+    printf("FUNC=mbedtls_hmac_vector");
+
 	size_t i;
 	const mbedtls_md_info_t *md_info;
 	mbedtls_md_context_t md_ctx;
@@ -60,6 +62,8 @@ int mbedtls_hmac_vector(mbedtls_md_type_t md_type, const u8 *key, size_t key_len
 int hmac_sha384_vector(const u8 *key, size_t key_len, size_t num_elem,
 		const u8 *addr[], const size_t *len, u8 *mac)
 {
+    printf("FUNC=hmac_sha384_vector");
+
 	return mbedtls_hmac_vector(MBEDTLS_MD_SHA384, key, key_len, num_elem, addr,
 				   len, mac);
 }
@@ -68,5 +72,7 @@ int hmac_sha384_vector(const u8 *key, size_t key_len, size_t num_elem,
 int hmac_sha384(const u8 *key, size_t key_len, const u8 *data,
 		size_t data_len, u8 *mac)
 {
+    printf("FUNC=hmac_sha384");
+
 	return hmac_sha384_vector(key, key_len, 1, &data, &data_len, mac);
 }

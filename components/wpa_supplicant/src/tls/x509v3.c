@@ -17,6 +17,8 @@
 
 static void x509_free_name(struct x509_name *name)
 {
+    ESP_LOGV("FUNC", "x509_free_name");
+
 	size_t i;
 
 	for (i = 0; i < name->num_attr; i++) {
@@ -45,6 +47,8 @@ static void x509_free_name(struct x509_name *name)
  */
 void x509_certificate_free(struct x509_certificate *cert)
 {
+    ESP_LOGV("FUNC", "x509_certificate_free");
+
 	if (cert == NULL)
 		return;
 	if (cert->next) {
@@ -66,6 +70,8 @@ void x509_certificate_free(struct x509_certificate *cert)
  */
 void x509_certificate_chain_free(struct x509_certificate *cert)
 {
+    ESP_LOGV("FUNC", "x509_certificate_chain_free");
+
 	struct x509_certificate *next;
 
 	while (cert) {
@@ -79,12 +85,16 @@ void x509_certificate_chain_free(struct x509_certificate *cert)
 
 static int x509_whitespace(char c)
 {
+    ESP_LOGV("FUNC", "x509_whitespace");
+
 	return c == ' ' || c == '\t';
 }
 
 
 static void x509_str_strip_whitespace(char *a)
 {
+    ESP_LOGV("FUNC", "x509_str_strip_whitespace");
+
 	char *ipos, *opos;
 	int remove_whitespace = 1;
 
@@ -107,6 +117,8 @@ static void x509_str_strip_whitespace(char *a)
 
 static int x509_str_compare(const char *a, const char *b)
 {
+    ESP_LOGV("FUNC", "x509_str_compare");
+
 	char *aa, *bb;
 	int ret;
 
@@ -147,6 +159,8 @@ static int x509_str_compare(const char *a, const char *b)
  */
 int x509_name_compare(struct x509_name *a, struct x509_name *b)
 {
+    ESP_LOGV("FUNC", "x509_name_compare");
+
 	int res;
 	size_t i;
 
@@ -182,6 +196,8 @@ static int x509_parse_algorithm_identifier(
 	const u8 *buf, size_t len,
 	struct x509_algorithm_identifier *id, const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_algorithm_identifier");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
 
@@ -221,6 +237,8 @@ static int x509_parse_public_key(const u8 *buf, size_t len,
 				 struct x509_certificate *cert,
 				 const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_public_key");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
 
@@ -293,6 +311,8 @@ static int x509_parse_public_key(const u8 *buf, size_t len,
 static int x509_parse_name(const u8 *buf, size_t len, struct x509_name *name,
 			   const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_name");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end, *set_pos, *set_end, *seq_pos, *seq_end;
 	struct asn1_oid oid;
@@ -469,6 +489,8 @@ static int x509_parse_name(const u8 *buf, size_t len, struct x509_name *name,
 
 static char * x509_name_attr_str(enum x509_name_attr_type type)
 {
+    ESP_LOGV("FUNC", "x509_name_attr_str");
+
 #ifndef ESPRESSIF_USE	
 	switch (type) {
 	case X509_NAME_ATTR_NOT_USED:
@@ -532,6 +554,8 @@ static char * x509_name_attr_str(enum x509_name_attr_type type)
  */
 void x509_name_string(struct x509_name *name, char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_name_string");
+
 	char *pos, *end;
 	int ret;
 	size_t i;
@@ -574,6 +598,8 @@ done:
 static int x509_parse_time(const u8 *buf, size_t len, u8 asn1_tag,
 			   os_time_t *val)
 {
+    ESP_LOGV("FUNC", "x509_parse_time");
+
 	return 0;
 }
 
@@ -581,6 +607,8 @@ static int x509_parse_time(const u8 *buf, size_t len, u8 asn1_tag,
 static int x509_parse_validity(const u8 *buf, size_t len,
 			       struct x509_certificate *cert, const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_validity");
+
 	struct asn1_hdr hdr;
 	const u8 *pos;
 	size_t plen;
@@ -644,6 +672,8 @@ static int x509_parse_validity(const u8 *buf, size_t len,
 
 static int x509_id_ce_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_id_ce_oid");
+
 	/* id-ce arc from X.509 for standard X.509v3 extensions */
 	return oid->len >= 4 &&
 		oid->oid[0] == 2 /* joint-iso-ccitt */ &&
@@ -655,6 +685,8 @@ static int x509_id_ce_oid(struct asn1_oid *oid)
 static int x509_parse_ext_key_usage(struct x509_certificate *cert,
 				    const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_ext_key_usage");
+
 	struct asn1_hdr hdr;
 
 	/*
@@ -692,6 +724,8 @@ static int x509_parse_ext_key_usage(struct x509_certificate *cert,
 static int x509_parse_ext_basic_constraints(struct x509_certificate *cert,
 					    const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_ext_basic_constraints");
+
 	struct asn1_hdr hdr;
 	unsigned long value;
 	size_t left;
@@ -777,6 +811,8 @@ static int x509_parse_ext_basic_constraints(struct x509_certificate *cert,
 static int x509_parse_alt_name_rfc8222(struct x509_name *name,
 				       const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_alt_name_rfc8222");
+
 	/* rfc822Name IA5String */
 	wpa_hexdump_ascii(MSG_MSGDUMP, "X509: altName - rfc822Name", pos, len);
 	os_free(name->alt_email);
@@ -799,6 +835,8 @@ static int x509_parse_alt_name_rfc8222(struct x509_name *name,
 static int x509_parse_alt_name_dns(struct x509_name *name,
 				   const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_alt_name_dns");
+
 	/* dNSName IA5String */
 	wpa_hexdump_ascii(MSG_MSGDUMP, "X509: altName - dNSName", pos, len);
 	os_free(name->dns);
@@ -821,6 +859,8 @@ static int x509_parse_alt_name_dns(struct x509_name *name,
 static int x509_parse_alt_name_uri(struct x509_name *name,
 				   const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_alt_name_uri");
+
 	/* uniformResourceIdentifier IA5String */
 	wpa_hexdump_ascii(MSG_MSGDUMP,
 			  "X509: altName - uniformResourceIdentifier",
@@ -845,6 +885,8 @@ static int x509_parse_alt_name_uri(struct x509_name *name,
 static int x509_parse_alt_name_ip(struct x509_name *name,
 				       const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_alt_name_ip");
+
 	/* iPAddress OCTET STRING */
 	wpa_hexdump(MSG_MSGDUMP, "X509: altName - iPAddress", pos, len);
 	os_free(name->ip);
@@ -860,6 +902,8 @@ static int x509_parse_alt_name_ip(struct x509_name *name,
 static int x509_parse_alt_name_rid(struct x509_name *name,
 				   const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_alt_name_rid");
+
 	char buf[80];
 
 	/* registeredID OBJECT IDENTIFIER */
@@ -876,6 +920,8 @@ static int x509_parse_alt_name_rid(struct x509_name *name,
 static int x509_parse_ext_alt_name(struct x509_name *name,
 				   const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_ext_alt_name");
+
 	struct asn1_hdr hdr;
 	const u8 *p, *end;
 
@@ -954,6 +1000,8 @@ static int x509_parse_ext_alt_name(struct x509_name *name,
 static int x509_parse_ext_subject_alt_name(struct x509_certificate *cert,
 					   const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_ext_subject_alt_name");
+
 	struct asn1_hdr hdr;
 
 	/* SubjectAltName ::= GeneralNames */
@@ -981,6 +1029,8 @@ static int x509_parse_ext_subject_alt_name(struct x509_certificate *cert,
 static int x509_parse_ext_issuer_alt_name(struct x509_certificate *cert,
 					  const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_ext_issuer_alt_name");
+
 	struct asn1_hdr hdr;
 
 	/* IssuerAltName ::= GeneralNames */
@@ -1009,6 +1059,8 @@ static int x509_parse_extension_data(struct x509_certificate *cert,
 				     struct asn1_oid *oid,
 				     const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_extension_data");
+
 	if (!x509_id_ce_oid(oid))
 		return 1;
 
@@ -1037,6 +1089,8 @@ static int x509_parse_extension_data(struct x509_certificate *cert,
 static int x509_parse_extension(struct x509_certificate *cert,
 				const u8 *pos, size_t len, const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_extension");
+
 	const u8 *end;
 	struct asn1_hdr hdr;
 	struct asn1_oid oid;
@@ -1119,6 +1173,8 @@ static int x509_parse_extension(struct x509_certificate *cert,
 static int x509_parse_extensions(struct x509_certificate *cert,
 				 const u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_parse_extensions");
+
 	const u8 *end;
 	struct asn1_hdr hdr;
 
@@ -1150,6 +1206,8 @@ static int x509_parse_tbs_certificate(const u8 *buf, size_t len,
 				      struct x509_certificate *cert,
 				      const u8 **next)
 {
+    ESP_LOGV("FUNC", "x509_parse_tbs_certificate");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
 	size_t left;
@@ -1342,6 +1400,8 @@ static int x509_parse_tbs_certificate(const u8 *buf, size_t len,
 
 static int x509_rsadsi_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_rsadsi_oid");
+
 	return oid->len >= 4 &&
 		oid->oid[0] == 1 /* iso */ &&
 		oid->oid[1] == 2 /* member-body */ &&
@@ -1352,6 +1412,8 @@ static int x509_rsadsi_oid(struct asn1_oid *oid)
 
 static int x509_pkcs_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_pkcs_oid");
+
 	return oid->len >= 5 &&
 		x509_rsadsi_oid(oid) &&
 		oid->oid[4] == 1 /* pkcs */;
@@ -1360,6 +1422,8 @@ static int x509_pkcs_oid(struct asn1_oid *oid)
 
 static int x509_digest_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_digest_oid");
+
 	return oid->len >= 5 &&
 		x509_rsadsi_oid(oid) &&
 		oid->oid[4] == 2 /* digestAlgorithm */;
@@ -1367,6 +1431,8 @@ static int x509_digest_oid(struct asn1_oid *oid)
 
 static int x509_sha1_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_sha1_oid");
+
 	return oid->len == 6 &&
 		oid->oid[0] == 1 /* iso */ &&
 		oid->oid[1] == 3 /* identified-organization */ &&
@@ -1378,6 +1444,8 @@ static int x509_sha1_oid(struct asn1_oid *oid)
 
 static int x509_sha256_oid(struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "x509_sha256_oid");
+
 	return oid->len == 9 &&
 		oid->oid[0] == 2 /* joint-iso-itu-t */ &&
 		oid->oid[1] == 16 /* country */ &&
@@ -1402,6 +1470,8 @@ static int x509_sha256_oid(struct asn1_oid *oid)
  */
 struct x509_certificate * x509_certificate_parse(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "x509_certificate_parse");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end, *hash_start;
 	struct x509_certificate *cert;
@@ -1509,6 +1579,8 @@ struct x509_certificate * x509_certificate_parse(const u8 *buf, size_t len)
 int x509_certificate_check_signature(struct x509_certificate *issuer,
 				     struct x509_certificate *cert)
 {
+    ESP_LOGV("FUNC", "x509_certificate_check_signature");
+
 	struct crypto_public_key *pk;
 	u8 *data;
 	const u8 *pos, *end, *next, *da_end;
@@ -1721,6 +1793,8 @@ skip_digest_oid:
 
 static int x509_valid_issuer(const struct x509_certificate *cert)
 {
+    ESP_LOGV("FUNC", "x509_valid_issuer");
+
 	if ((cert->extensions_present & X509_EXT_BASIC_CONSTRAINTS) &&
 	    !cert->ca) {
 		wpa_printf(MSG_DEBUG, "X509: Non-CA certificate used as an "
@@ -1758,6 +1832,8 @@ int x509_certificate_chain_validate(struct x509_certificate *trusted,
 				    struct x509_certificate *chain,
 				    int *reason, int disable_time_checks)
 {
+    ESP_LOGV("FUNC", "x509_certificate_chain_validate");
+
 	long unsigned idx;
 	int chain_trusted = 0;
 	struct x509_certificate *cert, *trust;
@@ -1883,10 +1959,11 @@ int x509_certificate_chain_validate(struct x509_certificate *trusted,
  * Returns: Pointer to the certificate with the given Subject name or
  * %NULL on failure
  */
-struct x509_certificate *
-x509_certificate_get_subject(struct x509_certificate *chain,
+struct x509_certificate * x509_certificate_get_subject(struct x509_certificate *chain,
 			     struct x509_name *name)
 {
+    ESP_LOGV("FUNC", "x509_certificate_get_subject");
+
 	struct x509_certificate *cert;
 
 	for (cert = chain; cert; cert = cert->next) {
@@ -1904,5 +1981,7 @@ x509_certificate_get_subject(struct x509_certificate *chain,
  */
 int x509_certificate_self_signed(struct x509_certificate *cert)
 {
+    ESP_LOGV("FUNC", "x509_certificate_self_signed");
+
 	return x509_name_compare(&cert->issuer, &cert->subject) == 0;
 }

@@ -19,9 +19,10 @@
 #include "dh_group5.h"
 
 
-void * 
-dh5_init(struct wpabuf **priv, struct wpabuf **publ)
+void * dh5_init(struct wpabuf **priv, struct wpabuf **publ)
 {
+    ESP_LOGV("FUNC", "dh5_init");
+
 	*publ = dh_init(dh_groups_get(5), priv);
 	if (*publ == 0)
 		return NULL;
@@ -29,10 +30,11 @@ dh5_init(struct wpabuf **priv, struct wpabuf **publ)
 }
 
 
-struct wpabuf * 
-dh5_derive_shared(void *ctx, const struct wpabuf *peer_public,
+struct wpabuf * dh5_derive_shared(void *ctx, const struct wpabuf *peer_public,
 				  const struct wpabuf *own_private)
 {
+    ESP_LOGV("FUNC", "dh5_derive_shared");
+
 	return dh_derive_shared(peer_public, own_private, dh_groups_get(5));
 }
 

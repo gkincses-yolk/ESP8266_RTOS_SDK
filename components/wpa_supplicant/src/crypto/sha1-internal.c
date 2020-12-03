@@ -20,21 +20,12 @@
 #include "md5.h"
 #include "crypto.h"
 
-#if CONFIG_IDF_TARGET_ESP8266
-#undef USE_MBEDTLS_CRYPTO
-#endif
-
-#ifdef USE_MBEDTLS_CRYPTO
-#include "mbedtls/sha1.h"
-#endif
-
 typedef struct SHA1Context SHA1_CTX;
 
 void SHA1Transform(u32 state[5], const unsigned char buffer[64]);
 
 
 
-#ifndef USE_MBEDTLS_CRYPTO
 /**
  * sha1_vector - SHA-1 hash for data vector
  * @num_elem: Number of elements in the data vector
@@ -43,9 +34,10 @@ void SHA1Transform(u32 state[5], const unsigned char buffer[64]);
  * @mac: Buffer for the hash
  * Returns: 0 on success, -1 of failure
  */
-int 
-sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
+int sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 {
+    //ESP_LOGV("FUNC", "sha1_vector");
+
 	SHA1_CTX ctx;
 	size_t i;
 
@@ -55,49 +47,6 @@ sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 	SHA1Final(mac, &ctx);
 	return 0;
 }
-#else 
-/**
- * sha1_vector - SHA-1 hash for data vector
- * @num_elem: Number of elements in the data vector
- * @addr: Pointers to the data areas
- * @len: Lengths of the data blocks
- * @mac: Buffer for the hash
- * Returns: 0 on success, -1 of failure
- */
-int
-sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
-{
-    mbedtls_sha1_context ctx;
-	size_t i;
-    int ret;
-
-    mbedtls_sha1_init( &ctx );
-
-    if ((ret = mbedtls_sha1_starts_ret( &ctx)) != 0) {
-        goto exit;
-    }
-
-
-    for (i = 0; i < num_elem; i++) {
-        if ((ret = mbedtls_sha1_update_ret(&ctx, addr[i], len[i])) != 0) {
-            goto exit;
-        }
-    }
- 
-    if ((ret = mbedtls_sha1_finish_ret( &ctx, mac)) != 0) {
-        goto exit;
-    }
-
-exit:
-    mbedtls_sha1_free( &ctx );
-
-    if (ret) {
-        return -1;
-    }
-
-    return 0;
-}
-#endif
 
 /* ===== start - public domain SHA1 implementation ===== */
 
@@ -214,6 +163,8 @@ A million repetitions of "a"
 #ifdef VERBOSE  /* SAK */
 void SHAPrintContext(SHA1_CTX *context, char *msg)
 {
+    //ESP_LOGV("FUNC", "SHAPrintContext");
+
 	printf("%s (%d,%d) %x %x %x %x %x\n",
 	       msg,
 	       context->count[0], context->count[1], 
@@ -227,9 +178,10 @@ void SHAPrintContext(SHA1_CTX *context, char *msg)
 
 /* Hash a single 512-bit block. This is the core of the algorithm. */
 
-void 
-SHA1Transform(u32 state[5], const unsigned char buffer[64])
+void SHA1Transform(u32 state[5], const unsigned char buffer[64])
 {
+    //ESP_LOGV("FUNC", "SHA1Transform");
+
 	u32 a, b, c, d, e;
 	typedef union {
 		unsigned char c[64];
@@ -286,9 +238,10 @@ SHA1Transform(u32 state[5], const unsigned char buffer[64])
 
 /* SHA1Init - Initialize new context */
 
-void 
-SHA1Init(SHA1_CTX* context)
+void SHA1Init(SHA1_CTX* context)
 {
+    //ESP_LOGV("FUNC", "SHA1Init");
+
 	/* SHA1 initialization constants */
 	context->state[0] = 0x67452301;
 	context->state[1] = 0xEFCDAB89;
@@ -301,9 +254,10 @@ SHA1Init(SHA1_CTX* context)
 
 /* Run your data through this. */
 
-void 
-SHA1Update(SHA1_CTX* context, const void *_data, u32 len)
+void SHA1Update(SHA1_CTX* context, const void *_data, u32 len)
 {
+    ////ESP_LOGV("FUNC", "SHA1Update");
+
 	u32 i, j;
 	const unsigned char *data = _data;
 
@@ -332,9 +286,10 @@ SHA1Update(SHA1_CTX* context, const void *_data, u32 len)
 
 /* Add padding and return the message digest. */
 
-void 
-SHA1Final(unsigned char digest[20], SHA1_CTX* context)
+void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 {
+    //ESP_LOGV("FUNC", "SHA1Final");
+
 	u32 i;
 #if CONFIG_IDF_TARGET_ESP8266
 	unsigned long index;

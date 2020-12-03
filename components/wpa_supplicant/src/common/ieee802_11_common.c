@@ -26,6 +26,8 @@
  */
 const u8 * get_ie(const u8 *ies, size_t len, u8 eid)
 {
+    ESP_LOGV("FUNC", "get_ie");
+
 	const struct element *elem;
 
 	if (!ies)
@@ -40,6 +42,8 @@ const u8 * get_ie(const u8 *ies, size_t len, u8 eid)
 int ieee802_11_parse_candidate_list(const char *pos, u8 *nei_rep,
 				    size_t nei_rep_len)
 {
+    ESP_LOGV("FUNC", "ieee802_11_parse_candidate_list");
+
 	u8 *nei_pos = nei_rep;
 	const char *end;
 
@@ -148,6 +152,8 @@ int ieee802_11_parse_candidate_list(const char *pos, u8 *nei_rep,
  */
 int ieee802_11_parse_elems(struct wpa_supplicant *wpa_s, const u8 *start, size_t len)
 {
+    ESP_LOGV("FUNC", "ieee802_11_parse_elems");
+
 	const struct element *elem;
 
 	if (!start)
@@ -176,6 +182,8 @@ int ieee802_11_parse_elems(struct wpa_supplicant *wpa_s, const u8 *start, size_t
 
 int ieee802_11_ext_capab(const u8 *ie, unsigned int capab)
 {
+    ESP_LOGV("FUNC", "ieee802_11_ext_capab");
+
 	if (!ie || ie[1] <= capab / 8)
 		return 0;
 	return !!(ie[2 + capab / 8] & BIT(capab % 8));
@@ -183,6 +191,8 @@ int ieee802_11_ext_capab(const u8 *ie, unsigned int capab)
 
 u8 get_operating_class(u8 chan, int sec_channel)
 {
+    ESP_LOGV("FUNC", "get_operating_class");
+
 	u8 op_class;
 
 	if (chan < 1 || chan > 14)

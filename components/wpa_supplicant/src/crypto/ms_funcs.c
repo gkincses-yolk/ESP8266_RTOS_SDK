@@ -27,6 +27,8 @@ static int utf8_to_ucs2(const u8 *utf8_string, size_t utf8_string_len,
 	     u8 *ucs2_buffer, size_t ucs2_buffer_size,
 	     size_t *ucs2_string_size)
 {
+    ESP_LOGV("FUNC", "utf8_to_ucs2");
+
 	size_t i, j;
 
 	for (i = 0, j = 0; i < utf8_string_len; i++) {
@@ -82,6 +84,8 @@ static int challenge_hash(const u8 *peer_challenge, const u8 *auth_challenge,
 	       const u8 *username, size_t username_len,
 	       u8 *challenge)
 {
+    ESP_LOGV("FUNC", "challenge_hash");
+
 	u8 hash[SHA1_MAC_LEN];
 	const unsigned char *addr[3];
 	size_t len[3];
@@ -110,6 +114,8 @@ static int challenge_hash(const u8 *peer_challenge, const u8 *auth_challenge,
 int nt_password_hash(const u8 *password, size_t password_len,
 		 u8 *password_hash)
 {
+    ESP_LOGV("FUNC", "nt_password_hash");
+
 	u8 buf[512], *pos;
 	size_t len, max_len;
 
@@ -131,6 +137,8 @@ int nt_password_hash(const u8 *password, size_t password_len,
  */
 int hash_nt_password_hash(const u8 *password_hash, u8 *password_hash_hash)
 {
+    ESP_LOGV("FUNC", "hash_nt_password_hash");
+
 	size_t len = 16;
 	return md4_vector(1, &password_hash, &len, password_hash_hash);
 }
@@ -145,6 +153,8 @@ int hash_nt_password_hash(const u8 *password_hash, u8 *password_hash_hash)
 void challenge_response(const u8 *challenge, const u8 *password_hash,
 		   u8 *response)
 {
+    ESP_LOGV("FUNC", "challenge_response");
+
 	u8 zpwd[7];
 	des_encrypt(challenge, password_hash, response);
 	des_encrypt(challenge, password_hash + 7, response + 8);
@@ -171,6 +181,8 @@ int generate_nt_response(const u8 *auth_challenge, const u8 *peer_challenge,
 		     const u8 *password, size_t password_len,
 		     u8 *response)
 {
+    ESP_LOGV("FUNC", "generate_nt_response");
+
 	u8 challenge[8];
 	u8 password_hash[16];
 
@@ -200,6 +212,8 @@ int generate_nt_response_pwhash(const u8 *auth_challenge,
 			    const u8 *password_hash,
 			    u8 *response)
 {
+    ESP_LOGV("FUNC", "generate_nt_response_pwhash");
+
 	u8 challenge[8];
 
 	if (challenge_hash(peer_challenge, auth_challenge,
@@ -229,6 +243,8 @@ int generate_authenticator_response_pwhash(
 	const u8 *username, size_t username_len,
 	const u8 *nt_response, u8 *response)
 {
+    ESP_LOGV("FUNC", "generate_authenticator_response_pwhash");
+
 	static const u8 magic1[39] = {
 		0x4D, 0x61, 0x67, 0x69, 0x63, 0x20, 0x73, 0x65, 0x72, 0x76,
 		0x65, 0x72, 0x20, 0x74, 0x6F, 0x20, 0x63, 0x6C, 0x69, 0x65,
@@ -288,6 +304,8 @@ int generate_authenticator_response(const u8 *password, size_t password_len,
 				const u8 *username, size_t username_len,
 				const u8 *nt_response, u8 *response)
 {
+    ESP_LOGV("FUNC", "generate_authenticator_response");
+
 	u8 password_hash[16];
 	if (nt_password_hash(password, password_len, password_hash))
 		return -1;
@@ -308,6 +326,8 @@ int generate_authenticator_response(const u8 *password, size_t password_len,
 int nt_challenge_response(const u8 *challenge, const u8 *password,
 		      size_t password_len, u8 *response)
 {
+    ESP_LOGV("FUNC", "nt_challenge_response");
+
 	u8 password_hash[16];
 	if (nt_password_hash(password, password_len, password_hash))
 		return -1;
@@ -326,6 +346,8 @@ int nt_challenge_response(const u8 *challenge, const u8 *password,
 int get_master_key(const u8 *password_hash_hash, const u8 *nt_response,
 	       u8 *master_key)
 {
+    ESP_LOGV("FUNC", "get_master_key");
+
 	static const u8 magic1[27] = {
 		0x54, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, 0x20, 0x74,
 		0x68, 0x65, 0x20, 0x4d, 0x50, 0x50, 0x45, 0x20, 0x4d,
@@ -359,6 +381,8 @@ int get_asymetric_start_key(const u8 *master_key, u8 *session_key,
 			size_t session_key_len, int is_send,
 			int is_server)
 {
+    ESP_LOGV("FUNC", "get_asymetric_start_key");
+
 	static const u8 magic2[84] = {
 		0x4f, 0x6e, 0x20, 0x74, 0x68, 0x65, 0x20, 0x63, 0x6c, 0x69,
 		0x65, 0x6e, 0x74, 0x20, 0x73, 0x69, 0x64, 0x65, 0x2c, 0x20,
@@ -431,6 +455,8 @@ int encrypt_pw_block_with_password_hash(
 	const u8 *password, size_t password_len,
 	const u8 *password_hash, u8 *pw_block)
 {
+    ESP_LOGV("FUNC", "encrypt_pw_block_with_password_hash");
+
 	size_t ucs2_len, offset;
 	u8 *pos;
 
@@ -473,6 +499,8 @@ int new_password_encrypted_with_old_nt_password_hash(
 	const u8 *old_password, size_t old_password_len,
 	u8 *encrypted_pw_block)
 {
+    ESP_LOGV("FUNC", "new_password_encrypted_with_old_nt_password_hash");
+
 	u8 password_hash[16];
 
 	if (nt_password_hash(old_password, old_password_len, password_hash))
@@ -494,6 +522,8 @@ int new_password_encrypted_with_old_nt_password_hash(
 void nt_password_hash_encrypted_with_block(const u8 *password_hash,
 				      const u8 *block, u8 *cypher)
 {
+    ESP_LOGV("FUNC", "nt_password_hash_encrypted_with_block");
+
 	des_encrypt(password_hash, block, cypher);
 	des_encrypt(password_hash + 8, block + 7, cypher + 8);
 }
@@ -513,6 +543,8 @@ int old_nt_password_hash_encrypted_with_new_nt_password_hash(
 	const u8 *old_password, size_t old_password_len,
 	u8 *encrypted_password_hash)
 {
+    ESP_LOGV("FUNC", "old_nt_password_hash_encrypted_with_new_nt_password_hash");
+
 	u8 old_password_hash[16], new_password_hash[16];
 
 	if (nt_password_hash(old_password, old_password_len,

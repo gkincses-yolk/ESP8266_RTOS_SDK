@@ -12,6 +12,8 @@
 #include "os.h"
 #include "base64.h"
 
+#include "esp_log.h"
+
 static const char base64_table[65] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char base64_url_table[65] =
@@ -21,6 +23,8 @@ static const char base64_url_table[65] =
 static char * base64_gen_encode(const unsigned char *src, size_t len,
 				size_t *out_len, const char *table, int add_pad)
 {
+    ESP_LOGV("FUNC", "base64_gen_encode");
+
 	char *out, *pos;
 	const unsigned char *end, *in;
 	size_t olen;
@@ -84,6 +88,8 @@ static char * base64_gen_encode(const unsigned char *src, size_t len,
 static unsigned char * base64_gen_decode(const char *src, size_t len,
 					 size_t *out_len, const char *table)
 {
+    ESP_LOGV("FUNC", "base64_gen_decode");
+
 	unsigned char dtable[256], *out, *pos, block[4], tmp;
 	size_t i, count, olen;
 	int pad = 0;
@@ -164,12 +170,16 @@ static unsigned char * base64_gen_decode(const char *src, size_t len,
  */
 char * base64_encode(const void *src, size_t len, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "base64_encode");
+
 	return base64_gen_encode(src, len, out_len, base64_table, 1);
 }
 
 
 char * base64_url_encode(const void *src, size_t len, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "base64_url_encode");
+
 	return base64_gen_encode(src, len, out_len, base64_url_table, 0);
 }
 
@@ -186,11 +196,15 @@ char * base64_url_encode(const void *src, size_t len, size_t *out_len)
  */
 unsigned char * base64_decode(const char *src, size_t len, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "base64_decode");
+
 	return base64_gen_decode(src, len, out_len, base64_table);
 }
 
 
 unsigned char * base64_url_decode(const char *src, size_t len, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "base64_url_decode");
+
 	return base64_gen_decode(src, len, out_len, base64_url_table);
 }

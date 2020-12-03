@@ -38,6 +38,8 @@ static void pmksa_cache_set_expiration(struct rsn_pmksa_cache *pmksa);
 
 static void _pmksa_cache_free_entry(struct rsn_pmksa_cache_entry *entry)
 {
+    ESP_LOGV("FUNC", "_pmksa_cache_free_entry");
+
     wpa_bin_clear_free(entry, sizeof(*entry));
 }
 
@@ -46,6 +48,8 @@ static void pmksa_cache_free_entry(struct rsn_pmksa_cache *pmksa,
         struct rsn_pmksa_cache_entry *entry,
         enum pmksa_free_reason reason)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_free_entry");
+
     pmksa->pmksa_count--;
     pmksa->free_cb(entry, pmksa->ctx, reason);
     _pmksa_cache_free_entry(entry);
@@ -54,6 +58,8 @@ static void pmksa_cache_free_entry(struct rsn_pmksa_cache *pmksa,
 
 static void pmksa_cache_expire(void *eloop_ctx)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_expire");
+
     struct rsn_pmksa_cache *pmksa = eloop_ctx;
     int64_t now_sec = esp_timer_get_time() / 1e6;
 
@@ -70,6 +76,8 @@ static void pmksa_cache_expire(void *eloop_ctx)
 
 static void pmksa_cache_set_expiration(struct rsn_pmksa_cache *pmksa)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_set_expiration");
+
     int sec;
     int64_t now_sec = esp_timer_get_time() / 1e6;
 
@@ -101,11 +109,12 @@ static void pmksa_cache_set_expiration(struct rsn_pmksa_cache *pmksa)
  * this entry will be replaced with the new entry. PMKID will be calculated
  * based on the PMK and the driver interface is notified of the new PMKID.
  */
-struct rsn_pmksa_cache_entry *
-pmksa_cache_add(struct rsn_pmksa_cache *pmksa, const u8 *pmk, size_t pmk_len,
+struct rsn_pmksa_cache_entry * pmksa_cache_add(struct rsn_pmksa_cache *pmksa, const u8 *pmk, size_t pmk_len,
         const u8 *pmkid, const u8 *kck, size_t kck_len,
         const u8 *aa, const u8 *spa, void *network_ctx, int akmp)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_add");
+
     struct rsn_pmksa_cache_entry *entry, *pos, *prev;
     int64_t now_sec = esp_timer_get_time() / 1e6;
 
@@ -233,6 +242,8 @@ pmksa_cache_add(struct rsn_pmksa_cache *pmksa, const u8 *pmk, size_t pmk_len,
 void pmksa_cache_flush(struct rsn_pmksa_cache *pmksa, void *network_ctx,
         const u8 *pmk, size_t pmk_len)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_flush");
+
     struct rsn_pmksa_cache_entry *entry, *prev = NULL, *tmp;
     int removed = 0;
 
@@ -269,6 +280,8 @@ void pmksa_cache_flush(struct rsn_pmksa_cache *pmksa, void *network_ctx,
  */
 void pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_deinit");
+
     struct rsn_pmksa_cache_entry *entry, *prev;
 
     if (pmksa == NULL)
@@ -300,6 +313,8 @@ struct rsn_pmksa_cache_entry * pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
         const u8 *aa, const u8 *pmkid,
         const void *network_ctx)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_get");
+
     struct rsn_pmksa_cache_entry *entry = pmksa->pmksa;
     while (entry) {
         if ((aa == NULL || os_memcmp(entry->aa, aa, ETH_ALEN) == 0) &&
@@ -313,11 +328,12 @@ struct rsn_pmksa_cache_entry * pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
 }
 
 
-static struct rsn_pmksa_cache_entry *
-pmksa_cache_clone_entry(struct rsn_pmksa_cache *pmksa,
+static struct rsn_pmksa_cache_entry * pmksa_cache_clone_entry(struct rsn_pmksa_cache *pmksa,
         const struct rsn_pmksa_cache_entry *old_entry,
         const u8 *aa)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_clone_entry");
+
     struct rsn_pmksa_cache_entry *new_entry;
 
     new_entry = pmksa_cache_add(pmksa, old_entry->pmk, old_entry->pmk_len,
@@ -346,10 +362,11 @@ pmksa_cache_clone_entry(struct rsn_pmksa_cache *pmksa,
  * new AP is sharing the same PMK as another AP that has the same SSID and has
  * already an entry in PMKSA cache.
  */
-struct rsn_pmksa_cache_entry *
-pmksa_cache_get_opportunistic(struct rsn_pmksa_cache *pmksa, void *network_ctx,
+struct rsn_pmksa_cache_entry * pmksa_cache_get_opportunistic(struct rsn_pmksa_cache *pmksa, void *network_ctx,
         const u8 *aa)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_get_opportunistic");
+
     struct rsn_pmksa_cache_entry *entry = pmksa->pmksa;
 
     wpa_printf(MSG_DEBUG, "RSN: Consider " MACSTR " for OKC", MAC2STR(aa));
@@ -378,6 +395,8 @@ pmksa_cache_get_opportunistic(struct rsn_pmksa_cache *pmksa, void *network_ctx,
  */
 struct rsn_pmksa_cache_entry * pmksa_cache_get_current(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_get_current");
+
     if (sm == NULL)
         return NULL;
     return sm->cur_pmksa;
@@ -390,6 +409,8 @@ struct rsn_pmksa_cache_entry * pmksa_cache_get_current(struct wpa_sm *sm)
  */
 void pmksa_cache_clear_current(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_clear_current");
+
     if (sm == NULL)
         return;
     sm->cur_pmksa = NULL;
@@ -409,6 +430,8 @@ int pmksa_cache_set_current(struct wpa_sm *sm, const u8 *pmkid,
         const u8 *bssid, void *network_ctx,
         int try_opportunistic)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_set_current");
+
     struct rsn_pmksa_cache *pmksa = sm->pmksa;
     wpa_printf(MSG_DEBUG, "RSN: PMKSA cache search - network_ctx=%p "
             "try_opportunistic=%d", network_ctx, try_opportunistic);
@@ -452,6 +475,8 @@ int pmksa_cache_set_current(struct wpa_sm *sm, const u8 *pmkid,
  */
 int pmksa_cache_list(struct rsn_pmksa_cache *pmksa, char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_list");
+
     int i, ret;
     char *pos = buf;
     struct rsn_pmksa_cache_entry *entry;
@@ -492,11 +517,12 @@ int pmksa_cache_list(struct rsn_pmksa_cache *pmksa, char *buf, size_t len)
  * @sm: Pointer to WPA state machine data from wpa_sm_init()
  * Returns: Pointer to PMKSA cache data or %NULL on failure
  */
-struct rsn_pmksa_cache *
-pmksa_cache_init(void (*free_cb)(struct rsn_pmksa_cache_entry *entry,
+struct rsn_pmksa_cache * pmksa_cache_init(void (*free_cb)(struct rsn_pmksa_cache_entry *entry,
             void *ctx, enum pmksa_free_reason reason),
         void *ctx, struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "pmksa_cache_init");
+
     struct rsn_pmksa_cache *pmksa;
 
     pmksa = os_zalloc(sizeof(*pmksa));

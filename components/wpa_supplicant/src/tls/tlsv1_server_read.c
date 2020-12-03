@@ -31,6 +31,8 @@ static int tls_process_change_cipher_spec(struct tlsv1_server *conn,
 static int tls_process_client_hello(struct tlsv1_server *conn, u8 ct,
 				    const u8 *in_data, size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_client_hello");
+
 	const u8 *pos, *end, *c;
 	size_t left, len, i, j;
 	u16 cipher_suite;
@@ -278,6 +280,8 @@ decode_error:
 static int tls_process_certificate(struct tlsv1_server *conn, u8 ct,
 				   const u8 *in_data, size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_certificate");
+
 	const u8 *pos, *end;
 	size_t left, len, list_len, cert_len, idx;
 	u8 type;
@@ -479,6 +483,8 @@ static int tls_process_certificate(struct tlsv1_server *conn, u8 ct,
 static int tls_process_client_key_exchange_rsa(
 	struct tlsv1_server *conn, const u8 *pos, const u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_process_client_key_exchange_rsa");
+
 	u8 *out;
 	size_t outlen, outbuflen;
 	u16 encr_len;
@@ -585,6 +591,8 @@ static int tls_process_client_key_exchange_rsa(
 static int tls_process_client_key_exchange_dh_anon(
 	struct tlsv1_server *conn, const u8 *pos, const u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_process_client_key_exchange_dh_anon");
+
 	const u8 *dh_yc;
 	u16 dh_yc_len;
 	u8 *shared;
@@ -689,6 +697,8 @@ static int tls_process_client_key_exchange_dh_anon(
 static int tls_process_client_key_exchange(struct tlsv1_server *conn, u8 ct,
 					   const u8 *in_data, size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_client_key_exchange");
+
 	const u8 *pos, *end;
 	size_t left, len;
 	u8 type;
@@ -767,6 +777,8 @@ static int tls_process_client_key_exchange(struct tlsv1_server *conn, u8 ct,
 static int tls_process_certificate_verify(struct tlsv1_server *conn, u8 ct,
 					  const u8 *in_data, size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_certificate_verify");
+
 	const u8 *pos, *end;
 	size_t left, len;
 	u8 type;
@@ -1014,6 +1026,8 @@ static int tls_process_change_cipher_spec(struct tlsv1_server *conn,
 					  u8 ct, const u8 *in_data,
 					  size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_change_cipher_spec");
+
 	const u8 *pos;
 	size_t left;
 
@@ -1063,6 +1077,8 @@ static int tls_process_change_cipher_spec(struct tlsv1_server *conn,
 static int tls_process_client_finished(struct tlsv1_server *conn, u8 ct,
 				       const u8 *in_data, size_t *in_len)
 {
+    ESP_LOGV("FUNC", "tls_process_client_finished");
+
 	const u8 *pos, *end;
 	size_t left, len, hlen;
 	u8 verify_data[TLS_VERIFY_DATA_LEN];
@@ -1201,6 +1217,8 @@ static int tls_process_client_finished(struct tlsv1_server *conn, u8 ct,
 int tlsv1_server_process_handshake(struct tlsv1_server *conn, u8 ct,
 				   const u8 *buf, size_t *len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_process_handshake");
+
 	if (ct == TLS_CONTENT_TYPE_ALERT) {
 		if (*len < 2) {
 			wpa_printf(MSG_DEBUG, "TLSv1: Alert underflow");

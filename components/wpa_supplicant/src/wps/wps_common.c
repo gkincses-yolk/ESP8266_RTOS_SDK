@@ -22,6 +22,8 @@
 void wps_kdf(const u8 *key, const u8 *label_prefix, size_t label_prefix_len,
 	     const char *label, u8 *res, size_t res_len)
 {
+    ESP_LOGV("FUNC", "wps_kdf");
+
 	u8 i_buf[4], key_bits[4];
 	const u8 *addr[4];
 	size_t len[4];
@@ -59,6 +61,8 @@ void wps_kdf(const u8 *key, const u8 *label_prefix, size_t label_prefix_len,
 
 int wps_derive_keys(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_derive_keys");
+
 	struct wpabuf *pubkey, *dh_shared;
 	u8 dhkey[SHA256_MAC_LEN], kdk[SHA256_MAC_LEN];
 	const u8 *addr[3];
@@ -137,6 +141,8 @@ int wps_derive_keys(struct wps_data *wps)
 void wps_derive_psk(struct wps_data *wps, const u8 *dev_passwd,
 		    size_t dev_passwd_len)
 {
+    ESP_LOGV("FUNC", "wps_derive_psk");
+
 	u8 hash[SHA256_MAC_LEN];
 
 	hmac_sha256(wps->authkey, WPS_AUTHKEY_LEN, dev_passwd,
@@ -157,6 +163,8 @@ void wps_derive_psk(struct wps_data *wps, const u8 *dev_passwd,
 struct wpabuf * wps_decrypt_encr_settings(struct wps_data *wps, const u8 *encr,
 					  size_t encr_len)
 {
+    ESP_LOGV("FUNC", "wps_decrypt_encr_settings");
+
 	struct wpabuf *decrypted;
 	const size_t block_size = 16;
 	size_t i;
@@ -214,6 +222,8 @@ struct wpabuf * wps_decrypt_encr_settings(struct wps_data *wps, const u8 *encr,
  */
 unsigned int wps_pin_checksum(unsigned int pin)
 {
+    ESP_LOGV("FUNC", "wps_pin_checksum");
+
 	unsigned int accum = 0;
 	while (pin) {
 		accum += 3 * (pin % 10);
@@ -233,6 +243,8 @@ unsigned int wps_pin_checksum(unsigned int pin)
  */
 unsigned int wps_pin_valid(unsigned int pin)
 {
+    ESP_LOGV("FUNC", "wps_pin_valid");
+
 	return wps_pin_checksum(pin / 10) == (pin % 10);
 }
 
@@ -243,6 +255,8 @@ unsigned int wps_pin_valid(unsigned int pin)
  */
 unsigned int wps_generate_pin(void)
 {
+    ESP_LOGV("FUNC", "wps_generate_pin");
+
 	unsigned int val;
 
 	/* Generate seven random digits for the PIN */
@@ -258,6 +272,8 @@ unsigned int wps_generate_pin(void)
 
 int wps_pin_str_valid(const char *pin)
 {
+    ESP_LOGV("FUNC", "wps_pin_str_valid");
+
 	const char *p;
 	size_t len;
 
@@ -275,6 +291,8 @@ int wps_pin_str_valid(const char *pin)
 void wps_fail_event(struct wps_context *wps, enum wps_msg_type msg,
 		    u16 config_error, u16 error_indication)
 {
+    ESP_LOGV("FUNC", "wps_fail_event");
+
 	union wps_event_data *data;
 
         data = (union wps_event_data *)os_zalloc(sizeof(union wps_event_data));
@@ -297,6 +315,8 @@ void wps_fail_event(struct wps_context *wps, enum wps_msg_type msg,
 
 void wps_success_event(struct wps_context *wps)
 {
+    ESP_LOGV("FUNC", "wps_success_event");
+
 	if (wps->event_cb == NULL)
 		return;
 
@@ -306,6 +326,8 @@ void wps_success_event(struct wps_context *wps)
 
 void wps_pwd_auth_fail_event(struct wps_context *wps, int enrollee, int part)
 {
+    ESP_LOGV("FUNC", "wps_pwd_auth_fail_event");
+
 	union wps_event_data *data;
 
         data = (union wps_event_data *)os_zalloc(sizeof(union wps_event_data));
@@ -327,6 +349,8 @@ void wps_pwd_auth_fail_event(struct wps_context *wps, int enrollee, int part)
 
 void wps_pbc_overlap_event(struct wps_context *wps)
 {
+    ESP_LOGV("FUNC", "wps_pbc_overlap_event");
+
 	if (wps->event_cb == NULL)
 		return;
 
@@ -336,6 +360,8 @@ void wps_pbc_overlap_event(struct wps_context *wps)
 
 void wps_pbc_timeout_event(struct wps_context *wps)
 {
+    ESP_LOGV("FUNC", "wps_pbc_timeout_event");
+
 	if (wps->event_cb == NULL)
 		return;
 
@@ -347,6 +373,8 @@ void wps_pbc_timeout_event(struct wps_context *wps)
 
 struct wpabuf * wps_get_oob_cred(struct wps_context *wps)
 {
+    ESP_LOGV("FUNC", "wps_get_oob_cred");
+
 	struct wps_data *data;
 	struct wpabuf *plain;
 
@@ -384,6 +412,8 @@ struct wpabuf * wps_build_nfc_pw_token(u16 dev_pw_id,
 				       const struct wpabuf *pubkey,
 				       const struct wpabuf *dev_pw)
 {
+    ESP_LOGV("FUNC", "wps_build_nfc_pw_token");
+
 	struct wpabuf *data;
 
 	data = wpabuf_alloc(200);
@@ -407,6 +437,8 @@ struct wpabuf * wps_build_nfc_pw_token(u16 dev_pw_id,
 
 int wps_oob_use_cred(struct wps_context *wps, struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_oob_use_cred");
+
 	struct wpabuf msg;
 	size_t i;
 
@@ -434,6 +466,8 @@ int wps_oob_use_cred(struct wps_context *wps, struct wps_parse_attr *attr)
 
 int wps_dev_type_str2bin(const char *str, u8 dev_type[WPS_DEV_TYPE_LEN])
 {
+    ESP_LOGV("FUNC", "wps_dev_type_str2bin");
+
 	const char *pos;
 
 	/* <categ>-<OUI>-<subcateg> */
@@ -458,6 +492,8 @@ int wps_dev_type_str2bin(const char *str, u8 dev_type[WPS_DEV_TYPE_LEN])
 char * wps_dev_type_bin2str(const u8 dev_type[WPS_DEV_TYPE_LEN], char *buf,
 			    size_t buf_len)
 {
+    ESP_LOGV("FUNC", "wps_dev_type_bin2str");
+
 	int ret;
 
 	ret = snprintf(buf, buf_len, "%u-%08X-%u",
@@ -472,6 +508,8 @@ char * wps_dev_type_bin2str(const u8 dev_type[WPS_DEV_TYPE_LEN], char *buf,
 
 void uuid_gen_mac_addr(const u8 *mac_addr, u8 *uuid)
 {
+    ESP_LOGV("FUNC", "uuid_gen_mac_addr");
+
 	const u8 *addr[2];
 	size_t len[2];
 	u8 hash[SHA1_MAC_LEN];
@@ -500,6 +538,8 @@ void uuid_gen_mac_addr(const u8 *mac_addr, u8 *uuid)
 
 u16 wps_config_methods_str2bin(const char *str)
 {
+    ESP_LOGV("FUNC", "wps_config_methods_str2bin");
+
 	u16 methods = 0;
 
 	if (str == NULL) {
@@ -546,6 +586,8 @@ u16 wps_config_methods_str2bin(const char *str)
 
 struct wpabuf * wps_build_wsc_ack(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_wsc_ack");
+
 	struct wpabuf *msg;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message WSC_ACK");
@@ -569,6 +611,8 @@ struct wpabuf * wps_build_wsc_ack(struct wps_data *wps)
 
 struct wpabuf * wps_build_wsc_nack(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_wsc_nack");
+
 	struct wpabuf *msg;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message WSC_NACK");
@@ -596,6 +640,8 @@ struct wpabuf * wps_nfc_token_gen(int ndef, int *id, struct wpabuf **pubkey,
 				  struct wpabuf **privkey,
 				  struct wpabuf **dev_pw)
 {
+    ESP_LOGV("FUNC", "wps_nfc_token_gen");
+
 	struct wpabuf *priv = NULL, *pub = NULL, *pw, *ret;
 	void *dh_ctx;
 	u16 val;

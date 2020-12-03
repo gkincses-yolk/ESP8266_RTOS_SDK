@@ -23,6 +23,8 @@ static void MD4Final(unsigned char digest[MD4_DIGEST_LENGTH], MD4_CTX *ctx);
 
 int md4_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "md4_vector");
+
 	MD4_CTX ctx;
 	size_t i;
 
@@ -62,6 +64,8 @@ static u8 PADDING[MD4_BLOCK_LENGTH] = {
 
 static void MD4Init(MD4_CTX *ctx)
 {
+    ESP_LOGV("FUNC", "MD4Init");
+
 	ctx->count = 0;
 	ctx->state[0] = 0x67452301;
 	ctx->state[1] = 0xefcdab89;
@@ -71,6 +75,8 @@ static void MD4Init(MD4_CTX *ctx)
 
 static void MD4Update(MD4_CTX *ctx, const unsigned char *input, size_t len)
 {
+    ESP_LOGV("FUNC", "MD4Update");
+
 	size_t have, need;
 
 	have = (size_t)((ctx->count >> 3) & (MD4_BLOCK_LENGTH - 1));
@@ -100,6 +106,8 @@ static void MD4Update(MD4_CTX *ctx, const unsigned char *input, size_t len)
 
 static void MD4Pad(MD4_CTX *ctx)
 {
+    ESP_LOGV("FUNC", "MD4Pad");
+
 	u8 count[8];
 	size_t padlen;
 
@@ -115,6 +123,8 @@ static void MD4Pad(MD4_CTX *ctx)
 
 static void MD4Final(unsigned char digest[MD4_DIGEST_LENGTH], MD4_CTX *ctx)
 {
+    ESP_LOGV("FUNC", "MD4Final");
+
 	int i;
 
 	MD4Pad(ctx);
@@ -134,6 +144,8 @@ static void MD4Final(unsigned char digest[MD4_DIGEST_LENGTH], MD4_CTX *ctx)
 
 static void MD4Transform(u32 state[4], const u8 block[MD4_BLOCK_LENGTH])
 {
+    ESP_LOGV("FUNC", "MD4Transform");
+
 	u32 a, b, c, d, in[MD4_BLOCK_LENGTH / 4];
 
 	os_memcpy(in, block, sizeof(in));

@@ -21,6 +21,8 @@
 /*TBD Move the this api to proper files once they are taken out of lib*/
 void wpabuf_clear_free(struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "wpabuf_clear_free");
+
     if (buf) {
         os_memset(wpabuf_mhead(buf), 0, wpabuf_len(buf));
         wpabuf_free(buf);
@@ -29,6 +31,8 @@ void wpabuf_clear_free(struct wpabuf *buf)
 
 int sae_set_group(struct sae_data *sae, int group)
 {
+    ESP_LOGV("FUNC", "sae_set_group");
+
 	struct sae_temporary_data *tmp;
 
 	sae_clear_data(sae);
@@ -75,6 +79,8 @@ int sae_set_group(struct sae_data *sae, int group)
 
 void sae_clear_temp_data(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_clear_temp_data");
+
 	struct sae_temporary_data *tmp;
 	if (sae == NULL || sae->tmp == NULL)
 		return;
@@ -93,6 +99,8 @@ void sae_clear_temp_data(struct sae_data *sae)
 
 void sae_clear_data(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_clear_data");
+
 	if (sae == NULL)
 		return;
 	sae_clear_temp_data(sae);
@@ -102,6 +110,8 @@ void sae_clear_data(struct sae_data *sae)
 
 static void buf_shift_right(u8 *buf, size_t len, size_t bits)
 {
+    ESP_LOGV("FUNC", "buf_shift_right");
+
 	size_t i;
 	for (i = len - 1; i > 0; i--)
 		buf[i] = (buf[i - 1] << (8 - bits)) | (buf[i] >> bits);
@@ -110,6 +120,8 @@ static void buf_shift_right(u8 *buf, size_t len, size_t bits)
 
 static struct crypto_bignum * sae_get_rand(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_get_rand");
+
 	u8 val[SAE_MAX_PRIME_LEN];
 	int iter = 0;
 	struct crypto_bignum *bn = NULL;
@@ -142,6 +154,8 @@ static struct crypto_bignum * sae_get_rand(struct sae_data *sae)
 
 static struct crypto_bignum * sae_get_rand_and_mask(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_get_rand_and_mask");
+
 	crypto_bignum_deinit(sae->tmp->sae_rand, 1);
 	sae->tmp->sae_rand = sae_get_rand(sae);
 	if (sae->tmp->sae_rand == NULL)
@@ -151,6 +165,8 @@ static struct crypto_bignum * sae_get_rand_and_mask(struct sae_data *sae)
 
 static void sae_pwd_seed_key(const u8 *addr1, const u8 *addr2, u8 *key)
 {
+    ESP_LOGV("FUNC", "sae_pwd_seed_key");
+
 	wpa_printf(MSG_DEBUG, "SAE: PWE derivation - addr1=" MACSTR
 		   " addr2=" MACSTR, MAC2STR(addr1), MAC2STR(addr2));
 	if (os_memcmp(addr1, addr2, ETH_ALEN) > 0) {
@@ -165,6 +181,8 @@ static void sae_pwd_seed_key(const u8 *addr1, const u8 *addr2, u8 *key)
 static int sae_test_pwd_seed_ffc(struct sae_data *sae, const u8 *pwd_seed,
 				 struct crypto_bignum *pwe)
 {
+    ESP_LOGV("FUNC", "sae_test_pwd_seed_ffc");
+
 	u8 pwd_value[SAE_MAX_PRIME_LEN];
 	size_t bits = sae->tmp->prime_len * 8;
 	u8 exp[1];
@@ -237,6 +255,8 @@ static int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
 			      const u8 *addr2, const u8 *password,
 			      size_t password_len, const char *identifier)
 {
+    ESP_LOGV("FUNC", "sae_derive_pwe_ffc");
+
 	u8 counter;
 	u8 addrs[2 * ETH_ALEN];
 	const u8 *addr[3];
@@ -301,6 +321,8 @@ static int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
 static int sae_derive_commit_element_ffc(struct sae_data *sae,
 					 struct crypto_bignum *mask)
 {
+    ESP_LOGV("FUNC", "sae_derive_commit_element_ffc");
+
 	/* COMMIT-ELEMENT = inverse(scalar-op(mask, PWE)) */
 	if (!sae->tmp->own_commit_element_ffc) {
 		sae->tmp->own_commit_element_ffc = crypto_bignum_init();
@@ -322,6 +344,8 @@ static int sae_derive_commit_element_ffc(struct sae_data *sae,
 
 static int sae_derive_commit(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_derive_commit");
+
 	struct crypto_bignum *mask;
 	int ret = -1;
 	unsigned int counter = 0;
@@ -370,6 +394,8 @@ int sae_prepare_commit(const u8 *addr1, const u8 *addr2,
 		       const u8 *password, size_t password_len,
 		       const char *identifier, struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_prepare_commit");
+
 	if (sae->tmp == NULL ||
 	    (sae->tmp->dh && sae_derive_pwe_ffc(sae, addr1, addr2, password,
 						password_len,
@@ -381,6 +407,8 @@ int sae_prepare_commit(const u8 *addr1, const u8 *addr2,
 
 static int sae_derive_k_ffc(struct sae_data *sae, u8 *k)
 {
+    ESP_LOGV("FUNC", "sae_derive_k_ffc");
+
 	struct crypto_bignum *K;
 	int ret = -1;
 
@@ -418,6 +446,8 @@ fail:
 
 static int sae_derive_keys(struct sae_data *sae, const u8 *k)
 {
+    ESP_LOGV("FUNC", "sae_derive_keys");
+
 	u8 null_key[SAE_KEYSEED_KEY_LEN], val[SAE_MAX_PRIME_LEN];
 	u8 keyseed[SHA256_MAC_LEN];
 	u8 keys[SAE_KCK_LEN + SAE_PMK_LEN];
@@ -463,6 +493,8 @@ fail:
 
 int sae_process_commit(struct sae_data *sae)
 {
+    ESP_LOGV("FUNC", "sae_process_commit");
+
 	u8 k[SAE_MAX_PRIME_LEN];
 	if (sae->tmp == NULL ||
 	    (sae->tmp->dh && sae_derive_k_ffc(sae, k) < 0) ||
@@ -474,6 +506,8 @@ int sae_process_commit(struct sae_data *sae)
 int sae_write_commit(struct sae_data *sae, struct wpabuf *buf,
 		      const struct wpabuf *token, const char *identifier)
 {
+    ESP_LOGV("FUNC", "sae_write_commit");
+
 	u8 *pos;
 
 	if (sae->tmp == NULL)
@@ -516,6 +550,8 @@ int sae_write_commit(struct sae_data *sae, struct wpabuf *buf,
 
 u16 sae_group_allowed(struct sae_data *sae, int *allowed_groups, u16 group)
 {
+    ESP_LOGV("FUNC", "sae_group_allowed");
+
 	if (allowed_groups) {
 		int i;
 		for (i = 0; allowed_groups[i] > 0; i++) {
@@ -557,6 +593,8 @@ u16 sae_group_allowed(struct sae_data *sae, int *allowed_groups, u16 group)
 
 static int sae_is_password_id_elem(const u8 *pos, const u8 *end)
 {
+    ESP_LOGV("FUNC", "sae_is_password_id_elem");
+
 	int ret = end - pos >= 3 &&
 		pos[0] == WLAN_EID_EXTENSION &&
 		pos[1] >= 1 &&
@@ -570,6 +608,8 @@ static void sae_parse_commit_token(struct sae_data *sae, const u8 **pos,
 				   const u8 *end, const u8 **token,
 				   size_t *token_len)
 {
+    ESP_LOGV("FUNC", "sae_parse_commit_token");
+
 	size_t scalar_elem_len, tlen;
 	const u8 *elem;
 
@@ -625,6 +665,8 @@ static void sae_parse_commit_token(struct sae_data *sae, const u8 **pos,
 static u16 sae_parse_commit_scalar(struct sae_data *sae, const u8 **pos,
 				   const u8 *end)
 {
+    ESP_LOGV("FUNC", "sae_parse_commit_scalar");
+
 	struct crypto_bignum *peer_scalar;
 
 	if (sae->tmp->prime_len > end - *pos) {
@@ -671,6 +713,8 @@ static u16 sae_parse_commit_scalar(struct sae_data *sae, const u8 **pos,
 static u16 sae_parse_commit_element_ffc(struct sae_data *sae, const u8 **pos,
 					const u8 *end)
 {
+    ESP_LOGV("FUNC", "sae_parse_commit_element_ffc");
+
 	struct crypto_bignum *res, *one;
 	const u8 one_bin[1] = { 0x01 };
 
@@ -720,12 +764,16 @@ static u16 sae_parse_commit_element_ffc(struct sae_data *sae, const u8 **pos,
 static u16 sae_parse_commit_element(struct sae_data *sae, const u8 **pos,
 				    const u8 *end)
 {
+    ESP_LOGV("FUNC", "sae_parse_commit_element");
+
     return sae_parse_commit_element_ffc(sae, pos, end);
 }
 
 static int sae_parse_password_identifier(struct sae_data *sae,
 					 const u8 *pos, const u8 *end)
 {
+    ESP_LOGV("FUNC", "sae_parse_password_identifier");
+
 	wpa_hexdump(MSG_DEBUG, "SAE: Possible elements at the end of the frame",
 		    pos, end - pos);
 	if (!sae_is_password_id_elem(pos, end)) {
@@ -761,6 +809,8 @@ static int sae_parse_password_identifier(struct sae_data *sae,
 u16 sae_parse_commit(struct sae_data *sae, const u8 *data, size_t len,
 		     const u8 **token, size_t *token_len, int *allowed_groups)
 {
+    ESP_LOGV("FUNC", "sae_parse_commit");
+
 	const u8 *pos = data, *end = data + len;
 	u16 res;
 
@@ -818,6 +868,8 @@ static void sae_cn_confirm(struct sae_data *sae, const u8 *sc,
 			   const u8 *element2, size_t element2_len,
 			   u8 *confirm)
 {
+    ESP_LOGV("FUNC", "sae_cn_confirm");
+
 	const u8 *addr[5];
 	size_t len[5];
 	u8 scalar_b1[SAE_MAX_PRIME_LEN], scalar_b2[SAE_MAX_PRIME_LEN];
@@ -855,6 +907,8 @@ static int sae_cn_confirm_ffc(struct sae_data *sae, const u8 *sc,
 			      const struct crypto_bignum *element2,
 			      u8 *confirm)
 {
+    ESP_LOGV("FUNC", "sae_cn_confirm_ffc");
+
 	u8 element_b1[SAE_MAX_PRIME_LEN];
 	u8 element_b2[SAE_MAX_PRIME_LEN];
 
@@ -876,6 +930,8 @@ static int sae_cn_confirm_ffc(struct sae_data *sae, const u8 *sc,
 
 int sae_write_confirm(struct sae_data *sae, struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "sae_write_confirm");
+
 	const u8 *sc;
 
 	if (sae->tmp == NULL)
@@ -900,6 +956,8 @@ int sae_write_confirm(struct sae_data *sae, struct wpabuf *buf)
 
 int sae_check_confirm(struct sae_data *sae, const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "sae_check_confirm");
+
 	u8 verifier[SHA256_MAC_LEN];
 
 	if (len < 2 + SHA256_MAC_LEN) {
@@ -937,6 +995,8 @@ int sae_check_confirm(struct sae_data *sae, const u8 *data, size_t len)
 
 const char * sae_state_txt(enum sae_state state)
 {
+    ESP_LOGV("FUNC", "sae_state_txt");
+
 	switch (state) {
 	case SAE_NOTHING:
 		return "Nothing";

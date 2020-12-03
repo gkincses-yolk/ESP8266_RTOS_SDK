@@ -22,6 +22,8 @@
  */
 void inc_byte_array(u8 *counter, size_t len)
 {
+    ESP_LOGV("FUNC", "inc_byte_array");
+
 	int pos = len - 1;
 	while (pos >= 0) {
 		counter[pos]++;
@@ -33,6 +35,8 @@ void inc_byte_array(u8 *counter, size_t len)
 
 static int hex2num(char c)
 {
+    ESP_LOGV("FUNC", "hex2num");
+
 	if (c >= '0' && c <= '9')
 		return c - '0';
 	if (c >= 'a' && c <= 'f')
@@ -45,6 +49,8 @@ static int hex2num(char c)
 
 int hex2byte(const char *hex)
 {
+    ESP_LOGV("FUNC", "hex2byte");
+
 	int a, b;
 	a = hex2num(*hex++);
 	if (a < 0)
@@ -66,6 +72,8 @@ int hex2byte(const char *hex)
  */
 int hexstr2bin(const char *hex, u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "hexstr2bin");
+
 	size_t i;
 	int a;
 	const char *ipos = hex;
@@ -83,6 +91,8 @@ int hexstr2bin(const char *hex, u8 *buf, size_t len)
 
 void wpa_get_ntp_timestamp(u8 *buf)
 {
+    ESP_LOGV("FUNC", "wpa_get_ntp_timestamp");
+
 	struct os_time now;
 	u32 sec, usec;
 	be32 tmp;
@@ -100,6 +110,8 @@ void wpa_get_ntp_timestamp(u8 *buf)
 }
 void printf_encode(char *txt, size_t maxlen, const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "printf_encode");
+
 	char *end = txt + maxlen;
 	size_t i;
 
@@ -149,6 +161,8 @@ void printf_encode(char *txt, size_t maxlen, const u8 *data, size_t len)
 
 size_t printf_decode(u8 *buf, size_t maxlen, const char *str)
 {
+    ESP_LOGV("FUNC", "printf_decode");
+
 	const char *pos = str;
 	size_t len = 0;
 	int val;
@@ -232,6 +246,8 @@ size_t printf_decode(u8 *buf, size_t maxlen, const char *str)
 
 char * wpa_config_parse_string(const char *value, size_t *len)
 {
+    ESP_LOGV("FUNC", "wpa_config_parse_string");
+
 	if (*value == '"') {
 		const char *pos;
 		char *str;
@@ -302,6 +318,8 @@ char * wpa_config_parse_string(const char *value, size_t *len)
 
 int wpa_is_hex(const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_is_hex");
+
 	size_t i;
 
 	for (i = 0; i < len; i++) {
@@ -316,6 +334,8 @@ size_t wpa_merge_byte_arrays(u8 *res, size_t res_len,
 			 const u8 *src1, size_t src1_len,
 			 const u8 *src2, size_t src2_len)
 {
+    ESP_LOGV("FUNC", "wpa_merge_byte_arrays");
+
 	size_t len = 0;
 
 	os_memset(res, 0, res_len);
@@ -346,6 +366,8 @@ size_t wpa_merge_byte_arrays(u8 *res, size_t res_len,
 
 char * dup_binstr(const void *src, size_t len)
 {
+    ESP_LOGV("FUNC", "dup_binstr");
+
 	char *res;
 
 	if (src == NULL)
@@ -360,6 +382,8 @@ char * dup_binstr(const void *src, size_t len)
 }
 void wpa_bin_clear_free(void *bin, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_bin_clear_free");
+
 	if (bin) {
 		os_memset(bin, 0, len);
 		os_free(bin);
@@ -368,6 +392,8 @@ void wpa_bin_clear_free(void *bin, size_t len)
 
 int int_array_len(const int *a)
 {
+    ESP_LOGV("FUNC", "int_array_len");
+
 	int i;
 	for (i = 0; a && a[i]; i++)
 		;
@@ -376,6 +402,8 @@ int int_array_len(const int *a)
 
 void bin_clear_free(void *bin, size_t len)
 {
+    ESP_LOGV("FUNC", "bin_clear_free");
+
 	if (bin) {
 		os_memset(bin, 0, len);
 		os_free(bin);
@@ -384,6 +412,8 @@ void bin_clear_free(void *bin, size_t len)
 
 void str_clear_free(char *str)
 {
+    ESP_LOGV("FUNC", "str_clear_free");
+
 	if (str) {
 		size_t len = os_strlen(str);
 		os_memset(str, 0, len);
@@ -393,6 +423,8 @@ void str_clear_free(char *str)
 
 int os_gmtime(os_time_t t, struct os_tm *tm)
 {
+    ESP_LOGV("FUNC", "os_gmtime");
+
 	struct tm *tm2;
 	time_t t2 = t;
 
@@ -411,6 +443,8 @@ int os_gmtime(os_time_t t, struct os_tm *tm)
 int os_mktime(int year, int month, int day, int hour, int min, int sec,
 		os_time_t *t)
 {
+    ESP_LOGV("FUNC", "os_mktime");
+
 	struct tm tm;
 
 	if (year < 1970 || month < 1 || month > 12 || day < 1 || day > 31 ||
@@ -432,6 +466,8 @@ int os_mktime(int year, int month, int day, int hour, int min, int sec,
 
 char * get_param(const char *cmd, const char *param)
 {
+    ESP_LOGV("FUNC", "get_param");
+
 	const char *pos, *end;
 	char *val;
 	size_t len;
@@ -456,6 +492,8 @@ char * get_param(const char *cmd, const char *param)
 
 void * os_memdup(const void *src, size_t len)
 {
+    ESP_LOGV("FUNC", "os_memdup");
+
 	void *r = os_malloc(len);
 
 	if (r && src)
@@ -471,6 +509,8 @@ void * os_memdup(const void *src, size_t len)
  */
 int hwaddr_aton2(const char *txt, u8 *addr)
 {
+    ESP_LOGV("FUNC", "hwaddr_aton2");
+
 	int i;
 	const char *pos = txt;
 
@@ -496,6 +536,8 @@ static inline int os_reltime_expired(struct os_time *now,
 				     struct os_time *ts,
 				     os_time_t timeout_secs)
 {
+    ESP_LOGV("FUNC", "os_reltime_expired");
+
 	struct os_time age;
 
 	os_time_sub(now, ts, &age);
@@ -507,11 +549,15 @@ int os_time_expired(struct os_time *now,
 		struct os_time *ts,
 		os_time_t timeout_secs)
 {
+    ESP_LOGV("FUNC", "os_time_expired");
+
 	return os_reltime_expired(now, ts, timeout_secs);
 }
 
 u8 rssi_to_rcpi(int rssi)
 {
+    ESP_LOGV("FUNC", "rssi_to_rcpi");
+
 	if (!rssi)
 		return 255; /* not available */
 	if (rssi < -110)
@@ -537,6 +583,8 @@ u8 rssi_to_rcpi(int rssi)
  */
 const char * wpa_ssid_txt(const u8 *ssid, size_t ssid_len)
 {
+    ESP_LOGV("FUNC", "wpa_ssid_txt");
+
 	static char ssid_txt[SSID_MAX_LEN * 4 + 1];
 
 	if (ssid == NULL) {

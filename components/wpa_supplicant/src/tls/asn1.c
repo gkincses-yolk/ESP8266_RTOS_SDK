@@ -13,6 +13,8 @@
 
 int asn1_get_next(const u8 *buf, size_t len, struct asn1_hdr *hdr)
 {
+    ESP_LOGV("FUNC", "asn1_get_next");
+
 	const u8 *pos, *end;
 	u8 tmp;
 
@@ -78,6 +80,8 @@ int asn1_get_next(const u8 *buf, size_t len, struct asn1_hdr *hdr)
 
 int asn1_parse_oid(const u8 *buf, size_t len, struct asn1_oid *oid)
 {
+    ESP_LOGV("FUNC", "asn1_parse_oid");
+
 	const u8 *pos, *end;
 	unsigned long val;
 	u8 tmp;
@@ -123,6 +127,8 @@ int asn1_parse_oid(const u8 *buf, size_t len, struct asn1_oid *oid)
 int asn1_get_oid(const u8 *buf, size_t len, struct asn1_oid *oid,
 		 const u8 **next)
 {
+    ESP_LOGV("FUNC", "asn1_get_oid");
+
 	struct asn1_hdr hdr;
 
 	if (asn1_get_next(buf, len, &hdr) < 0 || hdr.length == 0)
@@ -142,6 +148,8 @@ int asn1_get_oid(const u8 *buf, size_t len, struct asn1_oid *oid,
 
 void asn1_oid_to_str(struct asn1_oid *oid, char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "asn1_oid_to_str");
+
 	char *pos = buf;
 	size_t i;
 	int ret;
@@ -165,6 +173,8 @@ void asn1_oid_to_str(struct asn1_oid *oid, char *buf, size_t len)
 
 static u8 rotate_bits(u8 octet)
 {
+    ESP_LOGV("FUNC", "rotate_bits");
+
 	int i;
 	u8 res;
 
@@ -182,6 +192,8 @@ static u8 rotate_bits(u8 octet)
 
 unsigned long asn1_bit_string_to_long(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "asn1_bit_string_to_long");
+
 	unsigned long val = 0;
 	const u8 *pos = buf;
 

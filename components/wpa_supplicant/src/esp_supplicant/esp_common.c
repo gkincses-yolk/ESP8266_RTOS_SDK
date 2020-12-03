@@ -40,6 +40,8 @@ static void *s_supplicant_api_lock = NULL;
 static int esp_handle_action_frm(u8 *frame, size_t len,
 				 u8 *sender, u32 rssi, u8 channel)
 {
+    ESP_LOGV("FUNC", "esp_handle_action_frm");
+
 	struct ieee_mgmt_frame *frm = os_malloc(sizeof(struct ieee_mgmt_frame) + len);
 
 	if (!frm) {
@@ -64,6 +66,8 @@ static int esp_handle_action_frm(u8 *frame, size_t len,
 static void esp_handle_rrm_frame(struct wpa_supplicant *wpa_s, u8 *sender,
 				 u8 *payload, size_t len, u32 rssi)
 {
+    ESP_LOGV("FUNC", "esp_handle_rrm_frame");
+
 	if (payload[0] == WLAN_RRM_NEIGHBOR_REPORT_RESPONSE) {
 		/* neighbor report parsing */
 		wpas_rrm_process_neighbor_rep(wpa_s, payload + 1, len - 1);
@@ -80,6 +84,8 @@ static void esp_handle_rrm_frame(struct wpa_supplicant *wpa_s, u8 *sender,
 
 static int esp_mgmt_rx_action(u8 *sender, u8 *payload, size_t len, u8 channel, u32 rssi)
 {
+    ESP_LOGV("FUNC", "esp_mgmt_rx_action");
+
 	u8 category;
 	u8 bssid[ETH_ALEN];
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
@@ -103,6 +109,8 @@ static int esp_mgmt_rx_action(u8 *sender, u8 *payload, size_t len, u8 channel, u
 
 static void esp_supplicant_task(void *pvParameters)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_task");
+
 	supplicant_event_t *evt;
 	bool task_del = false;
 
@@ -159,6 +167,8 @@ static void esp_supplicant_task(void *pvParameters)
 
 static void esp_clear_bssid_flag(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_clear_bssid_flag");
+
 	wifi_config_t *config;
 
 	/* Reset only if btm is enabled */
@@ -181,6 +191,8 @@ static void esp_clear_bssid_flag(struct wpa_supplicant *wpa_s)
 
 static void esp_regsiter_action_frame(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "esp_regsiter_action_frame");
+
 	wpa_s->type &= ~WLAN_FC_STYPE_ACTION;
 	/* subtype is defined only for action frame */
 	wpa_s->subtype = 0;
@@ -200,6 +212,8 @@ static void esp_regsiter_action_frame(struct wpa_supplicant *wpa_s)
 static void esp_supplicant_sta_conn_handler(void* arg, esp_event_base_t event_base,
 					    int event_id, void* event_data)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_sta_conn_handler");
+
 	u8 bssid[ETH_ALEN];
 	u8 *ie;
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
@@ -227,6 +241,8 @@ static void esp_supplicant_sta_conn_handler(void* arg, esp_event_base_t event_ba
 static void esp_supplicant_sta_disconn_handler(void* arg, esp_event_base_t event_base,
 						int event_id, void* event_data)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_sta_disconn_handler");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 	wpas_rrm_reset(wpa_s);
 	if (wpa_s->current_bss) {
@@ -236,6 +252,8 @@ static void esp_supplicant_sta_disconn_handler(void* arg, esp_event_base_t event
 
 void esp_supplicant_common_init(struct wpa_funcs *wpa_cb)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_common_init");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 
 	s_supplicant_evt_queue = xQueueCreate(3, sizeof(supplicant_event_t));
@@ -264,6 +282,8 @@ void esp_supplicant_common_init(struct wpa_funcs *wpa_cb)
 int esp_rrm_send_neighbor_rep_request(neighbor_rep_request_cb cb,
 				      void *cb_ctx)
 {
+    ESP_LOGV("FUNC", "esp_rrm_send_neighbor_rep_request");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 	struct wpa_ssid_value wpa_ssid = {0};
 	struct wifi_ssid *ssid = esp_wifi_sta_get_prof_ssid_internal();
@@ -278,6 +298,8 @@ int esp_wnm_send_bss_transition_mgmt_query(enum btm_query_reason query_reason,
 					   const char *btm_candidates,
 					   int cand_list)
 {
+    ESP_LOGV("FUNC", "esp_wnm_send_bss_transition_mgmt_query");
+
 	struct wpa_supplicant *wpa_s = &g_wpa_supp;
 	return wnm_send_bss_transition_mgmt_query(wpa_s, query_reason, btm_candidates, cand_list);
 }
@@ -285,6 +307,8 @@ int esp_wnm_send_bss_transition_mgmt_query(enum btm_query_reason query_reason,
 void wpa_supplicant_connect(struct wpa_supplicant *wpa_s,
 			    struct wpa_bss *bss, char *ssid)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_connect");
+
 	wifi_config_t *config = os_zalloc(sizeof(wifi_config_t));
 
 	if (!config) {
@@ -304,6 +328,8 @@ void wpa_supplicant_connect(struct wpa_supplicant *wpa_s,
 
 void esp_set_rm_enabled_ie(void)
 {
+    ESP_LOGV("FUNC", "esp_set_rm_enabled_ie");
+
 	uint8_t rmm_ie[5] = {0};
 	uint8_t rrm_ie_len = 5;
 	uint8_t *pos = rmm_ie;
@@ -324,6 +350,8 @@ void esp_set_rm_enabled_ie(void)
 
 void esp_get_tx_power(uint8_t *tx_power)
 {
+    ESP_LOGV("FUNC", "esp_get_tx_power");
+
 #define DEFAULT_MAX_TX_POWER 19 /* max tx power is 19.5 dbm */
 	s8 power;
 	/* esp sends management frames at max tx power configured */
@@ -343,6 +371,8 @@ int wpa_drv_send_action(struct wpa_supplicant *wpa_s,
 			const u8 *data, size_t data_len,
 			int no_cck)
 {
+    ESP_LOGV("FUNC", "wpa_drv_send_action");
+
 	int ret = 0;
 	mgmt_frm_req_t *req = os_zalloc(sizeof(*req) + data_len);;
 	if (!req)
@@ -373,6 +403,8 @@ cleanup:
 
 int esp_supplicant_post_evt(uint32_t evt_id, uint32_t data)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_post_evt");
+
 	supplicant_event_t *evt = os_zalloc(sizeof(supplicant_event_t));
 	if (evt == NULL) {
 		return -1;
@@ -393,6 +425,8 @@ int esp_supplicant_post_evt(uint32_t evt_id, uint32_t data)
 int esp_ieee80211_handle_rx_frm(u8 type, u8 *frame, size_t len, u8 *sender,
 				u32 rssi, u8 channel, u64 current_tsf)
 {
+    ESP_LOGV("FUNC", "esp_ieee80211_handle_rx_frm");
+
 	if (type == WLAN_FC_STYPE_BEACON || type == WLAN_FC_STYPE_PROBE_RESP) {
 		return esp_handle_beacon_probe(type, frame, len, sender, rssi, channel, current_tsf);
 	} else if (type ==  WLAN_FC_STYPE_ACTION) {

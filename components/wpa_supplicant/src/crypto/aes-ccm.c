@@ -18,6 +18,8 @@
 
 static void xor_aes_block(u8 *dst, const u8 *src)
 {
+    ESP_LOGV("FUNC", "xor_aes_block");
+
 	u32 *d = (u32 *) dst;
 	u32 *s = (u32 *) src;
 	*d++ ^= *s++;
@@ -31,6 +33,8 @@ static void aes_ccm_auth_start(void *aes, size_t M, size_t L, const u8 *nonce,
 			       const u8 *aad, size_t aad_len, size_t plain_len,
 			       u8 *x)
 {
+    ESP_LOGV("FUNC", "aes_ccm_auth_start");
+
 	u8 aad_buf[2 * AES_BLOCK_SIZE];
 	u8 b[AES_BLOCK_SIZE];
 
@@ -65,6 +69,8 @@ static void aes_ccm_auth_start(void *aes, size_t M, size_t L, const u8 *nonce,
 
 static void aes_ccm_auth(void *aes, const u8 *data, size_t len, u8 *x)
 {
+    ESP_LOGV("FUNC", "aes_ccm_auth");
+
 	size_t last = len % AES_BLOCK_SIZE;
 	size_t i;
 
@@ -85,6 +91,8 @@ static void aes_ccm_auth(void *aes, const u8 *data, size_t len, u8 *x)
 
 static void aes_ccm_encr_start(size_t L, const u8 *nonce, u8 *a)
 {
+    ESP_LOGV("FUNC", "aes_ccm_encr_start");
+
 	/* A_i = Flags | Nonce N | Counter i */
 	a[0] = L - 1; /* Flags = L' */
 	os_memcpy(&a[1], nonce, 15 - L);
@@ -94,6 +102,8 @@ static void aes_ccm_encr_start(size_t L, const u8 *nonce, u8 *a)
 static void aes_ccm_encr(void *aes, size_t L, const u8 *in, size_t len, u8 *out,
 			 u8 *a)
 {
+    ESP_LOGV("FUNC", "aes_ccm_encr");
+
 	size_t last = len % AES_BLOCK_SIZE;
 	size_t i;
 
@@ -118,6 +128,8 @@ static void aes_ccm_encr(void *aes, size_t L, const u8 *in, size_t len, u8 *out,
 
 static void aes_ccm_encr_auth(void *aes, size_t M, u8 *x, u8 *a, u8 *auth)
 {
+    ESP_LOGV("FUNC", "aes_ccm_encr_auth");
+
 	size_t i;
 	u8 tmp[AES_BLOCK_SIZE];
 
@@ -133,6 +145,8 @@ static void aes_ccm_encr_auth(void *aes, size_t M, u8 *x, u8 *a, u8 *auth)
 
 static void aes_ccm_decr_auth(void *aes, size_t M, u8 *a, const u8 *auth, u8 *t)
 {
+    ESP_LOGV("FUNC", "aes_ccm_decr_auth");
+
 	size_t i;
 	u8 tmp[AES_BLOCK_SIZE];
 
@@ -151,6 +165,8 @@ int aes_ccm_ae(const u8 *key, size_t key_len, const u8 *nonce,
 	       size_t M, const u8 *plain, size_t plain_len,
 	       const u8 *aad, size_t aad_len, u8 *crypt, u8 *auth)
 {
+    ESP_LOGV("FUNC", "aes_ccm_ae");
+
 	const size_t L = 2;
 	void *aes;
 	u8 x[AES_BLOCK_SIZE], a[AES_BLOCK_SIZE];
@@ -182,6 +198,8 @@ int aes_ccm_ad(const u8 *key, size_t key_len, u8 *nonce,
 	       const u8 *aad, size_t aad_len, const u8 *auth,
 	       u8 *plain, bool skip_auth)
 {
+    ESP_LOGV("FUNC", "aes_ccm_ad");
+
 	const size_t L = 2;
 	void *aes;
 	u8 x[AES_BLOCK_SIZE], a[AES_BLOCK_SIZE];

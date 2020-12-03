@@ -69,10 +69,11 @@ struct eap_peap_data {
 };
 
 
-static int
-eap_peap_parse_phase1(struct eap_peap_data *data,
+static int eap_peap_parse_phase1(struct eap_peap_data *data,
 		      const char *phase1)
 {
+    ESP_LOGV("FUNC", "eap_peap_parse_phase1");
+
 	const char *pos;
 
 	pos = os_strstr(phase1, "peapver=");
@@ -131,9 +132,10 @@ eap_peap_parse_phase1(struct eap_peap_data *data,
 }
 
 
-static void *
-eap_peap_init(struct eap_sm *sm)
+static void * eap_peap_init(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_peap_init");
+
 	struct eap_peap_data *data;
 	struct eap_peer_config *config = eap_get_config(sm);
 
@@ -172,9 +174,10 @@ eap_peap_init(struct eap_sm *sm)
 }
 
 
-static void
-eap_peap_deinit(struct eap_sm *sm, void *priv)
+static void eap_peap_deinit(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_peap_deinit");
+
 	struct eap_peap_data *data = priv;
 	if (data == NULL)
 		return;
@@ -198,9 +201,10 @@ eap_peap_deinit(struct eap_sm *sm, void *priv)
  * This function builds an EAP-TLV NAK message. The caller is responsible for
  * freeing the returned buffer.
  */
-static struct wpabuf *
-eap_tlv_build_nak(int id, u16 nak_type)
+static struct wpabuf * eap_tlv_build_nak(int id, u16 nak_type)
 {
+    ESP_LOGV("FUNC", "eap_tlv_build_nak");
+
 	struct wpabuf *msg;
 
 	msg = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_TLV, 10,
@@ -218,10 +222,11 @@ eap_tlv_build_nak(int id, u16 nak_type)
 }
 
 
-static int
-eap_peap_get_isk(struct eap_sm *sm, struct eap_peap_data *data,
+static int eap_peap_get_isk(struct eap_sm *sm, struct eap_peap_data *data,
 		 u8 *isk, size_t isk_len)
 {
+    ESP_LOGV("FUNC", "eap_peap_get_isk");
+
 	u8 *key;
 	size_t key_len;
 
@@ -248,9 +253,10 @@ eap_peap_get_isk(struct eap_sm *sm, struct eap_peap_data *data,
 }
 
 
-static int
-eap_peap_derive_cmk(struct eap_sm *sm, struct eap_peap_data *data)
+static int eap_peap_derive_cmk(struct eap_sm *sm, struct eap_peap_data *data)
 {
+    ESP_LOGV("FUNC", "eap_peap_derive_cmk");
+
 	u8 *tk;
 	u8 isk[32], imck[60];
 
@@ -303,11 +309,12 @@ eap_peap_derive_cmk(struct eap_sm *sm, struct eap_peap_data *data)
 }
 
 
-static int
-eap_tlv_add_cryptobinding(struct eap_sm *sm,
+static int eap_tlv_add_cryptobinding(struct eap_sm *sm,
 			  struct eap_peap_data *data,
 			  struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "eap_tlv_add_cryptobinding");
+
 	u8 *mac;
 	u8 eap_type = EAP_TYPE_PEAP;
 	const u8 *addr[2];
@@ -354,12 +361,13 @@ eap_tlv_add_cryptobinding(struct eap_sm *sm,
  * This function builds an EAP-TLV Result message. The caller is responsible
  * for freeing the returned buffer.
  */
-static struct wpabuf *
-eap_tlv_build_result(struct eap_sm *sm,
+static struct wpabuf * eap_tlv_build_result(struct eap_sm *sm,
 		     struct eap_peap_data *data,
 		     int crypto_tlv_used,
 		     int id, u16 status)
 {
+    ESP_LOGV("FUNC", "eap_tlv_build_result");
+
 	struct wpabuf *msg;
 	size_t len;
 
@@ -388,12 +396,13 @@ eap_tlv_build_result(struct eap_sm *sm,
 }
 
 
-static int
-eap_tlv_validate_cryptobinding(struct eap_sm *sm,
+static int eap_tlv_validate_cryptobinding(struct eap_sm *sm,
 			       struct eap_peap_data *data,
 			       const u8 *crypto_tlv,
 			       size_t crypto_tlv_len)
 {
+    ESP_LOGV("FUNC", "eap_tlv_validate_cryptobinding");
+
 	u8 buf[61], mac[SHA1_MAC_LEN];
 	const u8 *pos;
 
@@ -464,12 +473,13 @@ eap_tlv_validate_cryptobinding(struct eap_sm *sm,
  * @force_failure: Force negotiation to fail
  * Returns: 0 on success, -1 on failure
  */
-static int
-eap_tlv_process(struct eap_sm *sm, struct eap_peap_data *data,
+static int eap_tlv_process(struct eap_sm *sm, struct eap_peap_data *data,
 		struct eap_method_ret *ret,
 		const struct wpabuf *req, struct wpabuf **resp,
 		int force_failure)
 {
+    ESP_LOGV("FUNC", "eap_tlv_process");
+
 	size_t left, tlv_len;
 	const u8 *pos;
 	const u8 *result_tlv = NULL, *crypto_tlv = NULL;
@@ -589,9 +599,10 @@ eap_tlv_process(struct eap_sm *sm, struct eap_peap_data *data,
 }
 
 
-static struct wpabuf *
-eap_peapv2_tlv_eap_payload(struct wpabuf *buf)
+static struct wpabuf * eap_peapv2_tlv_eap_payload(struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "eap_peapv2_tlv_eap_payload");
+
 	struct wpabuf *e;
 	struct eap_tlv_hdr *tlv;
 
@@ -623,6 +634,8 @@ static int eap_peap_phase2_request(struct eap_sm *sm,
 			struct wpabuf *req,
 			struct wpabuf **resp)
 {
+    ESP_LOGV("FUNC", "eap_peap_phase2_request");
+
 	struct eap_hdr *hdr = wpabuf_mhead(req);
 	size_t len = be_to_host16(hdr->length);
 	u8 *pos;
@@ -767,13 +780,14 @@ static int eap_peap_phase2_request(struct eap_sm *sm,
 }
 
 
-static int
-eap_peap_decrypt(struct eap_sm *sm, struct eap_peap_data *data,
+static int eap_peap_decrypt(struct eap_sm *sm, struct eap_peap_data *data,
 		 struct eap_method_ret *ret,
 		 const struct eap_hdr *req,
 		 const struct wpabuf *in_data,
 		 struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_peap_decrypt");
+
 	struct wpabuf *in_decrypted = NULL;
 	int res, skip_change = 0;
 	struct eap_hdr *hdr, *rhdr;
@@ -1042,11 +1056,12 @@ continue_req:
 }
 
 
-static struct wpabuf *
-eap_peap_process(struct eap_sm *sm, void *priv,
+static struct wpabuf * eap_peap_process(struct eap_sm *sm, void *priv,
 		 struct eap_method_ret *ret,
 		 const struct wpabuf *reqData)
 {
+    ESP_LOGV("FUNC", "eap_peap_process");
+
 	const struct eap_hdr *req;
 	size_t left;
 	int res;
@@ -1189,18 +1204,20 @@ eap_peap_process(struct eap_sm *sm, void *priv,
 }
 
 
-static bool
-eap_peap_has_reauth_data(struct eap_sm *sm, void *priv)
+static bool eap_peap_has_reauth_data(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_peap_has_reauth_data");
+
 	struct eap_peap_data *data = priv;
 	return tls_connection_established(sm->ssl_ctx, data->ssl.conn) &&
 		data->phase2_success;
 }
 
 
-static void
-eap_peap_deinit_for_reauth(struct eap_sm *sm, void *priv)
+static void eap_peap_deinit_for_reauth(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_peap_deinit_for_reauth");
+
 	struct eap_peap_data *data = priv;
 	wpabuf_free(data->pending_phase2_req);
 	data->pending_phase2_req = NULL;
@@ -1208,9 +1225,10 @@ eap_peap_deinit_for_reauth(struct eap_sm *sm, void *priv)
 }
 
 
-static void *
-eap_peap_init_for_reauth(struct eap_sm *sm, void *priv)
+static void * eap_peap_init_for_reauth(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_peap_init_for_reauth");
+
 	struct eap_peap_data *data = priv;
 	os_free(data->key_data);
 	data->key_data = NULL;
@@ -1233,10 +1251,11 @@ eap_peap_init_for_reauth(struct eap_sm *sm, void *priv)
 }
 
 
-static int
-eap_peap_get_status(struct eap_sm *sm, void *priv, char *buf,
+static int eap_peap_get_status(struct eap_sm *sm, void *priv, char *buf,
 		    size_t buflen, int verbose)
 {
+    ESP_LOGV("FUNC", "eap_peap_get_status");
+
 	struct eap_peap_data *data = priv;
 	int len, ret;
 
@@ -1254,17 +1273,19 @@ eap_peap_get_status(struct eap_sm *sm, void *priv, char *buf,
 }
 
 
-static bool
-eap_peap_isKeyAvailable(struct eap_sm *sm, void *priv)
+static bool eap_peap_isKeyAvailable(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_peap_isKeyAvailable");
+
 	struct eap_peap_data *data = priv;
 	return data->key_data != NULL && data->phase2_success;
 }
 
 
-static u8 *
-eap_peap_getKey(struct eap_sm *sm, void *priv, size_t *len)
+static u8 * eap_peap_getKey(struct eap_sm *sm, void *priv, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_peap_getKey");
+
 	struct eap_peap_data *data = priv;
 	u8 *key;
 
@@ -1301,9 +1322,10 @@ eap_peap_getKey(struct eap_sm *sm, void *priv, size_t *len)
 }
 
 
-static u8 *
-eap_peap_get_session_id(struct eap_sm *sm, void *priv, size_t *len)
+static u8 * eap_peap_get_session_id(struct eap_sm *sm, void *priv, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_peap_get_session_id");
+
 	struct eap_peap_data *data = priv;
 	u8 *id;
 
@@ -1321,9 +1343,10 @@ eap_peap_get_session_id(struct eap_sm *sm, void *priv, size_t *len)
 }
 
 
-int
-eap_peer_peap_register(void)
+int eap_peer_peap_register(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_peap_register");
+
 	struct eap_method *eap;
 	int ret;
 

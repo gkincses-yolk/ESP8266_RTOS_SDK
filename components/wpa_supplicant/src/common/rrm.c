@@ -21,6 +21,8 @@
 
 static void wpas_rrm_neighbor_rep_timeout_handler(void *data, void *user_ctx)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_neighbor_rep_timeout_handler");
+
 	struct rrm_data *rrm = data;
 
 	if (!rrm->notify_neighbor_rep) {
@@ -43,6 +45,8 @@ static void wpas_rrm_neighbor_rep_timeout_handler(void *data, void *user_ctx)
  */
 void wpas_rrm_reset(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_reset");
+
 	wpa_s->rrm.rrm_used = 0;
 
 	eloop_cancel_timeout(wpas_rrm_neighbor_rep_timeout_handler, &wpa_s->rrm,
@@ -63,6 +67,7 @@ void wpas_rrm_reset(struct wpa_supplicant *wpa_s)
 void wpas_rrm_process_neighbor_rep(struct wpa_supplicant *wpa_s,
 				   const u8 *report, size_t report_len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_process_neighbor_rep");
 
 	wpa_hexdump(MSG_DEBUG, "RRM: New Neighbor Report", report, report_len);
 	if (report_len < 1)
@@ -137,6 +142,8 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 						  const u8 *neighbor_rep, size_t len),
 				       void *cb_ctx)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_send_neighbor_rep_request");
+
 	struct wpabuf *buf;
 
 	if (!(wpa_s->rrm_ie[0] & WLAN_RRM_CAPS_NEIGHBOR_REPORT)) {
@@ -269,6 +276,8 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 static int wpas_rrm_report_elem(struct wpabuf **buf, u8 token, u8 mode, u8 type,
 				const u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_report_elem");
+
 	if (wpabuf_resize(buf, 5 + data_len))
 		return -1;
 
@@ -287,6 +296,8 @@ static int wpas_rrm_report_elem(struct wpabuf **buf, u8 token, u8 mode, u8 type,
 static void wpas_rrm_send_msr_report_mpdu(struct wpa_supplicant *wpa_s,
 					  const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_send_msr_report_mpdu");
+
 	struct wpabuf *report = wpabuf_alloc(len + 3);
 
 	if (!report)
@@ -310,6 +321,8 @@ static void wpas_rrm_send_msr_report_mpdu(struct wpa_supplicant *wpa_s,
 
 static int wpas_rrm_beacon_rep_update_last_frame(u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_beacon_rep_update_last_frame");
+
 	struct rrm_measurement_report_element *msr_rep;
 	u8 *end = pos + len;
 	u8 *msr_rep_end;
@@ -357,6 +370,8 @@ static int wpas_rrm_beacon_rep_update_last_frame(u8 *pos, size_t len)
 static void wpas_rrm_send_msr_report(struct wpa_supplicant *wpa_s,
 				     struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_send_msr_report");
+
 	int len = wpabuf_len(buf);
 	u8 *pos = wpabuf_mhead_u8(buf), *next = pos;
 
@@ -384,6 +399,8 @@ static void wpas_rrm_send_msr_report(struct wpa_supplicant *wpa_s,
 static int wpas_get_op_chan_phy(int channel, const u8 *ies, size_t ies_len,
 				u8 *op_class, u8 *chan, u8 *phy_type)
 {
+    ESP_LOGV("FUNC", "wpas_get_op_chan_phy");
+
 	const u8 *ie;
 	int sec_chan = 0;
 	struct ieee80211_ht_operation *ht_oper = NULL;
@@ -413,6 +430,8 @@ static int wpas_beacon_rep_add_frame_body(struct bitfield *eids,
 					  size_t buf_len, u8 **ies_buf,
 					  size_t *ie_len, int add_fixed)
 {
+    ESP_LOGV("FUNC", "wpas_beacon_rep_add_frame_body");
+
 	u8 *ies = *ies_buf;
 	size_t ies_len = *ie_len;
 	u8 *pos = buf;
@@ -497,6 +516,8 @@ static int wpas_add_beacon_rep_elem(struct beacon_rep_data *data,
 				    struct rrm_measurement_beacon_report *rep,
 				    u8 **ie, size_t *ie_len, u8 idx)
 {
+    ESP_LOGV("FUNC", "wpas_add_beacon_rep_elem");
+
 	int ret;
 	u8 *buf, *pos;
 	u32 subelems_len = REPORTED_FRAME_BODY_SUBELEM_LEN +
@@ -561,6 +582,8 @@ static int wpas_add_beacon_rep(struct wpa_supplicant *wpa_s,
 			       struct wpabuf **wpa_buf, struct wpa_bss *bss,
 			       u64 start, u64 parent_tsf)
 {
+    ESP_LOGV("FUNC", "wpas_add_beacon_rep");
+
 	struct beacon_rep_data *data = &wpa_s->beacon_rep_data;
 	u8 *ies = (u8 *) (bss + 1);
 	u8 *pos = ies;
@@ -607,6 +630,8 @@ static int wpas_add_beacon_rep(struct wpa_supplicant *wpa_s,
 static int wpas_beacon_rep_no_results(struct wpa_supplicant *wpa_s,
 				      struct wpabuf **buf)
 {
+    ESP_LOGV("FUNC", "wpas_beacon_rep_no_results");
+
 	return wpas_rrm_report_elem(buf, wpa_s->beacon_rep_data.token,
 				    MEASUREMENT_REPORT_MODE_ACCEPT,
 				    MEASURE_TYPE_BEACON, NULL, 0);
@@ -616,6 +641,8 @@ static int wpas_beacon_rep_no_results(struct wpa_supplicant *wpa_s,
 static void wpas_beacon_rep_table(struct wpa_supplicant *wpa_s,
 				  struct wpabuf **buf)
 {
+    ESP_LOGV("FUNC", "wpas_beacon_rep_table");
+
 	size_t i;
 
 	for (i = 0; i < wpa_s->last_scan_res_used; i++) {
@@ -633,6 +660,8 @@ static void wpas_beacon_rep_table(struct wpa_supplicant *wpa_s,
 
 static void wpas_rrm_refuse_request(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_refuse_request");
+
 	if (!is_multicast_ether_addr(wpa_s->rrm.dst_addr)) {
 		struct wpabuf *buf = NULL;
 
@@ -654,6 +683,8 @@ static void wpas_rrm_refuse_request(struct wpa_supplicant *wpa_s)
 
 static void wpas_rrm_scan_timeout(void *eloop_ctx, void *timeout_ctx)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_scan_timeout");
+
 	struct wpa_supplicant *wpa_s = eloop_ctx;
 	struct wpa_driver_scan_params *params =
 		&wpa_s->beacon_rep_data.scan_params;
@@ -674,6 +705,8 @@ static int wpas_rm_handle_beacon_req_subelem(struct wpa_supplicant *wpa_s,
 					     struct beacon_rep_data *data,
 					     u8 sid, u8 slen, const u8 *subelem)
 {
+    ESP_LOGV("FUNC", "wpas_rm_handle_beacon_req_subelem");
+
 	u8 report_info, i;
 
 	switch (sid) {
@@ -785,12 +818,13 @@ static int wpas_rm_handle_beacon_req_subelem(struct wpa_supplicant *wpa_s,
  * triggered, and -1 if processing failed (i.e., the element is in invalid
  * format or an internal error occurred).
  */
-static int
-wpas_rm_handle_beacon_req(struct wpa_supplicant *wpa_s,
+static int wpas_rm_handle_beacon_req(struct wpa_supplicant *wpa_s,
 			  u8 elem_token, int duration_mandatory,
 			  const struct rrm_measurement_beacon_request *req,
 			  size_t len, struct wpabuf **buf)
 {
+    ESP_LOGV("FUNC", "wpas_rm_handle_beacon_req");
+
 	struct beacon_rep_data *data = &wpa_s->beacon_rep_data;
 	struct wpa_driver_scan_params *params = &data->scan_params;
 	const u8 *subelems;
@@ -881,12 +915,13 @@ out:
 }
 
 
-static int
-wpas_rrm_handle_msr_req_element(
+static int wpas_rrm_handle_msr_req_element(
 	struct wpa_supplicant *wpa_s,
 	const struct rrm_measurement_request_element *req,
 	struct wpabuf **buf)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_handle_msr_req_element");
+
 	int duration_mandatory;
 
 	wpa_printf(MSG_DEBUG, "Measurement request type %d token %d",
@@ -935,10 +970,11 @@ reject:
 }
 
 
-static struct wpabuf *
-wpas_rrm_process_msr_req_elems(struct wpa_supplicant *wpa_s, const u8 *pos,
+static struct wpabuf * wpas_rrm_process_msr_req_elems(struct wpa_supplicant *wpa_s, const u8 *pos,
 			       size_t len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_process_msr_req_elems");
+
 	struct wpabuf *buf = NULL;
 
 	while (len) {
@@ -989,6 +1025,8 @@ void wpas_rrm_handle_radio_measurement_request(struct wpa_supplicant *wpa_s,
 					       const u8 *src, const u8 *dst,
 					       const u8 *frame, size_t len)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_handle_radio_measurement_request");
+
 	struct wpabuf *report;
 
 	if (!wpa_s->rrm.rrm_used) {
@@ -1022,6 +1060,8 @@ void wpas_rrm_handle_link_measurement_request(struct wpa_supplicant *wpa_s,
 					      const u8 *frame, size_t len,
 					      int rssi)
 {
+    ESP_LOGV("FUNC", "wpas_rrm_handle_link_measurement_request");
+
 	struct wpabuf *buf;
 	const struct rrm_link_measurement_request *req;
 	struct rrm_link_measurement_report report;
@@ -1075,6 +1115,8 @@ void wpas_rrm_handle_link_measurement_request(struct wpa_supplicant *wpa_s,
 int wpas_beacon_rep_scan_process(struct wpa_supplicant *wpa_s,
 				 u64 scan_start_tsf)
 {
+    ESP_LOGV("FUNC", "wpas_beacon_rep_scan_process");
+
 	size_t i = 0;
 	struct wpabuf *buf = NULL;
 	struct wpa_bss *bss = NULL;
@@ -1154,6 +1196,8 @@ out:
 
 void wpas_clear_beacon_rep_data(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpas_clear_beacon_rep_data");
+
 	struct beacon_rep_data *data = &wpa_s->beacon_rep_data;
 
 	eloop_cancel_timeout(wpas_rrm_scan_timeout, wpa_s, NULL);

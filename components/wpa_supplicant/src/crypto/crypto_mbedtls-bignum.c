@@ -26,6 +26,8 @@
 
 struct crypto_bignum *crypto_bignum_init(void)
 {
+    ESP_LOGV("FUNC", "*crypto_bignum_init");
+
     mbedtls_mpi *bn = os_zalloc(sizeof(mbedtls_mpi));
     if (bn == NULL) {
         return NULL;
@@ -39,6 +41,8 @@ struct crypto_bignum *crypto_bignum_init(void)
 
 struct crypto_bignum *crypto_bignum_init_set(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "*crypto_bignum_init_set");
+
     int ret = 0;
     mbedtls_mpi *bn = os_zalloc(sizeof(mbedtls_mpi));
     if (bn == NULL) {
@@ -56,6 +60,8 @@ cleanup:
 
 void crypto_bignum_deinit(struct crypto_bignum *n, int clear)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_deinit");
+
     mbedtls_mpi_free((mbedtls_mpi *)n);
     os_free((mbedtls_mpi *)n);
 }
@@ -64,6 +70,8 @@ void crypto_bignum_deinit(struct crypto_bignum *n, int clear)
 int crypto_bignum_to_bin(const struct crypto_bignum *a,
                          u8 *buf, size_t buflen, size_t padlen)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_to_bin");
+
     int num_bytes, offset;
 
     if (padlen > buflen) {
@@ -92,6 +100,8 @@ int crypto_bignum_add(const struct crypto_bignum *a,
                       const struct crypto_bignum *b,
                       struct crypto_bignum *c)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_add");
+
     return mbedtls_mpi_add_mpi((mbedtls_mpi *) c, (const mbedtls_mpi *) a, (const mbedtls_mpi *) b) ?
            -1 : 0;
 }
@@ -101,6 +111,8 @@ int crypto_bignum_mod(const struct crypto_bignum *a,
                       const struct crypto_bignum *b,
                       struct crypto_bignum *c)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_mod");
+
     return mbedtls_mpi_mod_mpi((mbedtls_mpi *) c, (const mbedtls_mpi *) a, (const mbedtls_mpi *) b) ? -1 : 0;
 }
 
@@ -110,6 +122,8 @@ int crypto_bignum_exptmod(const struct crypto_bignum *a,
                           const struct crypto_bignum *c,
                           struct crypto_bignum *d)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_exptmod");
+
     return  mbedtls_mpi_exp_mod((mbedtls_mpi *) d, (const mbedtls_mpi *) a, (const mbedtls_mpi *) b, (const mbedtls_mpi *) c, NULL) ? -1 : 0;
 
 }
@@ -119,6 +133,8 @@ int crypto_bignum_inverse(const struct crypto_bignum *a,
                           const struct crypto_bignum *b,
                           struct crypto_bignum *c)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_inverse");
+
     return mbedtls_mpi_inv_mod((mbedtls_mpi *) c, (const mbedtls_mpi *) a,
                                (const mbedtls_mpi *) b) ? -1 : 0;
 }
@@ -128,6 +144,8 @@ int crypto_bignum_sub(const struct crypto_bignum *a,
                       const struct crypto_bignum *b,
                       struct crypto_bignum *c)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_sub");
+
     return mbedtls_mpi_sub_mpi((mbedtls_mpi *) c, (const mbedtls_mpi *) a, (const mbedtls_mpi *) b) ?
            -1 : 0;
 }
@@ -137,6 +155,8 @@ int crypto_bignum_div(const struct crypto_bignum *a,
                       const struct crypto_bignum *b,
                       struct crypto_bignum *c)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_div");
+
     return mbedtls_mpi_div_mpi((mbedtls_mpi *) c, NULL, (const mbedtls_mpi *) a, (const mbedtls_mpi *) b) ?
            -1 : 0;
 }
@@ -147,6 +167,8 @@ int crypto_bignum_mulmod(const struct crypto_bignum *a,
                          const struct crypto_bignum *c,
                          struct crypto_bignum *d)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_mulmod");
+
     int res;
 #if ALLOW_EVEN_MOD || !CONFIG_MBEDTLS_HARDWARE_MPI // Must enable ALLOW_EVEN_MOD if c is even
     mbedtls_mpi temp;
@@ -171,24 +193,32 @@ int crypto_bignum_mulmod(const struct crypto_bignum *a,
 int crypto_bignum_cmp(const struct crypto_bignum *a,
                       const struct crypto_bignum *b)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_cmp");
+
     return mbedtls_mpi_cmp_mpi((const mbedtls_mpi *) a, (const mbedtls_mpi *) b);
 }
 
 
 int crypto_bignum_bits(const struct crypto_bignum *a)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_bits");
+
     return mbedtls_mpi_bitlen((const mbedtls_mpi *) a);
 }
 
 
 int crypto_bignum_is_zero(const struct crypto_bignum *a)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_is_zero");
+
     return (mbedtls_mpi_cmp_int((const mbedtls_mpi *) a, 0) == 0);
 }
 
 
 int crypto_bignum_is_one(const struct crypto_bignum *a)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_is_one");
+
     return (mbedtls_mpi_cmp_int((const mbedtls_mpi *) a, 1) == 0);
 }
 
@@ -196,6 +226,8 @@ int crypto_bignum_is_one(const struct crypto_bignum *a)
 int crypto_bignum_legendre(const struct crypto_bignum *a,
                            const struct crypto_bignum *p)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_legendre");
+
     mbedtls_mpi exp, tmp;
     int res = -2, ret;
 
@@ -229,6 +261,8 @@ cleanup:
 int crypto_bignum_to_string(const struct crypto_bignum *a,
                          u8 *buf, size_t buflen, size_t padlen)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_to_string");
+
     int num_bytes, offset;
     size_t outlen;
 
@@ -256,6 +290,8 @@ int crypto_bignum_addmod(struct crypto_bignum *a,
                       struct crypto_bignum *c,
                       struct crypto_bignum *d)
 {
+    ESP_LOGV("FUNC", "crypto_bignum_addmod");
+
     struct crypto_bignum *tmp = crypto_bignum_init();
     int ret = -1;
 
@@ -273,5 +309,7 @@ fail:
 
 void crypto_free_buffer(unsigned char *buf)
 {
+    ESP_LOGV("FUNC", "crypto_free_buffer");
+
     os_free(buf);
 }

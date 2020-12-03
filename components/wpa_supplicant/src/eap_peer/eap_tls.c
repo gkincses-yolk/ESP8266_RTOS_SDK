@@ -29,6 +29,8 @@ struct eap_tls_data {
 
 static void eap_tls_deinit(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_tls_deinit");
+
 	struct eap_tls_data *data = priv;
 	if (data == NULL)
 		return;
@@ -41,6 +43,8 @@ static void eap_tls_deinit(struct eap_sm *sm, void *priv)
 
 static void * eap_tls_init(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_tls_init");
+
 	struct eap_tls_data *data;
 	struct eap_peer_config *config = eap_get_config(sm);
 	if (config == NULL ||
@@ -71,6 +75,8 @@ static struct wpabuf * eap_tls_failure(struct eap_sm *sm,
 				       struct eap_method_ret *ret, int res,
 				       struct wpabuf *resp, u8 id)
 {
+    ESP_LOGV("FUNC", "eap_tls_failure");
+
 	wpa_printf(MSG_DEBUG, "EAP-TLS: TLS processing failed");
 
 	ret->methodState = METHOD_DONE;
@@ -105,6 +111,8 @@ static struct wpabuf * eap_tls_failure(struct eap_sm *sm,
 static void eap_tls_success(struct eap_sm *sm, struct eap_tls_data *data,
 			    struct eap_method_ret *ret)
 {
+    ESP_LOGV("FUNC", "eap_tls_success");
+
 	wpa_printf(MSG_DEBUG, "EAP-TLS: Done");
 
 	ret->methodState = METHOD_DONE;
@@ -142,6 +150,8 @@ static struct wpabuf * eap_tls_process(struct eap_sm *sm, void *priv,
 				       struct eap_method_ret *ret,
 				       const struct wpabuf *reqData)
 {
+    ESP_LOGV("FUNC", "eap_tls_process");
+
 	size_t left;
 	int res;
 	struct wpabuf *resp;
@@ -182,12 +192,16 @@ static struct wpabuf * eap_tls_process(struct eap_sm *sm, void *priv,
 
 static bool eap_tls_isKeyAvailable(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_tls_isKeyAvailable");
+
 	struct eap_tls_data *data = priv;
 
 	return data->key_data != NULL;
 }
 static u8 * eap_tls_getKey(struct eap_sm *sm, void *priv, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_tls_getKey");
+
 	struct eap_tls_data *data = priv;
 	u8 *key;
 
@@ -206,6 +220,8 @@ static u8 * eap_tls_getKey(struct eap_sm *sm, void *priv, size_t *len)
 
 int eap_peer_tls_register(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_tls_register");
+
 	struct eap_method *eap;
 	int ret;
 

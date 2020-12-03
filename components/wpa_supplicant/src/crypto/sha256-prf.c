@@ -30,6 +30,8 @@
 int sha256_prf(const u8 *key, size_t key_len, const char *label,
 		const u8 *data, size_t data_len, u8 *buf, size_t buf_len)
 {
+    ESP_LOGV("FUNC", "sha256_prf");
+
 	return sha256_prf_bits(key, key_len, label, data, data_len, buf,
 			       buf_len * 8);
 }
@@ -55,6 +57,8 @@ int sha256_prf_bits(const u8 *key, size_t key_len, const char *label,
 		    const u8 *data, size_t data_len, u8 *buf,
 		    size_t buf_len_bits)
 {
+    ESP_LOGV("FUNC", "sha256_prf_bits");
+
 	u16 counter = 1;
 	size_t pos, plen;
 	u8 hash[SHA256_MAC_LEN];

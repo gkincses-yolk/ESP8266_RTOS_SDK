@@ -17,7 +17,7 @@
 
 #ifdef ESP_PLATFORM
 // Uncomment this line to force output from this module
-#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
 #include "esp_log.h"
 #else
 #define ESP_LOGD(...)

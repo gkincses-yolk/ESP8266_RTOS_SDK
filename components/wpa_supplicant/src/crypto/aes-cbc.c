@@ -34,9 +34,6 @@
 #include "aes.h"
 #include "aes_wrap.h"
 
-#ifdef USE_MBEDTLS_CRYPTO
-#include "mbedtls/aes.h"
-
 /**
  * aes_128_cbc_encrypt - AES-128 CBC encryption
  * @key: Encryption key
@@ -45,72 +42,10 @@
  * @data_len: Length of data in bytes (must be divisible by 16)
  * Returns: 0 on success, -1 on failure
  */
-int
-aes_128_cbc_encrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
+int aes_128_cbc_encrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
 {
-	int ret = 0;
-	mbedtls_aes_context ctx;
-	u8 cbc[AES_BLOCK_SIZE];
+    ESP_LOGV("FUNC", "aes_128_cbc_encrypt");
 
-	mbedtls_aes_init(&ctx);
-
-	ret = mbedtls_aes_setkey_enc(&ctx, key, 128);
-	if(ret < 0) {
-		mbedtls_aes_free(&ctx);
-		return ret;
-	}
-
-	os_memcpy(cbc, iv, AES_BLOCK_SIZE);
-	ret = mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, data_len, cbc, data, data);
-	mbedtls_aes_free(&ctx);
-
-	return ret;
-}
-
-
-/**
- * aes_128_cbc_decrypt - AES-128 CBC decryption
- * @key: Decryption key
- * @iv: Decryption IV for CBC mode (16 bytes)
- * @data: Data to decrypt in-place
- * @data_len: Length of data in bytes (must be divisible by 16)
- * Returns: 0 on success, -1 on failure
- */
-int
-aes_128_cbc_decrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
-{
-	int ret = 0;
-	mbedtls_aes_context ctx;
-	u8 cbc[AES_BLOCK_SIZE];
-
-	mbedtls_aes_init(&ctx);
-
-	ret = mbedtls_aes_setkey_dec(&ctx, key, 128);
-	if(ret < 0) {
-		mbedtls_aes_free(&ctx);
-		return ret;
-	}
-
-	os_memcpy(cbc, iv, AES_BLOCK_SIZE);
-	ret = mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_DECRYPT, data_len, cbc, data, data);
-	mbedtls_aes_free(&ctx);
-
-	return ret;
-
-}
-#else /* USE_MBEDTLS_CRYPTO */
-
-/**
- * aes_128_cbc_encrypt - AES-128 CBC encryption
- * @key: Encryption key
- * @iv: Encryption IV for CBC mode (16 bytes)
- * @data: Data to encrypt in-place
- * @data_len: Length of data in bytes (must be divisible by 16)
- * Returns: 0 on success, -1 on failure
- */
-int
-aes_128_cbc_encrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
-{
 	void *ctx;
 	u8 cbc[AES_BLOCK_SIZE];
 	u8 *pos = data;
@@ -142,9 +77,10 @@ aes_128_cbc_encrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
  * @data_len: Length of data in bytes (must be divisible by 16)
  * Returns: 0 on success, -1 on failure
  */
-int
-aes_128_cbc_decrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
+int aes_128_cbc_decrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "aes_128_cbc_decrypt");
+
 	void *ctx;
 	u8 cbc[AES_BLOCK_SIZE], tmp[AES_BLOCK_SIZE];
 	u8 *pos = data;
@@ -167,4 +103,3 @@ aes_128_cbc_decrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
 	aes_decrypt_deinit(ctx);
 	return 0;
 }
-#endif /* USE_MBEDTLS_CRYPTO */

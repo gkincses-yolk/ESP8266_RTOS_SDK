@@ -17,6 +17,8 @@
 
 struct crypto_private_key * pkcs8_key_import(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "pkcs8_key_import");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
 	struct bignum *zero;
@@ -117,9 +119,10 @@ struct crypto_private_key * pkcs8_key_import(const u8 *buf, size_t len)
 }
 
 
-struct crypto_private_key *
-pkcs8_enc_key_import(const u8 *buf, size_t len, const char *passwd)
+struct crypto_private_key * pkcs8_enc_key_import(const u8 *buf, size_t len, const char *passwd)
 {
+    ESP_LOGV("FUNC", "pkcs8_enc_key_import");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end, *enc_alg;
 	size_t enc_alg_len;

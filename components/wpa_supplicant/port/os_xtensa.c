@@ -32,6 +32,8 @@
 
 int os_get_time(struct os_time *t)
 {
+    ESP_LOGV("FUNC", "os_get_time");
+
     struct timeval tv;
     int ret = gettimeofday(&tv, NULL);
     t->sec = (os_time_t) tv.tv_sec;
@@ -41,17 +43,23 @@ int os_get_time(struct os_time *t)
 
 unsigned long os_random(void)
 {
+    ESP_LOGV("FUNC", "os_random");
+
     return esp_random();
 }
 
 int os_get_random(unsigned char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "os_get_random");
+
     esp_fill_random(buf, len);
     return 0;
 }
 
 void os_sleep(os_time_t sec, os_time_t usec)
 {
+    ESP_LOGV("FUNC", "os_sleep");
+
         if (sec)
                 sleep(sec);
         if (usec)

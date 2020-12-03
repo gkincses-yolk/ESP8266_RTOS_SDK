@@ -28,6 +28,8 @@
 
 void *hostap_init(void)
 {
+    ESP_LOGV("FUNC", "hostap_init");
+
     struct wifi_ssid *ssid = esp_wifi_ap_get_prof_ap_ssid_internal();
     struct hostapd_data *hapd = NULL;
     struct wpa_auth_config *auth_conf;
@@ -96,6 +98,8 @@ void *hostap_init(void)
 
 bool hostap_deinit(void *data)
 {
+    ESP_LOGV("FUNC", "hostap_deinit");
+
     struct hostapd_data *hapd = (struct hostapd_data *)data;
 
     if (hapd == NULL) {

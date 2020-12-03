@@ -28,6 +28,10 @@
  */
 void wpa_supplicant_req_scan(struct wpa_supplicant *wpa_s, int sec, int usec)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_req_scan");
+
+    ESP_LOGV("FUNC", "wpa_supplicant_req_scan");
+
 	int ret;
 	struct wpa_driver_scan_params *params;
 
@@ -75,6 +79,8 @@ void wpa_supplicant_req_scan(struct wpa_supplicant *wpa_s, int sec, int usec)
  */
 const u8 * wpa_scan_get_ie(const struct wpa_scan_res *res, u8 ie)
 {
+    ESP_LOGV("FUNC", "wpa_scan_get_ie");
+
 	size_t ie_len = res->ie_len;
 
 	/* Use the Beacon frame IEs if res->ie_len is not available */
@@ -86,6 +92,8 @@ const u8 * wpa_scan_get_ie(const struct wpa_scan_res *res, u8 ie)
 
 void wpa_scan_free_params(struct wpa_driver_scan_params *params)
 {
+    ESP_LOGV("FUNC", "wpa_scan_free_params");
+
 	if (params == NULL)
 		return;
 

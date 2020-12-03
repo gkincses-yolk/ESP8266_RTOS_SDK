@@ -35,9 +35,10 @@
  * bignum_init - Allocate memory for bignum
  * Returns: Pointer to allocated bignum or %NULL on failure
  */
-struct bignum *  
-bignum_init(void)
+struct bignum *  bignum_init(void)
 {
+    ESP_LOGV("FUNC", "bignum_init");
+
 	struct bignum *n = (struct bignum *)os_zalloc(sizeof(mp_int));
 	if (n == NULL)
 		return NULL;
@@ -53,9 +54,10 @@ bignum_init(void)
  * bignum_deinit - Free bignum
  * @n: Bignum from bignum_init()
  */
-void  
-bignum_deinit(struct bignum *n)
+void  bignum_deinit(struct bignum *n)
 {
+    ESP_LOGV("FUNC", "bignum_deinit");
+
 	if (n) {
 		mp_clear((mp_int *) n);
 		os_free(n);
@@ -68,9 +70,10 @@ bignum_deinit(struct bignum *n)
  * @n: Bignum from bignum_init()
  * Returns: Length of n if written to a binary buffer
  */
-size_t  
-bignum_get_unsigned_bin_len(struct bignum *n)
+size_t  bignum_get_unsigned_bin_len(struct bignum *n)
 {
+    ESP_LOGV("FUNC", "bignum_get_unsigned_bin_len");
+
 	return mp_unsigned_bin_size((mp_int *) n);
 }
 
@@ -83,9 +86,10 @@ bignum_get_unsigned_bin_len(struct bignum *n)
  * enough. Set to used buffer length on success if not %NULL.
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_get_unsigned_bin(const struct bignum *n, u8 *buf, size_t *len)
+int  bignum_get_unsigned_bin(const struct bignum *n, u8 *buf, size_t *len)
 {
+    ESP_LOGV("FUNC", "bignum_get_unsigned_bin");
+
 	size_t need = mp_unsigned_bin_size((mp_int *) n);
 	if (len && need > *len) {
 		*len = need;
@@ -108,9 +112,10 @@ bignum_get_unsigned_bin(const struct bignum *n, u8 *buf, size_t *len)
  * @len: Length of buf in octets
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_set_unsigned_bin(struct bignum *n, const u8 *buf, size_t len)
+int  bignum_set_unsigned_bin(struct bignum *n, const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "bignum_set_unsigned_bin");
+
 	if (mp_read_unsigned_bin((mp_int *) n, (u8 *) buf, len) != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);
 		return -1;
@@ -125,9 +130,10 @@ bignum_set_unsigned_bin(struct bignum *n, const u8 *buf, size_t len)
  * @b: Bignum from bignum_init()
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_cmp(const struct bignum *a, const struct bignum *b)
+int  bignum_cmp(const struct bignum *a, const struct bignum *b)
 {
+    ESP_LOGV("FUNC", "bignum_cmp");
+
 	return mp_cmp((mp_int *) a, (mp_int *) b);
 }
 
@@ -138,9 +144,10 @@ bignum_cmp(const struct bignum *a, const struct bignum *b)
  * @b: Small integer
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_cmp_d(const struct bignum *a, unsigned long b)
+int  bignum_cmp_d(const struct bignum *a, unsigned long b)
 {
+    ESP_LOGV("FUNC", "bignum_cmp_d");
+
 	return mp_cmp_d((mp_int *) a, b);
 }
 
@@ -152,10 +159,11 @@ bignum_cmp_d(const struct bignum *a, unsigned long b)
  * @c: Bignum from bignum_init(); used to store the result of a + b
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_add(const struct bignum *a, const struct bignum *b,
+int  bignum_add(const struct bignum *a, const struct bignum *b,
 	       struct bignum *c)
 {
+    ESP_LOGV("FUNC", "bignum_add");
+
 	if (mp_add((mp_int *) a, (mp_int *) b, (mp_int *) c) != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);
 		return -1;
@@ -171,10 +179,11 @@ bignum_add(const struct bignum *a, const struct bignum *b,
  * @c: Bignum from bignum_init(); used to store the result of a - b
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_sub(const struct bignum *a, const struct bignum *b,
+int  bignum_sub(const struct bignum *a, const struct bignum *b,
 	       struct bignum *c)
 {
+    ESP_LOGV("FUNC", "bignum_sub");
+
 	if (mp_sub((mp_int *) a, (mp_int *) b, (mp_int *) c) != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);
 		return -1;
@@ -190,10 +199,11 @@ bignum_sub(const struct bignum *a, const struct bignum *b,
  * @c: Bignum from bignum_init(); used to store the result of a * b
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_mul(const struct bignum *a, const struct bignum *b,
+int  bignum_mul(const struct bignum *a, const struct bignum *b,
 	       struct bignum *c)
 {
+    ESP_LOGV("FUNC", "bignum_mul");
+
 	if (mp_mul((mp_int *) a, (mp_int *) b, (mp_int *) c) != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);
 		return -1;
@@ -210,10 +220,11 @@ bignum_mul(const struct bignum *a, const struct bignum *b,
  * @d: Bignum from bignum_init(); used to store the result of a * b (mod c)
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_mulmod(const struct bignum *a, const struct bignum *b,
+int  bignum_mulmod(const struct bignum *a, const struct bignum *b,
 		  const struct bignum *c, struct bignum *d)
 {
+    ESP_LOGV("FUNC", "bignum_mulmod");
+
 	if (mp_mulmod((mp_int *) a, (mp_int *) b, (mp_int *) c, (mp_int *) d)
 	    != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);
@@ -231,10 +242,11 @@ bignum_mulmod(const struct bignum *a, const struct bignum *b,
  * @d: Bignum from bignum_init(); used to store the result of a^b (mod c)
  * Returns: 0 on success, -1 on failure
  */
-int  
-bignum_exptmod(const struct bignum *a, const struct bignum *b,
+int  bignum_exptmod(const struct bignum *a, const struct bignum *b,
 		   const struct bignum *c, struct bignum *d)
 {
+    ESP_LOGV("FUNC", "bignum_exptmod");
+
 	if (mp_exptmod((mp_int *) a, (mp_int *) b, (mp_int *) c, (mp_int *) d)
 	    != MP_OKAY) {
 		wpa_printf(MSG_DEBUG, "BIGNUM: %s failed", __func__);

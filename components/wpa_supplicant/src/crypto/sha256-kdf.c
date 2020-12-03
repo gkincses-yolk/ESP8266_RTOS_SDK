@@ -33,6 +33,8 @@ int hmac_sha256_kdf(const u8 *secret, size_t secret_len,
 		    const char *label, const u8 *seed, size_t seed_len,
 		    u8 *out, size_t outlen)
 {
+    ESP_LOGV("FUNC", "hmac_sha256_kdf");
+
 	u8 T[SHA256_MAC_LEN];
 	u8 iter = 1;
 	const unsigned char *addr[4];

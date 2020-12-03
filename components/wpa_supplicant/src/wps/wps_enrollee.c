@@ -21,7 +21,10 @@
 #include "wps/wps_dev_attr.h"
 
 
-static int wps_build_mac_addr(struct wps_data *wps, struct wpabuf *msg) {
+static int wps_build_mac_addr(struct wps_data *wps, struct wpabuf *msg)
+{
+    ESP_LOGV("FUNC", "wps_build_mac_addr");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * MAC Address");
 	wpabuf_put_be16(msg, ATTR_MAC_ADDR);
 	wpabuf_put_be16(msg, ETH_ALEN);
@@ -32,6 +35,8 @@ static int wps_build_mac_addr(struct wps_data *wps, struct wpabuf *msg) {
 
 static int wps_build_wps_state(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_wps_state");
+
 	u8 state;
 	if (wps->wps->ap)
 		state = wps->wps->wps_state;
@@ -48,6 +53,8 @@ static int wps_build_wps_state(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_e_hash(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_e_hash");
+
 	u8 *hash;
 	const u8 *addr[4];
 	size_t len[4];
@@ -96,6 +103,8 @@ static int wps_build_e_hash(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_e_snonce1(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_e_snonce1");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * E-SNonce1");
 	wpabuf_put_be16(msg, ATTR_E_SNONCE1);
 	wpabuf_put_be16(msg, WPS_SECRET_NONCE_LEN);
@@ -106,6 +115,8 @@ static int wps_build_e_snonce1(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_e_snonce2(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_e_snonce2");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * E-SNonce2");
 	wpabuf_put_be16(msg, ATTR_E_SNONCE2);
 	wpabuf_put_be16(msg, WPS_SECRET_NONCE_LEN);
@@ -117,6 +128,8 @@ static int wps_build_e_snonce2(struct wps_data *wps, struct wpabuf *msg)
 
 static struct wpabuf * wps_build_m1(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m1");
+
 	struct wpabuf *msg;
 	u16 config_methods;
 
@@ -180,6 +193,8 @@ static struct wpabuf * wps_build_m1(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m3(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m3");
+
 	struct wpabuf *msg;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M3");
@@ -211,6 +226,8 @@ static struct wpabuf * wps_build_m3(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m5(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m5");
+
 	struct wpabuf *msg, *plain;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M5");
@@ -246,6 +263,8 @@ static struct wpabuf * wps_build_m5(struct wps_data *wps)
 
 static int wps_build_cred_ssid(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_ssid");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * SSID");
 	wpabuf_put_be16(msg, ATTR_SSID);
 	wpabuf_put_be16(msg, wps->wps->ssid_len);
@@ -256,6 +275,8 @@ static int wps_build_cred_ssid(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_cred_auth_type(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_auth_type");
+
 	u16 auth_type = wps->wps->auth_types;
 
 	/* Select the best authentication type */
@@ -278,6 +299,8 @@ static int wps_build_cred_auth_type(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_cred_encr_type(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_encr_type");
+
 	u16 encr_type = wps->wps->encr_types;
 
 	/* Select the best encryption type */
@@ -303,6 +326,8 @@ static int wps_build_cred_encr_type(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_cred_network_key(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_network_key");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Network Key");
 	wpabuf_put_be16(msg, ATTR_NETWORK_KEY);
 	wpabuf_put_be16(msg, wps->wps->network_key_len);
@@ -313,6 +338,8 @@ static int wps_build_cred_network_key(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_cred_mac_addr(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_mac_addr");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * MAC Address (AP BSSID)");
 	wpabuf_put_be16(msg, ATTR_MAC_ADDR);
 	wpabuf_put_be16(msg, ETH_ALEN);
@@ -323,6 +350,8 @@ static int wps_build_cred_mac_addr(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_ap_settings(struct wps_data *wps, struct wpabuf *plain)
 {
+    ESP_LOGV("FUNC", "wps_build_ap_settings");
+
 	if (wps->wps->ap_settings) {
 		wpa_printf(MSG_DEBUG,  "WPS:  * AP Settings (pre-configured)");
 		wpabuf_put_data(plain, wps->wps->ap_settings,
@@ -340,6 +369,8 @@ static int wps_build_ap_settings(struct wps_data *wps, struct wpabuf *plain)
 
 static struct wpabuf * wps_build_m7(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m7");
+
 	struct wpabuf *msg, *plain;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M7");
@@ -386,6 +417,8 @@ static struct wpabuf * wps_build_m7(struct wps_data *wps)
 
 static struct wpabuf * wps_build_wsc_done(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_wsc_done");
+
 	struct wpabuf *msg;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message WSC_Done");
@@ -416,6 +449,8 @@ static struct wpabuf * wps_build_wsc_done(struct wps_data *wps)
 struct wpabuf * wps_enrollee_get_msg(struct wps_data *wps,
 				     enum wsc_op_code *op_code)
 {
+    ESP_LOGV("FUNC", "wps_enrollee_get_msg");
+
 	struct wpabuf *msg;
 
 	switch (wps->state) {
@@ -476,6 +511,8 @@ struct wpabuf * wps_enrollee_get_msg(struct wps_data *wps,
 
 static int wps_process_registrar_nonce(struct wps_data *wps, const u8 *r_nonce)
 {
+    ESP_LOGV("FUNC", "wps_process_registrar_nonce");
+
 	if (r_nonce == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Registrar Nonce received");
 		return -1;
@@ -491,6 +528,8 @@ static int wps_process_registrar_nonce(struct wps_data *wps, const u8 *r_nonce)
 
 static int wps_process_enrollee_nonce(struct wps_data *wps, const u8 *e_nonce)
 {
+    ESP_LOGV("FUNC", "wps_process_enrollee_nonce");
+
 	if (e_nonce == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Enrollee Nonce received");
 		return -1;
@@ -507,6 +546,8 @@ static int wps_process_enrollee_nonce(struct wps_data *wps, const u8 *e_nonce)
 
 static int wps_process_uuid_r(struct wps_data *wps, const u8 *uuid_r)
 {
+    ESP_LOGV("FUNC", "wps_process_uuid_r");
+
 	if (uuid_r == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No UUID-R received");
 		return -1;
@@ -522,6 +563,8 @@ static int wps_process_uuid_r(struct wps_data *wps, const u8 *uuid_r)
 static int wps_process_pubkey(struct wps_data *wps, const u8 *pk,
 			      size_t pk_len)
 {
+    ESP_LOGV("FUNC", "wps_process_pubkey");
+
 	if (pk == NULL || pk_len == 0) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Public Key received");
 		return -1;
@@ -546,6 +589,8 @@ static int wps_process_pubkey(struct wps_data *wps, const u8 *pk,
 
 static int wps_process_r_hash1(struct wps_data *wps, const u8 *r_hash1)
 {
+    ESP_LOGV("FUNC", "wps_process_r_hash1");
+
 	if (r_hash1 == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No R-Hash1 received");
 		return -1;
@@ -560,6 +605,8 @@ static int wps_process_r_hash1(struct wps_data *wps, const u8 *r_hash1)
 
 static int wps_process_r_hash2(struct wps_data *wps, const u8 *r_hash2)
 {
+    ESP_LOGV("FUNC", "wps_process_r_hash2");
+
 	if (r_hash2 == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No R-Hash2 received");
 		return -1;
@@ -574,6 +621,8 @@ static int wps_process_r_hash2(struct wps_data *wps, const u8 *r_hash2)
 
 static int wps_process_r_snonce1(struct wps_data *wps, const u8 *r_snonce1)
 {
+    ESP_LOGV("FUNC", "wps_process_r_snonce1");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[4];
 	size_t len[4];
@@ -614,6 +663,8 @@ static int wps_process_r_snonce1(struct wps_data *wps, const u8 *r_snonce1)
 
 static int wps_process_r_snonce2(struct wps_data *wps, const u8 *r_snonce2)
 {
+    ESP_LOGV("FUNC", "wps_process_r_snonce2");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[4];
 	size_t len[4];
@@ -656,6 +707,8 @@ static int wps_process_r_snonce2(struct wps_data *wps, const u8 *r_snonce2)
 static int wps_process_cred_e(struct wps_data *wps, const u8 *cred,
 			      size_t cred_len, int cred_idx, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_e");
+
 	struct wps_parse_attr *attr;
 	struct wpabuf msg;
 	int ret = 0;
@@ -736,6 +789,8 @@ _out:
 static int wps_process_creds(struct wps_data *wps, const u8 *cred[],
 			     size_t cred_len[], size_t num_cred, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_process_creds");
+
 	size_t i;
 	int ok = 0;
 
@@ -774,6 +829,8 @@ static int wps_process_ap_settings_e(struct wps_data *wps,
 				     struct wps_parse_attr *attr,
 				     struct wpabuf *attrs, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_process_ap_settings_e");
+
 	struct wps_credential *cred;
 	int ret = 0;
 
@@ -887,6 +944,8 @@ static enum wps_process_res wps_process_m2(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m2");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Received M2");
 
 	if (wps->state != RECV_M2) {
@@ -934,6 +993,8 @@ static enum wps_process_res wps_process_m2(struct wps_data *wps,
 static enum wps_process_res wps_process_m2d(struct wps_data *wps,
 					    struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m2d");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Received M2D");
 
 	if (wps->state != RECV_M2) {
@@ -990,6 +1051,8 @@ static enum wps_process_res wps_process_m4(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m4");
+
 	struct wpabuf *decrypted;
 	struct wps_parse_attr *eattr;
 	enum wps_process_res res;
@@ -1062,6 +1125,8 @@ static enum wps_process_res wps_process_m6(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m6");
+
 	struct wpabuf *decrypted;
 	struct wps_parse_attr *eattr;
 	enum wps_process_res res;
@@ -1136,6 +1201,8 @@ static enum wps_process_res wps_process_m8(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m8");
+
 	struct wpabuf *decrypted;
 	struct wps_parse_attr *eattr;
 	enum wps_process_res res;
@@ -1225,6 +1292,8 @@ extern struct wps_sm *gWpsSm;
 static enum wps_process_res wps_process_wsc_start(struct wps_data *wps,
 						const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_start");
+
 	struct wps_sm *sm = gWpsSm;
 	enum wps_process_res ret = WPS_CONTINUE;
 
@@ -1243,6 +1312,8 @@ static enum wps_process_res wps_process_wsc_start(struct wps_data *wps,
 static enum wps_process_res wps_process_wsc_msg(struct wps_data *wps,
 						const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_msg");
+
 	struct wps_parse_attr *attr;
 	enum wps_process_res ret = WPS_CONTINUE;
 
@@ -1354,6 +1425,8 @@ _out:
 static enum wps_process_res wps_process_wsc_ack(struct wps_data *wps,
 						const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_ack");
+
 	struct wps_parse_attr *attr;
 	enum wps_process_res res;
 
@@ -1419,6 +1492,8 @@ _out:
 static enum wps_process_res wps_process_wsc_nack(struct wps_data *wps,
 						 const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_nack");
+
 	struct wps_parse_attr *attr;
 	enum wps_process_res res;
 	u16 config_error;
@@ -1517,6 +1592,8 @@ enum wps_process_res wps_enrollee_process_msg(struct wps_data *wps,
 					      enum wsc_op_code op_code,
 					      const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_enrollee_process_msg");
+
 
 	wpa_printf(MSG_DEBUG,  "WPS: Processing received message (len=%lu "
 		   "op_code=%d)",

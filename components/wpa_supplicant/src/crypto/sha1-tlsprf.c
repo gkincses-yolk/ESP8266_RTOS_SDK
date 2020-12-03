@@ -30,6 +30,8 @@
 int tls_prf_sha1_md5(const u8 *secret, size_t secret_len, const char *label,
 		     const u8 *seed, size_t seed_len, u8 *out, size_t outlen)
 {
+    ESP_LOGV("FUNC", "tls_prf_sha1_md5");
+
 	size_t L_S1, L_S2, i;
 	const u8 *S1, *S2;
 	u8 A_MD5[MD5_MAC_LEN], A_SHA1[SHA1_MAC_LEN];

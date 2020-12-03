@@ -24,6 +24,8 @@
  */
 int eap_hdr_len_valid(const struct wpabuf *msg, size_t min_payload)
 {
+    ESP_LOGV("FUNC", "eap_hdr_len_valid");
+
 	const struct eap_hdr *hdr;
 	size_t len;
 
@@ -66,6 +68,8 @@ int eap_hdr_len_valid(const struct wpabuf *msg, size_t min_payload)
 const u8 * eap_hdr_validate(int vendor, EapType eap_type,
 			    const struct wpabuf *msg, size_t *plen)
 {
+    ESP_LOGV("FUNC", "eap_hdr_validate");
+
 	const struct eap_hdr *hdr;
 	const u8 *pos;
 	size_t len;
@@ -128,6 +132,8 @@ const u8 * eap_hdr_validate(int vendor, EapType eap_type,
 struct wpabuf * eap_msg_alloc(int vendor, EapType type, size_t payload_len,
 			      u8 code, u8 identifier)
 {
+    ESP_LOGV("FUNC", "eap_msg_alloc");
+
 	struct wpabuf *buf;
 	struct eap_hdr *hdr;
 	size_t len;
@@ -166,6 +172,8 @@ struct wpabuf * eap_msg_alloc(int vendor, EapType type, size_t payload_len,
  */
 void eap_update_len(struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "eap_update_len");
+
 	struct eap_hdr *hdr;
 	hdr = wpabuf_mhead(msg);
 	if (wpabuf_len(msg) < sizeof(*hdr))
@@ -181,6 +189,8 @@ void eap_update_len(struct wpabuf *msg)
  */
 u8 eap_get_id(const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "eap_get_id");
+
 	const struct eap_hdr *eap;
 
 	if (wpabuf_len(msg) < sizeof(*eap))
@@ -198,6 +208,8 @@ u8 eap_get_id(const struct wpabuf *msg)
  */
 EapType eap_get_type(const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "eap_get_type");
+
 	if (wpabuf_len(msg) < sizeof(struct eap_hdr) + 1)
 		return EAP_TYPE_NONE;
 

@@ -19,10 +19,11 @@
 
 #define S_SWAP(a,b) do { u8 t = S[a]; S[a] = S[b]; S[b] = t; } while(0)
 
-int 
-rc4_skip(const u8 *key, size_t keylen, size_t skip,
+int rc4_skip(const u8 *key, size_t keylen, size_t skip,
 	     u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "rc4_skip");
+
 	u32 i, j, k;
 	u8 S[256], *pos;
 	size_t kpos;

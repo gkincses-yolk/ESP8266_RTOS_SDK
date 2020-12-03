@@ -33,6 +33,8 @@
 int  wpa_parse_wpa_ie(const u8 *wpa_ie, size_t wpa_ie_len,
 		     struct wpa_ie_data *data)
 {
+    ESP_LOGV("FUNC", "wpa_parse_wpa_ie");
+
 	if (wpa_ie_len >= 1 && wpa_ie[0] == WLAN_EID_RSN)
 		return wpa_parse_wpa_ie_rsn(wpa_ie, wpa_ie_len, data);
 	else
@@ -44,6 +46,8 @@ static int  wpa_gen_wpa_ie_wpa(u8 *wpa_ie, size_t wpa_ie_len,
                   int pairwise_cipher, int group_cipher,
                   int key_mgmt)
 {
+    ESP_LOGV("FUNC", "wpa_gen_wpa_ie_wpa");
+
     u8 *pos;
     struct wpa_ie_hdr *hdr;
 
@@ -117,6 +121,8 @@ static int  wpa_gen_wpa_ie_rsn(u8 *rsn_ie, size_t rsn_ie_len,
                   int key_mgmt, int mgmt_group_cipher,
                   struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_gen_wpa_ie_rsn");
+
 #ifndef CONFIG_NO_WPA2
     u8 *pos;
     struct rsn_ie_hdr *hdr;
@@ -271,6 +277,8 @@ static int  wpa_gen_wpa_ie_rsn(u8 *rsn_ie, size_t rsn_ie_len,
  */
 int  wpa_gen_wpa_ie(struct wpa_sm *sm, u8 *wpa_ie, size_t wpa_ie_len)
 {
+    ESP_LOGV("FUNC", "wpa_gen_wpa_ie");
+
     if (sm->proto == WPA_PROTO_RSN)
         return wpa_gen_wpa_ie_rsn(wpa_ie, wpa_ie_len,
                       sm->pairwise_cipher,
@@ -295,6 +303,8 @@ int  wpa_gen_wpa_ie(struct wpa_sm *sm, u8 *wpa_ie, size_t wpa_ie_len)
 static int  wpa_parse_generic(const u8 *pos, const u8 *end,
 			     struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "wpa_parse_generic");
+
 	if (pos[1] == 0)
 		return 1;
 
@@ -359,6 +369,8 @@ static int  wpa_parse_generic(const u8 *pos, const u8 *end,
 int  wpa_supplicant_parse_ies(const u8 *buf, size_t len,
 			     struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "wpa_supplicant_parse_ies");
+
 	const u8 *pos, *end;
 	int ret = 0;
 

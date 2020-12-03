@@ -786,6 +786,8 @@ const u8 rcons[] /* ICACHE_RODATA_ATTR */ = {
  */
 int rijndaelKeySetupEnc(u32 rk[], const u8 cipherKey[], int keyBits)
 {
+    ESP_LOGV("FUNC", "rijndaelKeySetupEnc");
+
 	int i;
 	u32 temp;
 

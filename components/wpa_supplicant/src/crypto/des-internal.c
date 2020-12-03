@@ -248,6 +248,8 @@ static const u32 SP8[64] =
 
 static void cookey(const u32 *raw1, u32 *keyout)
 {
+    ESP_LOGV("FUNC", "cookey");
+
 	u32 *cook;
 	const u32 *raw0;
 	u32 dough[32];
@@ -272,6 +274,8 @@ static void cookey(const u32 *raw1, u32 *keyout)
 
 static void deskey(const u8 *key, int decrypt, u32 *keyout)
 {
+    ESP_LOGV("FUNC", "deskey");
+
 	u32 i, j, l, m, n, kn[32];
 	u8 pc1m[56], pcr[56];
 
@@ -317,6 +321,8 @@ static void deskey(const u8 *key, int decrypt, u32 *keyout)
 
 static void desfunc(u32 *block, const u32 *keys)
 {
+    ESP_LOGV("FUNC", "desfunc");
+
 	u32 work, right, leftt;
 	int cur_round;
 
@@ -398,6 +404,8 @@ static void desfunc(u32 *block, const u32 *keys)
 
 void des_encrypt(const u8 *clear, const u8 *key, u8 *cypher)
 {
+    ESP_LOGV("FUNC", "des_encrypt");
+
 	u8 pkey[8], next, tmp;
 	int i;
 	u32 ek[32], work[2];
@@ -426,6 +434,8 @@ void des_encrypt(const u8 *clear, const u8 *key, u8 *cypher)
 /*
 void des_key_setup(const u8 *key, u32 *ek, u32 *dk)
 {
+ESP_LOGV("FUNC", "des_key_setup");
+
 	deskey(key, 0, ek);
 	deskey(key, 1, dk);
 }
@@ -433,6 +443,8 @@ void des_key_setup(const u8 *key, u32 *ek, u32 *dk)
 
 void des_block_encrypt(const u8 *plain, const u32 *ek, u8 *crypt)
 {
+ESP_LOGV("FUNC", "des_block_encrypt");
+
 	u32 work[2];
 	work[0] = WPA_GET_BE32(plain);
 	work[1] = WPA_GET_BE32(plain + 4);
@@ -444,6 +456,8 @@ void des_block_encrypt(const u8 *plain, const u32 *ek, u8 *crypt)
 
 void des_block_decrypt(const u8 *crypt, const u32 *dk, u8 *plain)
 {
+ESP_LOGV("FUNC", "des_block_decrypt");
+
 	u32 work[2];
 	work[0] = WPA_GET_BE32(crypt);
 	work[1] = WPA_GET_BE32(crypt + 4);
@@ -455,6 +469,8 @@ void des_block_decrypt(const u8 *crypt, const u32 *dk, u8 *plain)
 
 void des3_key_setup(const u8 *key, struct des3_key_s *dkey)
 {
+ESP_LOGV("FUNC", "des3_key_setup");
+
 	deskey(key, 0, dkey->ek[0]);
 	deskey(key + 8, 1, dkey->ek[1]);
 	deskey(key + 16, 0, dkey->ek[2]);
@@ -467,6 +483,8 @@ void des3_key_setup(const u8 *key, struct des3_key_s *dkey)
 
 void des3_encrypt(const u8 *plain, const struct des3_key_s *key, u8 *crypt)
 {
+ESP_LOGV("FUNC", "des3_encrypt");
+
 	u32 work[2];
 
 	work[0] = WPA_GET_BE32(plain);
@@ -481,6 +499,8 @@ void des3_encrypt(const u8 *plain, const struct des3_key_s *key, u8 *crypt)
 
 void des3_decrypt(const u8 *crypt, const struct des3_key_s *key, u8 *plain)
 {
+ESP_LOGV("FUNC", "des3_decrypt");
+
 	u32 work[2];
 
 	work[0] = WPA_GET_BE32(crypt);

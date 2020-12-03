@@ -16,6 +16,8 @@
 
 struct tlsv1_credentials * tlsv1_cred_alloc(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_cred_alloc");
+
 	struct tlsv1_credentials *cred;
 	cred = (struct tlsv1_credentials *)os_zalloc(sizeof(*cred));
 	return cred;
@@ -24,6 +26,8 @@ struct tlsv1_credentials * tlsv1_cred_alloc(void)
 
 void tlsv1_cred_free(struct tlsv1_credentials *cred)
 {
+    ESP_LOGV("FUNC", "tlsv1_cred_free");
+
 	if (cred == NULL)
 		return;
 
@@ -39,6 +43,8 @@ void tlsv1_cred_free(struct tlsv1_credentials *cred)
 static int tlsv1_add_cert_der(struct x509_certificate **chain,
 			      const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "tlsv1_add_cert_der");
+
 	struct x509_certificate *cert, *p;
 	char name[128];
 
@@ -83,6 +89,8 @@ static const char *pem_key_enc_end = "-----END ENCRYPTED PRIVATE KEY-----";
 
 static const u8 * search_tag(const char *tag, const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "search_tag");
+
 	size_t i, plen;
 
 	plen = os_strlen(tag);
@@ -101,6 +109,8 @@ static const u8 * search_tag(const char *tag, const u8 *buf, size_t len)
 static int tlsv1_add_cert(struct x509_certificate **chain,
 			  const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "tlsv1_add_cert");
+
 	const u8 *pos, *end;
 	unsigned char *der;
 	size_t der_len;
@@ -152,6 +162,8 @@ static int tlsv1_set_cert_chain(struct x509_certificate **chain,
 				const char *cert, const u8 *cert_blob,
 				size_t cert_blob_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_cert_chain");
+
 	if (cert_blob)
 		return tlsv1_add_cert(chain, cert_blob, cert_blob_len);
 
@@ -188,6 +200,8 @@ int tlsv1_set_ca_cert(struct tlsv1_credentials *cred, const char *cert,
 		      const u8 *cert_blob, size_t cert_blob_len,
 		      const char *path)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_ca_cert");
+
 	if (tlsv1_set_cert_chain(&cred->trusted_certs, cert,
 				 cert_blob, cert_blob_len) < 0)
 		return -1;
@@ -214,6 +228,8 @@ int tlsv1_set_ca_cert(struct tlsv1_credentials *cred, const char *cert,
 int tlsv1_set_cert(struct tlsv1_credentials *cred, const char *cert,
 		   const u8 *cert_blob, size_t cert_blob_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_cert");
+
 	return tlsv1_set_cert_chain(&cred->cert, cert,
 				    cert_blob, cert_blob_len);
 }
@@ -221,6 +237,8 @@ int tlsv1_set_cert(struct tlsv1_credentials *cred, const char *cert,
 
 static struct crypto_private_key * tlsv1_set_key_pem(const u8 *key, size_t len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_key_pem");
+
 	const u8 *pos, *end;
 	unsigned char *der;
 	size_t der_len;
@@ -262,6 +280,8 @@ static struct crypto_private_key * tlsv1_set_key_enc_pem(const u8 *key,
 							 size_t len,
 							 const char *passwd)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_key_enc_pem");
+
 	const u8 *pos, *end;
 	unsigned char *der;
 	size_t der_len;
@@ -289,6 +309,8 @@ static struct crypto_private_key * tlsv1_set_key_enc_pem(const u8 *key,
 static int tlsv1_set_key(struct tlsv1_credentials *cred,
 			 const u8 *key, size_t len, const char *passwd)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_key");
+
 	cred->key = crypto_private_key_import(key, len, passwd);
 	if (cred->key == NULL)
 		cred->key = tlsv1_set_key_pem(key, len);
@@ -318,6 +340,8 @@ int tlsv1_set_private_key(struct tlsv1_credentials *cred,
 			  const u8 *private_key_blob,
 			  size_t private_key_blob_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_private_key");
+
 	crypto_private_key_free(cred->key);
 	cred->key = NULL;
 
@@ -349,6 +373,8 @@ int tlsv1_set_private_key(struct tlsv1_credentials *cred,
 static int tlsv1_set_dhparams_der(struct tlsv1_credentials *cred,
 				  const u8 *dh, size_t len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_dhparams_der");
+
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
 
@@ -427,6 +453,8 @@ static const char *pem_dhparams_end = "-----END DH PARAMETERS-----";
 static int tlsv1_set_dhparams_blob(struct tlsv1_credentials *cred,
 				   const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_dhparams_blob");
+
 	const u8 *pos, *end;
 	unsigned char *der;
 	size_t der_len;
@@ -479,6 +507,8 @@ static int tlsv1_set_dhparams_blob(struct tlsv1_credentials *cred,
 int tlsv1_set_dhparams(struct tlsv1_credentials *cred, const char *dh_file,
 		       const u8 *dh_blob, size_t dh_blob_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_set_dhparams");
+
 	if (dh_blob)
 		return tlsv1_set_dhparams_blob(cred, dh_blob, dh_blob_len);
 

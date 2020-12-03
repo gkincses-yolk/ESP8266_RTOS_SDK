@@ -13,6 +13,8 @@
 
 int uuid_str2bin(const char *str, u8 *bin)
 {
+    ESP_LOGV("FUNC", "uuid_str2bin");
+
 	const char *pos;
 	u8 *opos;
 
@@ -48,6 +50,8 @@ int uuid_str2bin(const char *str, u8 *bin)
 
 int uuid_bin2str(const u8 *bin, char *str, size_t max_len)
 {
+    ESP_LOGV("FUNC", "uuid_bin2str");
+
 	int len;
 	len = snprintf(str, max_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-"
 			  "%02x%02x-%02x%02x%02x%02x%02x%02x",
@@ -63,6 +67,8 @@ int uuid_bin2str(const u8 *bin, char *str, size_t max_len)
 
 int is_nil_uuid(const u8 *uuid)
 {
+    ESP_LOGV("FUNC", "is_nil_uuid");
+
 	int i;
 	for (i = 0; i < UUID_LEN; i++)
 		if (uuid[i])

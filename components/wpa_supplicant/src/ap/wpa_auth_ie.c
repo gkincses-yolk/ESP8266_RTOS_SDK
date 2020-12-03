@@ -22,6 +22,8 @@ int rsn_testing = 0;
 
 static int wpa_write_wpa_ie(struct wpa_auth_config *conf, u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_write_wpa_ie");
+
 	struct wpa_ie_hdr *hdr;
 	int num_suites;
 	u8 *pos, *count;
@@ -87,6 +89,8 @@ static int wpa_write_wpa_ie(struct wpa_auth_config *conf, u8 *buf, size_t len)
 int wpa_write_rsn_ie(struct wpa_auth_config *conf, u8 *buf, size_t len,
 		     const u8 *pmkid)
 {
+    ESP_LOGV("FUNC", "wpa_write_rsn_ie");
+
 	struct rsn_ie_hdr *hdr;
 	int num_suites, res;
 	u8 *pos, *count;
@@ -293,6 +297,8 @@ int wpa_write_rsn_ie(struct wpa_auth_config *conf, u8 *buf, size_t len,
 
 int wpa_auth_gen_wpa_ie(struct wpa_authenticator *wpa_auth)
 {
+    ESP_LOGV("FUNC", "wpa_auth_gen_wpa_ie");
+
 	u8 *pos, buf[128];
 	int res;
 
@@ -335,6 +341,8 @@ int wpa_auth_gen_wpa_ie(struct wpa_authenticator *wpa_auth)
 u8 * wpa_add_kde(u8 *pos, u32 kde, const u8 *data, size_t data_len,
 		 const u8 *data2, size_t data2_len)
 {
+    ESP_LOGV("FUNC", "wpa_add_kde");
+
 	*pos++ = WLAN_EID_VENDOR_SPECIFIC;
 	*pos++ = RSN_SELECTOR_LEN + data_len + data2_len;
 	RSN_SELECTOR_PUT(pos, kde);
@@ -353,6 +361,8 @@ int wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
 			const u8 *wpa_ie, size_t wpa_ie_len/*,
 			const u8 *mdie, size_t mdie_len*/)
 {
+    ESP_LOGV("FUNC", "wpa_validate_wpa_ie");
+
 	struct wpa_ie_data data;
 	int ciphers, key_mgmt, res, version;
 	u32 selector;
@@ -566,6 +576,8 @@ int wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
 static int wpa_parse_generic(const u8 *pos, const u8 *end,
 			     struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "wpa_parse_generic");
+
 	if (pos[1] == 0)
 		return 1;
 
@@ -651,6 +663,8 @@ static int wpa_parse_generic(const u8 *pos, const u8 *end,
  */
 int wpa_parse_kde_ies(const u8 *buf, size_t len, struct wpa_eapol_ie_parse *ie)
 {
+    ESP_LOGV("FUNC", "wpa_parse_kde_ies");
+
 	const u8 *pos, *end;
 	int ret = 0;
 
@@ -701,5 +715,7 @@ int wpa_parse_kde_ies(const u8 *buf, size_t len, struct wpa_eapol_ie_parse *ie)
 
 int wpa_auth_uses_mfp(struct wpa_state_machine *sm)
 {
+    ESP_LOGV("FUNC", "wpa_auth_uses_mfp");
+
 	return sm ? sm->mgmt_frame_prot : 0;
 }

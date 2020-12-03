@@ -1187,9 +1187,10 @@ static const struct dh_group dh_groups[] = {
 #define NUM_DH_GROUPS (sizeof(dh_groups) / sizeof(dh_groups[0]))
 
 
-const struct dh_group * 
-dh_groups_get(int id)
+const struct dh_group * dh_groups_get(int id)
 {
+    ESP_LOGV("FUNC", "dh_groups_get");
+
 	size_t i;
 
 	for (i = 0; i < NUM_DH_GROUPS; i++) {
@@ -1205,9 +1206,10 @@ dh_groups_get(int id)
  * @priv: Pointer for returning Diffie-Hellman private key
  * Returns: Diffie-Hellman public value
  */
-struct wpabuf * 
-dh_init(const struct dh_group *dh, struct wpabuf **priv)
+struct wpabuf * dh_init(const struct dh_group *dh, struct wpabuf **priv)
 {
+    ESP_LOGV("FUNC", "dh_init");
+
 	struct wpabuf *pv;
 	size_t pv_len;
 
@@ -1262,11 +1264,12 @@ dh_init(const struct dh_group *dh, struct wpabuf **priv)
  * @dh: Selected Diffie-Hellman group
  * Returns: Diffie-Hellman shared key
  */
-struct wpabuf * 
-dh_derive_shared(const struct wpabuf *peer_public,
+struct wpabuf * dh_derive_shared(const struct wpabuf *peer_public,
 				 const struct wpabuf *own_private,
 				 const struct dh_group *dh)
 {
+    ESP_LOGV("FUNC", "dh_derive_shared");
+
 	struct wpabuf *shared;
 	size_t shared_len;
 

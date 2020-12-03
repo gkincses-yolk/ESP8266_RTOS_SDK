@@ -39,12 +39,16 @@
 void  wpa_install_key(enum wpa_alg alg, u8 *addr, int key_idx, int set_tx,
                       u8 *seq, size_t seq_len, u8 *key, size_t key_len, int key_entry_valid)
 {
+    ESP_LOGV("FUNC", "wpa_install_key");
+
     esp_wifi_set_sta_key_internal(alg, addr, key_idx, set_tx, seq, seq_len, key, key_len, key_entry_valid);
 }
 
 int  wpa_get_key(uint8_t *ifx, int *alg, u8 *addr, int *key_idx,
                  u8 *key, size_t key_len, int key_entry_valid)
 {
+    ESP_LOGV("FUNC", "wpa_get_key");
+
     return esp_wifi_get_sta_key_internal(ifx, alg, addr, key_idx, key, key_len, key_entry_valid);
 }
 
@@ -65,16 +69,22 @@ int  wpa_get_key(uint8_t *ifx, int *alg, u8 *addr, int *key_idx,
 
 void  wpa_sendto_wrapper(void *buffer, u16 len)
 {
+    ESP_LOGV("FUNC", "wpa_sendto_wrapper");
+
     esp_wifi_internal_tx(0, buffer, len);
 }
 
 void  wpa_deauthenticate(u8 reason_code)
 {
+    ESP_LOGV("FUNC", "wpa_deauthenticate");
+
     esp_wifi_deauthenticate_internal(reason_code);
 }
 
 void  wpa_config_profile(void)
 {
+    ESP_LOGV("FUNC", "wpa_config_profile");
+
     if (esp_wifi_sta_prof_is_wpa_internal()) {
         wpa_set_profile(WPA_PROTO_WPA, esp_wifi_sta_get_prof_authmode_internal());
     } else if (esp_wifi_sta_prof_is_wpa2_internal() || esp_wifi_sta_prof_is_wpa3_internal()) {
@@ -86,6 +96,8 @@ void  wpa_config_profile(void)
 
 int wpa_config_bss(uint8_t *bssid)
 {
+    ESP_LOGV("FUNC", "wpa_config_bss");
+
     int ret = 0;
     struct wifi_ssid *ssid = esp_wifi_sta_get_prof_ssid_internal();
     u8 mac[6];
@@ -98,6 +110,8 @@ int wpa_config_bss(uint8_t *bssid)
 
 void  wpa_config_assoc_ie(u8 proto, u8 *assoc_buf, u32 assoc_wpa_ie_len)
 {
+    ESP_LOGV("FUNC", "wpa_config_assoc_ie");
+
     if (proto == BIT(0)) {
         esp_wifi_set_appie_internal(WIFI_APPIE_WPA, assoc_buf, assoc_wpa_ie_len, 1);
     } else {
@@ -108,11 +122,15 @@ void  wpa_config_assoc_ie(u8 proto, u8 *assoc_buf, u32 assoc_wpa_ie_len)
 
 void  wpa_neg_complete(void)
 {
+    ESP_LOGV("FUNC", "wpa_neg_complete");
+
     esp_wifi_auth_done_internal();
 }
 
 bool  wpa_attach(void)
 {
+    ESP_LOGV("FUNC", "wpa_attach");
+
     bool ret = true; 
     ret = wpa_sm_init(NULL, wpa_sendto_wrapper,
                  wpa_config_assoc_ie, wpa_install_key, wpa_get_key, wpa_deauthenticate, wpa_neg_complete);
@@ -124,6 +142,8 @@ bool  wpa_attach(void)
 
 uint8_t  *wpa_ap_get_wpa_ie(uint8_t *ie_len)
 {
+    ESP_LOGV("FUNC", "wpa_ap_get_wpa_ie");
+
     struct hostapd_data *hapd = (struct hostapd_data *)esp_wifi_get_hostap_private_internal();
 
     if (!hapd || !hapd->wpa_auth || !hapd->wpa_auth->wpa_ie) {
@@ -136,6 +156,8 @@ uint8_t  *wpa_ap_get_wpa_ie(uint8_t *ie_len)
 
 bool  wpa_ap_rx_eapol(void *hapd_data, void *sm_data, u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "wpa_ap_rx_eapol");
+
     struct hostapd_data *hapd = (struct hostapd_data *)hapd_data;
     struct wpa_state_machine *sm = (struct wpa_state_machine *)sm_data;
 
@@ -150,12 +172,16 @@ bool  wpa_ap_rx_eapol(void *hapd_data, void *sm_data, u8 *data, size_t data_len)
 
 bool  wpa_deattach(void)
 {
+    ESP_LOGV("FUNC", "wpa_deattach");
+
     wpa_sm_deinit();
     return true;
 }
 
 void  wpa_sta_connect(uint8_t *bssid)
 {
+    ESP_LOGV("FUNC", "wpa_sta_connect");
+
 
     int ret = 0;
     wpa_config_profile();
@@ -165,6 +191,8 @@ void  wpa_sta_connect(uint8_t *bssid)
 
 int wpa_parse_wpa_ie_wrapper(const u8 *wpa_ie, size_t wpa_ie_len, wifi_wpa_ie_t *data)
 {
+    ESP_LOGV("FUNC", "wpa_parse_wpa_ie_wrapper");
+
     struct wpa_ie_data ie;
     int ret = 0;
 
@@ -182,6 +210,8 @@ int wpa_parse_wpa_ie_wrapper(const u8 *wpa_ie, size_t wpa_ie_len, wifi_wpa_ie_t 
 
 static void wpa_sta_disconnected_cb(uint8_t reason_code)
 {
+    ESP_LOGV("FUNC", "wpa_sta_disconnected_cb");
+
     switch (reason_code) {
         case WIFI_REASON_UNSPECIFIED:
         case WIFI_REASON_AUTH_EXPIRE:
@@ -204,12 +234,16 @@ static void wpa_sta_disconnected_cb(uint8_t reason_code)
 #ifndef ROAMING_SUPPORT
 static void esp_supplicant_common_init(struct wpa_funcs *wpa_cb)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_common_init");
+
 	wpa_cb->esp_sta_rx_mgmt = NULL;
 }
 #endif
 
 int esp_supplicant_init(void)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_init");
+
     struct wpa_funcs *wpa_cb;
 
     wpa_cb = (struct wpa_funcs *)os_malloc(sizeof(struct wpa_funcs));
@@ -245,5 +279,7 @@ int esp_supplicant_init(void)
 
 int esp_supplicant_deinit(void)
 {
+    ESP_LOGV("FUNC", "esp_supplicant_deinit");
+
     return esp_wifi_unregister_wpa_cb_internal();
 }

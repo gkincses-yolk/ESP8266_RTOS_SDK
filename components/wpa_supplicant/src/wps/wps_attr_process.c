@@ -15,6 +15,8 @@
 int wps_process_authenticator(struct wps_data *wps, const u8 *authenticator,
 			      const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_authenticator");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[2];
 	size_t len[2];
@@ -51,6 +53,8 @@ int wps_process_authenticator(struct wps_data *wps, const u8 *authenticator,
 int wps_process_key_wrap_auth(struct wps_data *wps, struct wpabuf *msg,
 			      const u8 *key_wrap_auth)
 {
+    ESP_LOGV("FUNC", "wps_process_key_wrap_auth");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *head;
 	size_t len;
@@ -81,6 +85,8 @@ int wps_process_key_wrap_auth(struct wps_data *wps, struct wpabuf *msg,
 static int wps_process_cred_network_idx(struct wps_credential *cred,
 					const u8 *idx)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_network_idx");
+
 	if (idx == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include "
 			   "Network Index");
@@ -96,6 +102,8 @@ static int wps_process_cred_network_idx(struct wps_credential *cred,
 static int wps_process_cred_ssid(struct wps_credential *cred, const u8 *ssid,
 				 size_t ssid_len)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_ssid");
+
 	if (ssid == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include SSID");
 		return -1;
@@ -119,6 +127,8 @@ static int wps_process_cred_ssid(struct wps_credential *cred, const u8 *ssid,
 static int wps_process_cred_auth_type(struct wps_credential *cred,
 				      const u8 *auth_type)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_auth_type");
+
 	if (auth_type == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include "
 			   "Authentication Type");
@@ -136,6 +146,8 @@ static int wps_process_cred_auth_type(struct wps_credential *cred,
 static int wps_process_cred_encr_type(struct wps_credential *cred,
 				      const u8 *encr_type)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_encr_type");
+
 	if (encr_type == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include "
 			   "Encryption Type");
@@ -153,6 +165,8 @@ static int wps_process_cred_encr_type(struct wps_credential *cred,
 static int wps_process_cred_network_key_idx(struct wps_credential *cred,
 					    const u8 *key_idx)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_network_key_idx");
+
 	if (key_idx == NULL)
 		return 0; /* optional attribute */
 
@@ -166,6 +180,8 @@ static int wps_process_cred_network_key_idx(struct wps_credential *cred,
 static int wps_process_cred_network_key(struct wps_credential *cred,
 					const u8 *key, size_t key_len)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_network_key");
+
 	if (key == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include "
 			   "Network Key");
@@ -192,6 +208,8 @@ static int wps_process_cred_network_key(struct wps_credential *cred,
 static int wps_process_cred_mac_addr(struct wps_credential *cred,
 				     const u8 *mac_addr)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_mac_addr");
+
 	if (mac_addr == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: Credential did not include "
 			   "MAC Address");
@@ -208,6 +226,8 @@ static int wps_process_cred_mac_addr(struct wps_credential *cred,
 static int wps_process_cred_eap_type(struct wps_credential *cred,
 				     const u8 *eap_type, size_t eap_type_len)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_eap_type");
+
 	if (eap_type == NULL)
 		return 0; /* optional attribute */
 
@@ -221,6 +241,8 @@ static int wps_process_cred_eap_identity(struct wps_credential *cred,
 					 const u8 *identity,
 					 size_t identity_len)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_eap_identity");
+
 	if (identity == NULL)
 		return 0; /* optional attribute */
 
@@ -234,6 +256,8 @@ static int wps_process_cred_eap_identity(struct wps_credential *cred,
 static int wps_process_cred_key_prov_auto(struct wps_credential *cred,
 					  const u8 *key_prov_auto)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_key_prov_auto");
+
 	if (key_prov_auto == NULL)
 		return 0; /* optional attribute */
 
@@ -247,6 +271,8 @@ static int wps_process_cred_key_prov_auto(struct wps_credential *cred,
 static int wps_process_cred_802_1x_enabled(struct wps_credential *cred,
 					   const u8 *dot1x_enabled)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_802_1x_enabled");
+
 	if (dot1x_enabled == NULL)
 		return 0; /* optional attribute */
 
@@ -259,6 +285,8 @@ static int wps_process_cred_802_1x_enabled(struct wps_credential *cred,
 static int wps_process_cred_ap_channel(struct wps_credential *cred,
 				       const u8 *ap_channel)
 {
+    ESP_LOGV("FUNC", "wps_process_cred_ap_channel");
+
 	if (ap_channel == NULL)
 		return 0; /* optional attribute */
 
@@ -271,6 +299,8 @@ static int wps_process_cred_ap_channel(struct wps_credential *cred,
 
 static int wps_workaround_cred_key(struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_workaround_cred_key");
+
 	if (cred->auth_type & (WPS_AUTH_WPAPSK | WPS_AUTH_WPA2PSK) &&
 	    cred->key_len > 8 && cred->key_len < 64 &&
 	    cred->key[cred->key_len - 1] == 0) {
@@ -298,6 +328,8 @@ static int wps_workaround_cred_key(struct wps_credential *cred)
 int wps_process_cred(struct wps_parse_attr *attr,
 		     struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_process_cred");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Process Credential");
 
 	/* TODO: support multiple Network Keys */
@@ -325,6 +357,8 @@ int wps_process_cred(struct wps_parse_attr *attr,
 int wps_process_ap_settings(struct wps_parse_attr *attr,
 			    struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_process_ap_settings");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Processing AP Settings");
 	os_memset(cred, 0, sizeof(*cred));
 	/* TODO: optional attributes New Password and Device Password ID */

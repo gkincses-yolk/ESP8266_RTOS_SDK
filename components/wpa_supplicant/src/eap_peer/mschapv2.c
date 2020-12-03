@@ -11,6 +11,8 @@
 
 const u8 * mschapv2_remove_domain(const u8 *username, size_t *len)
 {
+    ESP_LOGV("FUNC", "mschapv2_remove_domain");
+
 	size_t i;
 
 	/*
@@ -36,6 +38,8 @@ int mschapv2_derive_response(const u8 *identity, size_t identity_len,
 			 u8 *nt_response, u8 *auth_response,
 			 u8 *master_key)
 {
+    ESP_LOGV("FUNC", "mschapv2_derive_response");
+
 	const u8 *username;
 	size_t username_len;
 	u8 password_hash[16], password_hash_hash[16];
@@ -83,6 +87,8 @@ int mschapv2_derive_response(const u8 *identity, size_t identity_len,
 int mschapv2_verify_auth_response(const u8 *auth_response,
 			      const u8 *buf, size_t buf_len)
 {
+    ESP_LOGV("FUNC", "mschapv2_verify_auth_response");
+
 	u8 recv_response[MSCHAPV2_AUTH_RESPONSE_LEN];
 	if (buf_len < 2 + 2 * MSCHAPV2_AUTH_RESPONSE_LEN ||
 	    buf[0] != 'S' || buf[1] != '=' ||

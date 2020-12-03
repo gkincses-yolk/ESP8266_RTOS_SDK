@@ -25,6 +25,8 @@
 
 void wnm_deallocate_memory(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_deallocate_memory");
+
 	int i;
 
 	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
@@ -41,6 +43,8 @@ void wnm_deallocate_memory(struct wpa_supplicant *wpa_s)
 static void wnm_parse_neighbor_report_elem(struct neighbor_report *rep,
 					   u8 id, u8 elen, const u8 *pos)
 {
+    ESP_LOGV("FUNC", "wnm_parse_neighbor_report_elem");
+
 	switch (id) {
 	case WNM_NEIGHBOR_TSF:
 		if (elen < 2 + 2) {
@@ -133,6 +137,8 @@ static void wnm_parse_neighbor_report(struct wpa_supplicant *wpa_s,
 				      const u8 *pos, u8 len,
 				      struct neighbor_report *rep)
 {
+    ESP_LOGV("FUNC", "wnm_parse_neighbor_report");
+
 	u8 left = len;
 
 	if (left < 13) {
@@ -170,6 +176,8 @@ static void wnm_parse_neighbor_report(struct wpa_supplicant *wpa_s,
 
 static void wnm_clear_acceptable(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_clear_acceptable");
+
 	unsigned int i;
 
 	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++)
@@ -179,6 +187,8 @@ static void wnm_clear_acceptable(struct wpa_supplicant *wpa_s)
 
 static struct wpa_bss * get_first_acceptable(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "get_first_acceptable");
+
 	unsigned int i;
 	struct neighbor_report *nei;
 
@@ -196,6 +206,8 @@ bool wpa_scan_res_match(struct wpa_supplicant *wpa_s,
 			struct wpa_bss *current_bss,
 			struct wpa_bss *target_bss)
 {
+    ESP_LOGV("FUNC", "wpa_scan_res_match");
+
 	if (current_bss->ssid_len != target_bss->ssid_len) {
 		wpa_printf(MSG_DEBUG, "WNM: ssid didn't match");
 		return false;
@@ -211,10 +223,11 @@ bool wpa_scan_res_match(struct wpa_supplicant *wpa_s,
 }
 
 
-static struct wpa_bss *
-compare_scan_neighbor_results(struct wpa_supplicant *wpa_s, os_time_t age_secs,
+static struct wpa_bss * compare_scan_neighbor_results(struct wpa_supplicant *wpa_s, os_time_t age_secs,
 			      enum mbo_transition_reject_reason *reason)
 {
+    ESP_LOGV("FUNC", "compare_scan_neighbor_results");
+
 	u8 i;
 	struct wpa_bss *bss = wpa_s->current_bss;
 	struct wpa_bss *target;
@@ -309,6 +322,8 @@ compare_scan_neighbor_results(struct wpa_supplicant *wpa_s, os_time_t age_secs,
 
 static int wpa_bss_ies_eq(struct wpa_bss *a, struct wpa_bss *b, u8 eid)
 {
+    ESP_LOGV("FUNC", "wpa_bss_ies_eq");
+
 	const u8 *ie_a, *ie_b;
 
 	if (!a || !b)
@@ -326,6 +341,8 @@ static int wpa_bss_ies_eq(struct wpa_bss *a, struct wpa_bss *b, u8 eid)
 
 static u32 wnm_get_bss_info(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 {
+    ESP_LOGV("FUNC", "wnm_get_bss_info");
+
 	u32 info = 0;
 
 	info |= NEI_REP_BSSID_INFO_AP_UNKNOWN_REACH;
@@ -360,6 +377,8 @@ static int wnm_add_nei_rep(struct wpabuf **buf, const u8 *bssid,
 			   u32 bss_info, u8 op_class, u8 chan, u8 phy_type,
 			   u8 pref)
 {
+    ESP_LOGV("FUNC", "wnm_add_nei_rep");
+
 	if (wpabuf_len(*buf) + 18 >
 	    IEEE80211_MAX_MMPDU_SIZE - IEEE80211_HDRLEN) {
 		wpa_printf(MSG_DEBUG,
@@ -391,6 +410,8 @@ static int wnm_nei_rep_add_bss(struct wpa_supplicant *wpa_s,
 			       struct wpa_bss *bss, struct wpabuf **buf,
 			       u8 pref)
 {
+    ESP_LOGV("FUNC", "wnm_nei_rep_add_bss");
+
 	const u8 *ie;
 	u8 op_class;
 	int sec_chan = 0;
@@ -422,6 +443,8 @@ static int wnm_nei_rep_add_bss(struct wpa_supplicant *wpa_s,
 
 static void wnm_add_cand_list(struct wpa_supplicant *wpa_s, struct wpabuf **buf)
 {
+    ESP_LOGV("FUNC", "wnm_add_cand_list");
+
 	unsigned int i, pref = 255;
 	struct os_reltime now;
 
@@ -467,6 +490,8 @@ static void wnm_send_bss_transition_mgmt_resp(
 	enum mbo_transition_reject_reason reason,
 	u8 delay, const u8 *target_bssid)
 {
+    ESP_LOGV("FUNC", "wnm_send_bss_transition_mgmt_resp");
+
 	struct wpabuf *buf;
 	int res;
 
@@ -520,6 +545,8 @@ void wnm_bss_tm_connect(struct wpa_supplicant *wpa_s,
 			struct wpa_bss *bss, char *ssid,
 			int after_new_scan)
 {
+    ESP_LOGV("FUNC", "wnm_bss_tm_connect");
+
 	wpa_printf(MSG_DEBUG,
 		"WNM: Transition to BSS " MACSTR
 		" based on BSS Transition Management Request after_new_scan=%d)",
@@ -552,6 +579,8 @@ void wnm_bss_tm_connect(struct wpa_supplicant *wpa_s,
 
 int wnm_scan_process(struct wpa_supplicant *wpa_s, int reply_on_fail)
 {
+    ESP_LOGV("FUNC", "wnm_scan_process");
+
 	struct wpa_bss *bss;
 	enum bss_trans_mgmt_status_code status = WNM_BSS_TM_REJECT_UNSPECIFIED;
 	enum mbo_transition_reject_reason reason =
@@ -601,6 +630,8 @@ send_bss_resp_fail:
 
 static int cand_pref_compar(const void *a, const void *b)
 {
+    ESP_LOGV("FUNC", "cand_pref_compar");
+
 	const struct neighbor_report *aa = a;
 	const struct neighbor_report *bb = b;
 
@@ -620,6 +651,8 @@ static int cand_pref_compar(const void *a, const void *b)
 
 static void wnm_sort_cand_list(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_sort_cand_list");
+
 	if (!wpa_s->wnm_neighbor_report_elements)
 		return;
 	qsort(wpa_s->wnm_neighbor_report_elements,
@@ -630,6 +663,8 @@ static void wnm_sort_cand_list(struct wpa_supplicant *wpa_s)
 
 static void wnm_dump_cand_list(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_dump_cand_list");
+
 #ifdef DEBUG_PRINT
 	unsigned int i;
 
@@ -652,6 +687,8 @@ static void wnm_dump_cand_list(struct wpa_supplicant *wpa_s)
 
 static void wnm_set_scan_freqs(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_set_scan_freqs");
+
 	unsigned int i;
 	int num_chan;
 	u8 chan = 0;
@@ -682,6 +719,8 @@ static void wnm_set_scan_freqs(struct wpa_supplicant *wpa_s)
 
 static int wnm_fetch_scan_results(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wnm_fetch_scan_results");
+
 	/* ESP doesn't support this */
 	return 0;
 }
@@ -690,6 +729,8 @@ static void ieee802_11_rx_bss_trans_mgmt_req(struct wpa_supplicant *wpa_s,
 					     const u8 *pos, const u8 *end,
 					     int reply)
 {
+    ESP_LOGV("FUNC", "ieee802_11_rx_bss_trans_mgmt_req");
+
 	unsigned int beacon_int;
 	u8 valid_int;
 
@@ -891,6 +932,8 @@ int wnm_send_bss_transition_mgmt_query(struct wpa_supplicant *wpa_s,
 				       const char *btm_candidates,
 				       int cand_list)
 {
+    ESP_LOGV("FUNC", "wnm_send_bss_transition_mgmt_query");
+
 	struct wpabuf *buf;
 	int ret;
 
@@ -941,6 +984,8 @@ int wnm_send_bss_transition_mgmt_query(struct wpa_supplicant *wpa_s,
 void ieee802_11_rx_wnm_action(struct wpa_supplicant *wpa_s,
 			      u8 *sender, u8 *payload, size_t len)
 {
+    ESP_LOGV("FUNC", "ieee802_11_rx_wnm_action");
+
 	const u8 *pos, *end;
 	u8 act;
 

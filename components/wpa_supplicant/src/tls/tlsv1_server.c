@@ -23,6 +23,8 @@
 
 void tlsv1_server_alert(struct tlsv1_server *conn, u8 level, u8 description)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_alert");
+
 	conn->alert_level = level;
 	conn->alert_description = description;
 }
@@ -32,6 +34,8 @@ int tlsv1_server_derive_keys(struct tlsv1_server *conn,
 			     const u8 *pre_master_secret,
 			     size_t pre_master_secret_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_derive_keys");
+
 	u8 seed[2 * TLS_RANDOM_LEN];
 	u8 key_block[TLS_MAX_KEY_BLOCK_LEN];
 	u8 *pos;
@@ -108,6 +112,8 @@ u8 * tlsv1_server_handshake(struct tlsv1_server *conn,
 			    const u8 *in_data, size_t in_len,
 			    size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_handshake");
+
 	const u8 *pos, *end;
 	u8 *msg = NULL, *in_msg, *in_pos, *in_end, alert, ct;
 	size_t in_msg_len;
@@ -201,6 +207,8 @@ int tlsv1_server_encrypt(struct tlsv1_server *conn,
 			 const u8 *in_data, size_t in_len,
 			 u8 *out_data, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_encrypt");
+
 	size_t rlen;
 
 	wpa_hexdump_key(MSG_MSGDUMP, "TLSv1: Plaintext AppData",
@@ -234,6 +242,8 @@ int tlsv1_server_decrypt(struct tlsv1_server *conn,
 			 const u8 *in_data, size_t in_len,
 			 u8 *out_data, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_decrypt");
+
 	const u8 *in_end, *pos;
 	int used;
 	u8 alert, *out_end, *out_pos, ct;
@@ -316,6 +326,8 @@ int tlsv1_server_decrypt(struct tlsv1_server *conn,
  */
 int tlsv1_server_global_init(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_global_init");
+
 	return crypto_global_init();
 }
 
@@ -329,6 +341,8 @@ int tlsv1_server_global_init(void)
  */
 void tlsv1_server_global_deinit(void)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_global_deinit");
+
 	crypto_global_deinit();
 }
 
@@ -340,6 +354,8 @@ void tlsv1_server_global_deinit(void)
  */
 struct tlsv1_server * tlsv1_server_init(struct tlsv1_credentials *cred)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_init");
+
 	struct tlsv1_server *conn;
 	size_t count;
 	u16 *suites;
@@ -376,6 +392,8 @@ struct tlsv1_server * tlsv1_server_init(struct tlsv1_credentials *cred)
 
 static void tlsv1_server_clear_data(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_clear_data");
+
 	tlsv1_record_set_cipher_suite(&conn->rl, TLS_NULL_WITH_NULL_NULL);
 	tlsv1_record_change_write_cipher(&conn->rl);
 	tlsv1_record_change_read_cipher(&conn->rl);
@@ -401,6 +419,8 @@ static void tlsv1_server_clear_data(struct tlsv1_server *conn)
  */
 void tlsv1_server_deinit(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_deinit");
+
 	tlsv1_server_clear_data(conn);
 	os_free(conn);
 }
@@ -413,6 +433,8 @@ void tlsv1_server_deinit(struct tlsv1_server *conn)
  */
 int tlsv1_server_established(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_established");
+
 	return conn->state == ESTABLISHED;
 }
 
@@ -430,6 +452,8 @@ int tlsv1_server_established(struct tlsv1_server *conn)
 int tlsv1_server_prf(struct tlsv1_server *conn, const char *label,
 		     int server_random_first, u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_prf");
+
 	u8 seed[2 * TLS_RANDOM_LEN];
 
 	if (conn->state != ESTABLISHED)
@@ -463,6 +487,8 @@ int tlsv1_server_prf(struct tlsv1_server *conn, const char *label,
 int tlsv1_server_get_cipher(struct tlsv1_server *conn, char *buf,
 			    size_t buflen)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_get_cipher");
+
 #ifndef ESPRESSIF_USE	
     char *cipher;
 
@@ -544,6 +570,8 @@ int tlsv1_server_get_cipher(struct tlsv1_server *conn, char *buf,
  */
 int tlsv1_server_shutdown(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_shutdown");
+
 	conn->state = CLIENT_HELLO;
 
 	if (tls_verify_hash_init(&conn->verify) < 0) {
@@ -565,6 +593,8 @@ int tlsv1_server_shutdown(struct tlsv1_server *conn)
  */
 int tlsv1_server_resumed(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_resumed");
+
 	return 0;
 }
 
@@ -577,6 +607,8 @@ int tlsv1_server_resumed(struct tlsv1_server *conn)
  */
 int tlsv1_server_get_random(struct tlsv1_server *conn, struct tls_random *keys)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_get_random");
+
 	os_memset(keys, 0, sizeof(*keys));
 	if (conn->state == CLIENT_HELLO)
 		return -1;
@@ -601,6 +633,8 @@ int tlsv1_server_get_random(struct tlsv1_server *conn, struct tls_random *keys)
  */
 int tlsv1_server_get_keyblock_size(struct tlsv1_server *conn)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_get_keyblock_size");
+
 	if (conn->state == CLIENT_HELLO || conn->state == SERVER_HELLO)
 		return -1;
 
@@ -618,6 +652,8 @@ int tlsv1_server_get_keyblock_size(struct tlsv1_server *conn)
  */
 int tlsv1_server_set_cipher_list(struct tlsv1_server *conn, u8 *ciphers)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_set_cipher_list");
+
 	size_t count;
 	u16 *suites;
 
@@ -644,6 +680,8 @@ int tlsv1_server_set_cipher_list(struct tlsv1_server *conn, u8 *ciphers)
 
 int tlsv1_server_set_verify(struct tlsv1_server *conn, int verify_peer)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_set_verify");
+
 	conn->verify_peer = verify_peer;
 	return 0;
 }
@@ -653,6 +691,8 @@ void tlsv1_server_set_session_ticket_cb(struct tlsv1_server *conn,
 					tlsv1_server_session_ticket_cb cb,
 					void *ctx)
 {
+    ESP_LOGV("FUNC", "tlsv1_server_set_session_ticket_cb");
+
 	wpa_printf(MSG_DEBUG, "TLSv1: SessionTicket callback set %p (ctx %p)",
 		   cb, ctx);
 	conn->session_ticket_cb = cb;

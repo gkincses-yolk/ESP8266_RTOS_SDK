@@ -14,11 +14,12 @@
 #include "crypto/sha1.h"
 #include "eap_peer/eap_peap_common.h"
 
-int
-peap_prfplus(int version, const u8 *key, size_t key_len,
+int peap_prfplus(int version, const u8 *key, size_t key_len,
 	     const char *label, const u8 *seed, size_t seed_len,
 	     u8 *buf, size_t buf_len)
 {
+    ESP_LOGV("FUNC", "peap_prfplus");
+
 	unsigned char counter = 0;
 	size_t pos, plen;
 	u8 hash[SHA1_MAC_LEN];

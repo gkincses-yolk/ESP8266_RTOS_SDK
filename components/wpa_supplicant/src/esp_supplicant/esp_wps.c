@@ -95,26 +95,36 @@ int wps_testing_dummy_cred = 0;
 
 int wps_get_type(void)
 {
+    ESP_LOGV("FUNC", "wps_get_type");
+
     return esp_wifi_get_wps_type_internal();
 }
 
 int wps_set_type(uint32_t type)
 {
+    ESP_LOGV("FUNC", "wps_set_type");
+
     return esp_wifi_set_wps_type_internal(type);
 }
 
 int wps_get_status(void)
 {
+    ESP_LOGV("FUNC", "wps_get_status");
+
     return esp_wifi_get_wps_status_internal();
 }
 
 int wps_set_status(uint32_t status)
 {
+    ESP_LOGV("FUNC", "wps_set_status");
+
     return esp_wifi_set_wps_status_internal(status);
 }
 
 static void wps_rxq_init(void)
 {
+    ESP_LOGV("FUNC", "wps_rxq_init");
+
     DATA_MUTEX_TAKE();
     STAILQ_INIT(&s_wps_rxq);
     DATA_MUTEX_GIVE();
@@ -122,6 +132,8 @@ static void wps_rxq_init(void)
 
 static void wps_rxq_enqueue(struct wps_rx_param *param)
 {
+    ESP_LOGV("FUNC", "wps_rxq_enqueue");
+
     DATA_MUTEX_TAKE();
     STAILQ_INSERT_TAIL(&s_wps_rxq,param, bqentry);
     DATA_MUTEX_GIVE();
@@ -129,6 +141,8 @@ static void wps_rxq_enqueue(struct wps_rx_param *param)
 
 static struct wps_rx_param * wps_rxq_dequeue(void)
 {
+    ESP_LOGV("FUNC", "wps_rxq_dequeue");
+
     struct wps_rx_param *param = NULL;
     DATA_MUTEX_TAKE();
     if ((param = STAILQ_FIRST(&s_wps_rxq)) != NULL) {
@@ -141,6 +155,8 @@ static struct wps_rx_param * wps_rxq_dequeue(void)
 
 static void wps_rxq_deinit(void)
 {
+    ESP_LOGV("FUNC", "wps_rxq_deinit");
+
     struct wps_rx_param *param = NULL;
     DATA_MUTEX_TAKE();
     while ((param = STAILQ_FIRST(&s_wps_rxq)) != NULL) {
@@ -155,6 +171,8 @@ static void wps_rxq_deinit(void)
 #ifdef USE_WPS_TASK
 void wps_task(void *pvParameters )
 {
+    ESP_LOGV("FUNC", "wps_task");
+
     ETSEvent *e;
     wps_ioctl_param_t *param;
     bool del_task = false;
@@ -251,6 +269,8 @@ void wps_task(void *pvParameters )
  */
 int wps_post(uint32_t sig, uint32_t par)
 {
+    ESP_LOGV("FUNC", "wps_post");
+
     wpa_printf(MSG_DEBUG, "wps post: sig=%d cnt=%d", sig, s_wps_sig_cnt[sig]);
 
     DATA_MUTEX_TAKE();
@@ -286,6 +306,8 @@ int wps_post(uint32_t sig, uint32_t par)
 
 static void wps_sendto_wrapper(void *buffer, uint16_t len)
 {
+    ESP_LOGV("FUNC", "wps_sendto_wrapper");
+
     esp_wifi_internal_tx(WIFI_IF_STA, buffer, len);
 }
 
@@ -301,6 +323,8 @@ static void wps_sendto_wrapper(void *buffer, uint16_t len)
 static inline int wps_sm_ether_send(struct wps_sm *sm, const u8 *dest, u16 proto,
                                     const u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "wps_sm_ether_send");
+
     void *buffer = (void *)(data - sizeof(struct l2_ethhdr));
     struct l2_ethhdr *eth = (struct l2_ethhdr *)buffer;
 
@@ -318,6 +342,8 @@ u8 *wps_sm_alloc_eapol(struct wps_sm *sm, u8 type,
                        const void *data, u16 data_len,
                        size_t *msg_len, void **data_pos)
 {
+    ESP_LOGV("FUNC", "*wps_sm_alloc_eapol");
+
     void *buffer;
     struct ieee802_1x_hdr *hdr;
 
@@ -350,6 +376,8 @@ u8 *wps_sm_alloc_eapol(struct wps_sm *sm, u8 type,
 
 void wps_sm_free_eapol(u8 *buffer)
 {
+    ESP_LOGV("FUNC", "wps_sm_free_eapol");
+
     if (buffer != NULL) {
         buffer = buffer - sizeof(struct l2_ethhdr);
         os_free(buffer);
@@ -369,6 +397,8 @@ void wps_sm_free_eapol(u8 *buffer)
  */
 struct wps_data *wps_init(void)
 {
+    ESP_LOGV("FUNC", "*wps_init");
+
     struct wps_sm *sm = gWpsSm;
     struct wps_data *data = (struct wps_data *)os_zalloc(sizeof(*data));
     const char *all_zero_pin = "00000000";
@@ -468,6 +498,8 @@ struct wps_data *wps_init(void)
  */
 void wps_deinit(void)
 {
+    ESP_LOGV("FUNC", "wps_deinit");
+
     struct wps_data *data = gWpsSm->wps;
 
 #ifdef CONFIG_WPS_NFC
@@ -504,9 +536,10 @@ void wps_deinit(void)
     os_free(data);
 }
 
-static void
-wps_build_ic_appie_wps_pr(void)
+static void wps_build_ic_appie_wps_pr(void)
 {
+    ESP_LOGV("FUNC", "wps_build_ic_appie_wps_pr");
+
     struct wpabuf *extra_ie = NULL;
     struct wpabuf *wps_ie;
     struct wps_sm *sm = gWpsSm;
@@ -539,9 +572,10 @@ wps_build_ic_appie_wps_pr(void)
     wpabuf_free(extra_ie);
 }
 
-static void
-wps_build_ic_appie_wps_ar(void)
+static void wps_build_ic_appie_wps_ar(void)
 {
+    ESP_LOGV("FUNC", "wps_build_ic_appie_wps_ar");
+
     struct wpabuf *buf = (struct wpabuf *)wps_build_assoc_req_ie(WPS_REQ_ENROLLEE);
 
     wpa_printf(MSG_DEBUG, "wps build: wps ar");
@@ -552,9 +586,10 @@ wps_build_ic_appie_wps_ar(void)
     }
 }
 
-static bool
-wps_parse_scan_result(struct wps_scan_ie *scan)
+static bool wps_parse_scan_result(struct wps_scan_ie *scan)
 {
+    ESP_LOGV("FUNC", "wps_parse_scan_result");
+
     struct wps_sm *sm = gWpsSm;
     wifi_mode_t op_mode = 0;
 #ifdef WPS_DEBUG
@@ -616,6 +651,8 @@ wps_parse_scan_result(struct wps_scan_ie *scan)
 
 int wps_send_eap_identity_rsp(u8 id)
 {
+    ESP_LOGV("FUNC", "wps_send_eap_identity_rsp");
+
     struct wps_sm *sm = gWpsSm;
     struct wpabuf *eap_buf = NULL;
     u8 bssid[6];
@@ -659,6 +696,8 @@ _err:
 
 int wps_send_frag_ack(u8 id)
 {
+    ESP_LOGV("FUNC", "wps_send_frag_ack");
+
     struct wps_sm *sm = gWpsSm;
     struct wpabuf *eap_buf = NULL;
     u8 bssid[6];
@@ -708,6 +747,8 @@ _err:
 
 int wps_enrollee_process_msg_frag(struct wpabuf **buf, int tot_len, u8 *frag_data, int frag_len, u8 flag)
 {
+    ESP_LOGV("FUNC", "wps_enrollee_process_msg_frag");
+
     struct wps_sm *sm = gWpsSm;
     u8 identifier;
 
@@ -753,6 +794,8 @@ int wps_enrollee_process_msg_frag(struct wpabuf **buf, int tot_len, u8 *frag_dat
 
 int wps_process_wps_mX_req(u8 *ubuf, int len, enum wps_process_res *res)
 {
+    ESP_LOGV("FUNC", "wps_process_wps_mX_req");
+
     struct wps_sm *sm = gWpsSm;
     static struct wpabuf *wps_buf = NULL;
     struct eap_expand *expd;
@@ -826,6 +869,8 @@ int wps_process_wps_mX_req(u8 *ubuf, int len, enum wps_process_res *res)
 
 int wps_send_wps_mX_rsp(u8 id)
 {
+    ESP_LOGV("FUNC", "wps_send_wps_mX_rsp");
+
     struct wps_sm *sm = gWpsSm;
     struct wpabuf *eap_buf = NULL;
     struct wpabuf *wps_buf = NULL;
@@ -888,6 +933,8 @@ _err:
 
 int wps_tx_start(void)
 {
+    ESP_LOGV("FUNC", "wps_tx_start");
+
     struct wps_sm *sm = gWpsSm;
     u8 bssid[6];
     u8 *buf;
@@ -920,6 +967,8 @@ int wps_tx_start(void)
 
 int wps_start_pending(void)
 {
+    ESP_LOGV("FUNC", "wps_start_pending");
+
     if (!gWpsSm) {
         return ESP_FAIL;
     }
@@ -930,6 +979,8 @@ int wps_start_pending(void)
 
 int wps_stop_process(system_event_sta_wps_fail_reason_t reason_code)
 {
+    ESP_LOGV("FUNC", "wps_stop_process");
+
     struct wps_sm *sm = gWpsSm;
 
     if (!gWpsSm) {
@@ -962,6 +1013,8 @@ int wps_stop_process(system_event_sta_wps_fail_reason_t reason_code)
 
 int wps_finish(void)
 {
+    ESP_LOGV("FUNC", "wps_finish");
+
     struct wps_sm *sm = gWpsSm;
     int ret = ESP_FAIL;
 
@@ -1012,6 +1065,8 @@ int wps_finish(void)
 /* Add current ap to discard ap list */
 void wps_add_discard_ap(u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wps_add_discard_ap");
+
     struct wps_sm *sm = gWpsSm;
     u8 cnt = sm->discard_ap_cnt;
 
@@ -1032,6 +1087,8 @@ void wps_add_discard_ap(u8 *bssid)
 
 int wps_start_msg_timer(void)
 {
+    ESP_LOGV("FUNC", "wps_start_msg_timer");
+
     struct wps_sm *sm = gWpsSm;
     uint32_t msg_timeout;
     int ret = ESP_FAIL;
@@ -1075,6 +1132,8 @@ int wps_start_msg_timer(void)
  */
 int wps_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len)
 {
+    ESP_LOGV("FUNC", "wps_sm_rx_eapol");
+
     if (!gWpsSm) {
         return ESP_FAIL;
     }
@@ -1106,6 +1165,8 @@ int wps_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len)
 
 int wps_sm_rx_eapol_internal(u8 *src_addr, u8 *buf, u32 len)
 {
+    ESP_LOGV("FUNC", "wps_sm_rx_eapol_internal");
+
     struct wps_sm *sm = gWpsSm;
     u32 plen, data_len, eap_len;
     struct ieee802_1x_hdr *hdr;
@@ -1262,6 +1323,8 @@ out:
 
 int wps_set_default_factory(void)
 {
+    ESP_LOGV("FUNC", "wps_set_default_factory");
+
     if (!s_factory_info) {
         s_factory_info = os_zalloc(sizeof(wps_factory_information_t));
         if (!s_factory_info) {
@@ -1280,6 +1343,8 @@ int wps_set_default_factory(void)
 
 int wps_set_factory_info(const esp_wps_config_t *config)
 {
+    ESP_LOGV("FUNC", "wps_set_factory_info");
+
     int ret;
 
     ret = wps_set_default_factory();
@@ -1312,6 +1377,8 @@ int wps_set_factory_info(const esp_wps_config_t *config)
 
 int wps_dev_init(void)
 {
+    ESP_LOGV("FUNC", "wps_dev_init");
+
     int ret = 0;
     struct wps_sm *sm = gWpsSm;
     struct wps_device_data *dev = NULL;
@@ -1412,6 +1479,8 @@ _out:
 
 int wps_dev_deinit(struct wps_device_data *dev)
 {
+    ESP_LOGV("FUNC", "wps_dev_deinit");
+
     int ret = 0;
 
     if (!dev) {
@@ -1442,9 +1511,10 @@ int wps_dev_deinit(struct wps_device_data *dev)
     return ret;
 }
 
-void
-wifi_station_wps_timeout_internal(void)
+void wifi_station_wps_timeout_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_timeout_internal");
+
     struct wps_sm *sm = gWpsSm;
 
     if (!sm) {
@@ -1463,6 +1533,8 @@ wifi_station_wps_timeout_internal(void)
 
 void wifi_station_wps_timeout(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_timeout");
+
 #ifdef USE_WPS_TASK
     wps_post(SIG_WPS_TIMER_TIMEOUT, 0);
     return;
@@ -1474,6 +1546,8 @@ void wifi_station_wps_timeout(void)
 void
 wifi_station_wps_msg_timeout_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_timeout_internal");
+
     struct wps_sm *sm = gWpsSm;
 
     if (!sm) {
@@ -1493,6 +1567,8 @@ wifi_station_wps_msg_timeout_internal(void)
 
 void wifi_station_wps_msg_timeout(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_msg_timeout");
+
 #ifdef USE_WPS_TASK
     wps_post(SIG_WPS_TIMER_MSG_TIMEOUT, 0);
     return;
@@ -1503,6 +1579,8 @@ void wifi_station_wps_msg_timeout(void)
 
 void wifi_station_wps_success_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_success_internal");
+
     struct wps_sm* sm = gWpsSm;
 
     system_event_t evt;
@@ -1524,6 +1602,8 @@ void wifi_station_wps_success_internal(void)
 
 void wifi_station_wps_success(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_success");
+
 #ifdef USE_WPS_TASK
     wps_post(SIG_WPS_TIMER_SUCCESS_CB, 0);
     return;
@@ -1534,12 +1614,16 @@ void wifi_station_wps_success(void)
 
 void wifi_station_wps_eapol_start_handle_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_eapol_start_handle_internal");
+
     wpa_printf(MSG_DEBUG, "Resend EAPOL-Start.");
     wps_tx_start();
 }
 
 void wifi_station_wps_eapol_start_handle(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_eapol_start_handle");
+
 #ifdef USE_WPS_TASK
     wps_post(SIG_WPS_TIMER_EAPOL_START, 0);
     return;
@@ -1551,6 +1635,8 @@ void wifi_station_wps_eapol_start_handle(void)
 int
 wifi_station_wps_init(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_eapol_start_handle_internal");
+
     struct wps_funcs *wps_cb;
     struct wps_sm *sm = NULL;
     uint8_t mac[6];
@@ -1659,6 +1745,8 @@ _out:
 
 int wps_delete_timer(void)
 {
+    ESP_LOGV("FUNC", "wps_delete_timer");
+
     struct wps_sm *sm = gWpsSm;
 
     if (!sm) {
@@ -1679,9 +1767,10 @@ int wps_delete_timer(void)
     return ESP_OK;
 }
 
-int
-wifi_station_wps_deinit(void)
+int wifi_station_wps_deinit(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_deinit");
+
     struct wps_sm *sm = gWpsSm;
 
     if (gWpsSm == NULL) {
@@ -1712,9 +1801,10 @@ wifi_station_wps_deinit(void)
     return ESP_OK;
 }
 
-int
-wps_station_wps_register_cb(wps_st_cb_t cb)
+int wps_station_wps_register_cb(wps_st_cb_t cb)
 {
+    ESP_LOGV("FUNC", "wps_station_wps_register_cb");
+
     if (!gWpsSm) {
         return ESP_FAIL;
     }
@@ -1723,15 +1813,17 @@ wps_station_wps_register_cb(wps_st_cb_t cb)
     return ESP_OK;
 }
 
-struct wps_sm *
-wps_sm_get(void)
+struct wps_sm * wps_sm_get(void)
 {
+    ESP_LOGV("FUNC", "wps_sm_get");
+
     return gWpsSm;
 }
 
-int
-wps_ssid_save(u8 *ssid, u8 ssid_len, u8 idx)
+int wps_ssid_save(u8 *ssid, u8 ssid_len, u8 idx)
 {
+    ESP_LOGV("FUNC", "wps_ssid_save");
+
     u8 *tmpssid;
 
     if (!ssid || !gWpsSm || idx > 2) {
@@ -1752,9 +1844,10 @@ wps_ssid_save(u8 *ssid, u8 ssid_len, u8 idx)
     return ESP_OK;
 }
 
-int
-wps_key_save(char *key, u8 key_len, u8 idx)
+int wps_key_save(char *key, u8 key_len, u8 idx)
 {
+    ESP_LOGV("FUNC", "wps_key_save");
+
     u8 *tmpkey;
 
     if (!key || !gWpsSm || idx > 2) {
@@ -1774,9 +1867,10 @@ wps_key_save(char *key, u8 key_len, u8 idx)
     return ESP_OK;
 }
 
-void
-wifi_wps_scan_done(void *arg, STATUS status)
+void wifi_wps_scan_done(void *arg, STATUS status)
 {
+    ESP_LOGV("FUNC", "wifi_wps_scan_done");
+
     struct wps_sm *sm = gWpsSm;
     wifi_config_t wifi_config;
 
@@ -1819,9 +1913,10 @@ wifi_wps_scan_done(void *arg, STATUS status)
     }
 }
 
-void
-wifi_wps_scan_internal(void)
+void wifi_wps_scan_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_wps_scan_internal");
+
     struct wps_sm *sm = gWpsSm;
 
     sm->scan_cnt++;
@@ -1834,6 +1929,8 @@ wifi_wps_scan_internal(void)
 
 void wifi_wps_scan(void)
 {
+    ESP_LOGV("FUNC", "wifi_wps_scan");
+
 #ifdef USE_WPS_TASK
     wps_post(SIG_WPS_TIMER_SCAN, 0);
     return;
@@ -1844,6 +1941,8 @@ void wifi_wps_scan(void)
 
 int wifi_station_wps_start(void)
 {
+    ESP_LOGV("FUNC", "wifi_station_wps_start");
+
     struct wps_sm *sm = wps_sm_get();
 
     if (!sm) {
@@ -1878,6 +1977,8 @@ int wifi_station_wps_start(void)
 
 int wps_task_deinit(void)
 {
+    ESP_LOGV("FUNC", "wps_task_deinit");
+
     wpa_printf(MSG_DEBUG, "wps task deinit");
 
     if (s_wps_api_sem) {
@@ -1919,6 +2020,8 @@ int wps_task_deinit(void)
 
 int wps_task_init(void)
 {
+    ESP_LOGV("FUNC", "wps_task_init");
+
     int ret = 0;
 
     /* Call wps_task_deinit() first in case esp_wifi_wps_disable() fails
@@ -1972,6 +2075,8 @@ _wps_no_mem:
 
 int wps_post_block(uint32_t sig, void *arg)
 {
+    ESP_LOGV("FUNC", "wps_post_block");
+
     wps_ioctl_param_t param;
 
     param.ret = ESP_FAIL;
@@ -1990,6 +2095,8 @@ int wps_post_block(uint32_t sig, void *arg)
 
 int wps_check_wifi_mode(void)
 {
+    ESP_LOGV("FUNC", "wps_check_wifi_mode");
+
     bool sniffer = false;
     wifi_mode_t mode;
     int ret;
@@ -2016,6 +2123,8 @@ int wps_check_wifi_mode(void)
 
 int esp_wifi_wps_enable(const esp_wps_config_t *config)
 {
+    ESP_LOGV("FUNC", "esp_wifi_wps_enable");
+
     int ret;
 
     if (ESP_OK != wps_check_wifi_mode()) {
@@ -2056,6 +2165,8 @@ int esp_wifi_wps_enable(const esp_wps_config_t *config)
 
 int wifi_wps_enable_internal(const esp_wps_config_t *config)
 {
+    ESP_LOGV("FUNC", "wifi_wps_enable_internal");
+
     int ret = 0;
 
     wpa_printf(MSG_DEBUG, "ESP WPS crypto initialize!");
@@ -2094,6 +2205,8 @@ int wifi_wps_enable_internal(const esp_wps_config_t *config)
 
 int wifi_wps_disable_internal(void)
 {
+    ESP_LOGV("FUNC", "wifi_wps_disable_internal");
+
     wps_set_status(WPS_STATUS_DISABLE);
     wifi_station_wps_deinit();
     return ESP_OK;
@@ -2101,6 +2214,8 @@ int wifi_wps_disable_internal(void)
 
 int esp_wifi_wps_disable(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_wps_disable");
+
     int ret = 0;
 
     if (ESP_OK != wps_check_wifi_mode()) {
@@ -2143,6 +2258,8 @@ int esp_wifi_wps_disable(void)
 
 int esp_wifi_wps_start(int timeout_ms)
 {
+    ESP_LOGV("FUNC", "esp_wifi_wps_start");
+
     if (ESP_OK != wps_check_wifi_mode()) {
         return ESP_ERR_WIFI_MODE;
     }
@@ -2177,9 +2294,10 @@ int esp_wifi_wps_start(int timeout_ms)
     return ESP_OK;
 }
 
-bool
-wifi_set_wps_cb(wps_st_cb_t cb)
+bool wifi_set_wps_cb(wps_st_cb_t cb)
 {
+    ESP_LOGV("FUNC", "wifi_set_wps_cb");
+
     wifi_mode_t mode;
 
     esp_wifi_get_mode(&mode);

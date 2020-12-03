@@ -31,6 +31,8 @@
 int tlsv1_record_set_cipher_suite(struct tlsv1_record_layer *rl,
 				  u16 cipher_suite)
 {
+    ESP_LOGV("FUNC", "tlsv1_record_set_cipher_suite");
+
 	const struct tls_cipher_suite *suite;
 	const struct tls_cipher_data *data;
 
@@ -75,6 +77,8 @@ int tlsv1_record_set_cipher_suite(struct tlsv1_record_layer *rl,
  */
 int tlsv1_record_change_write_cipher(struct tlsv1_record_layer *rl)
 {
+    ESP_LOGV("FUNC", "tlsv1_record_change_write_cipher");
+
 	wpa_printf(MSG_DEBUG, "TLSv1: Record Layer - New write cipher suite "
 		   "0x%04x", rl->cipher_suite);
 	rl->write_cipher_suite = rl->cipher_suite;
@@ -111,6 +115,8 @@ int tlsv1_record_change_write_cipher(struct tlsv1_record_layer *rl)
  */
 int tlsv1_record_change_read_cipher(struct tlsv1_record_layer *rl)
 {
+    ESP_LOGV("FUNC", "tlsv1_record_change_read_cipher");
+
 	wpa_printf(MSG_DEBUG, "TLSv1: Record Layer - New read cipher suite "
 		   "0x%04x \n", rl->cipher_suite);
 	rl->read_cipher_suite = rl->cipher_suite;
@@ -155,6 +161,8 @@ int tlsv1_record_send(struct tlsv1_record_layer *rl, u8 content_type, u8 *buf,
 		      size_t buf_size, const u8 *payload, size_t payload_len,
 		      size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_record_send");
+
 	u8 *pos, *ct_start, *length, *cpayload;
 	struct crypto_hash *hmac = NULL;
 	size_t clen;
@@ -283,6 +291,8 @@ int tlsv1_record_receive(struct tlsv1_record_layer *rl,
 			 const u8 *in_data, size_t in_len,
 			 u8 *out_data, size_t *out_len, u8 *alert)
 {
+    ESP_LOGV("FUNC", "tlsv1_record_receive");
+
 	size_t i, rlen, hlen;
 	u8 padlen;
 	struct crypto_hash *hmac = NULL;

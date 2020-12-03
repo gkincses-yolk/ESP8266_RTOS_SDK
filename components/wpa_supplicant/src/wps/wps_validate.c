@@ -19,6 +19,8 @@
 
 static int wps_validate_version(const u8 *version, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_version");
+
 	if (version == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Version attribute "
@@ -38,6 +40,8 @@ static int wps_validate_version(const u8 *version, int mandatory)
 
 static int wps_validate_version2(const u8 *version2, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_version2");
+
 	if (version2 == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Version2 attribute "
@@ -57,6 +61,8 @@ static int wps_validate_version2(const u8 *version2, int mandatory)
 
 static int wps_validate_request_type(const u8 *request_type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_request_type");
+
 	if (request_type == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Request Type "
@@ -76,6 +82,8 @@ static int wps_validate_request_type(const u8 *request_type, int mandatory)
 
 static int wps_validate_response_type(const u8 *response_type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_response_type");
+
 	if (response_type == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Response Type "
@@ -95,6 +103,8 @@ static int wps_validate_response_type(const u8 *response_type, int mandatory)
 
 static int valid_config_methods(u16 val, int wps2)
 {
+    ESP_LOGV("FUNC", "valid_config_methods");
+
 #ifndef CONFIG_WPA_WPS_WARS
 	if (wps2) {
 		if (!(val & 0x6000) && (val & WPS_CONFIG_DISPLAY)) {
@@ -117,6 +127,8 @@ static int valid_config_methods(u16 val, int wps2)
 static int wps_validate_config_methods(const u8 *config_methods, int wps2,
 				       int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_config_methods");
+
 	u16 val;
 
 	if (config_methods == NULL) {
@@ -141,6 +153,8 @@ static int wps_validate_config_methods(const u8 *config_methods, int wps2,
 static int wps_validate_ap_config_methods(const u8 *config_methods, int wps2,
 					  int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_ap_config_methods");
+
 	u16 val;
 
 	if (wps_validate_config_methods(config_methods, wps2, mandatory) < 0)
@@ -161,6 +175,8 @@ static int wps_validate_ap_config_methods(const u8 *config_methods, int wps2,
 
 static int wps_validate_uuid_e(const u8 *uuid_e, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_uuid_e");
+
 	if (uuid_e == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: UUID-E "
@@ -175,6 +191,8 @@ static int wps_validate_uuid_e(const u8 *uuid_e, int mandatory)
 
 static int wps_validate_uuid_r(const u8 *uuid_r, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_uuid_r");
+
 	if (uuid_r == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: UUID-R "
@@ -190,6 +208,8 @@ static int wps_validate_uuid_r(const u8 *uuid_r, int mandatory)
 static int wps_validate_primary_dev_type(const u8 *primary_dev_type,
 					 int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_primary_dev_type");
+
 	if (primary_dev_type == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Primary Device Type "
@@ -204,6 +224,8 @@ static int wps_validate_primary_dev_type(const u8 *primary_dev_type,
 
 static int wps_validate_rf_bands(const u8 *rf_bands, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_rf_bands");
+
 	if (rf_bands == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: RF Bands "
@@ -224,6 +246,8 @@ static int wps_validate_rf_bands(const u8 *rf_bands, int mandatory)
 
 static int wps_validate_assoc_state(const u8 *assoc_state, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_assoc_state");
+
 	u16 val;
 	if (assoc_state == NULL) {
 		if (mandatory) {
@@ -245,6 +269,8 @@ static int wps_validate_assoc_state(const u8 *assoc_state, int mandatory)
 
 static int wps_validate_config_error(const u8 *config_error, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_config_error");
+
 	u16 val;
 
 	if (config_error == NULL) {
@@ -268,6 +294,8 @@ static int wps_validate_config_error(const u8 *config_error, int mandatory)
 static int wps_validate_dev_password_id(const u8 *dev_password_id,
 					int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_dev_password_id");
+
 	u16 val;
 
 	if (dev_password_id == NULL) {
@@ -291,6 +319,8 @@ static int wps_validate_dev_password_id(const u8 *dev_password_id,
 static int wps_validate_manufacturer(const u8 *manufacturer, size_t len,
 				     int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_manufacturer");
+
 	if (manufacturer == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Manufacturer "
@@ -311,6 +341,8 @@ static int wps_validate_manufacturer(const u8 *manufacturer, size_t len,
 static int wps_validate_model_name(const u8 *model_name, size_t len,
 				   int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_model_name");
+
 	if (model_name == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Model Name "
@@ -331,6 +363,8 @@ static int wps_validate_model_name(const u8 *model_name, size_t len,
 static int wps_validate_model_number(const u8 *model_number, size_t len,
 				     int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_model_number");
+
 	if (model_number == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Model Number "
@@ -351,6 +385,8 @@ static int wps_validate_model_number(const u8 *model_number, size_t len,
 static int wps_validate_serial_number(const u8 *serial_number, size_t len,
 				      int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_serial_number");
+
 	if (serial_number == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Serial Number "
@@ -372,6 +408,8 @@ static int wps_validate_serial_number(const u8 *serial_number, size_t len,
 static int wps_validate_dev_name(const u8 *dev_name, size_t len,
 				 int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_dev_name");
+
 	if (dev_name == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Device Name "
@@ -392,6 +430,8 @@ static int wps_validate_dev_name(const u8 *dev_name, size_t len,
 static int wps_validate_request_to_enroll(const u8 *request_to_enroll,
 					  int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_request_to_enroll");
+
 	if (request_to_enroll == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Request to Enroll "
@@ -412,6 +452,8 @@ static int wps_validate_request_to_enroll(const u8 *request_to_enroll,
 static int wps_validate_req_dev_type(const u8 *req_dev_type[], size_t num,
 				     int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_req_dev_type");
+
 	if (num == 0) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Requested Device "
@@ -426,6 +468,8 @@ static int wps_validate_req_dev_type(const u8 *req_dev_type[], size_t num,
 
 static int wps_validate_wps_state(const u8 *wps_state, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_wps_state");
+
 	if (wps_state == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Wi-Fi Protected "
@@ -447,6 +491,8 @@ static int wps_validate_wps_state(const u8 *wps_state, int mandatory)
 static int wps_validate_ap_setup_locked(const u8 *ap_setup_locked,
 					int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_ap_setup_locked");
+
 	if (ap_setup_locked == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: AP Setup Locked "
@@ -467,6 +513,8 @@ static int wps_validate_ap_setup_locked(const u8 *ap_setup_locked,
 static int wps_validate_selected_registrar(const u8 *selected_registrar,
 					   int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_selected_registrar");
+
 	if (selected_registrar == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Selected Registrar "
@@ -487,6 +535,8 @@ static int wps_validate_selected_registrar(const u8 *selected_registrar,
 static int wps_validate_sel_reg_config_methods(const u8 *config_methods,
 					       int wps2, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_sel_reg_config_methods");
+
 	u16 val;
 
 	if (config_methods == NULL) {
@@ -512,6 +562,8 @@ static int wps_validate_sel_reg_config_methods(const u8 *config_methods,
 static int wps_validate_authorized_macs(const u8 *authorized_macs, size_t len,
 					int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_authorized_macs");
+
 	if (authorized_macs == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Authorized MACs "
@@ -531,6 +583,8 @@ static int wps_validate_authorized_macs(const u8 *authorized_macs, size_t len,
 
 static int wps_validate_msg_type(const u8 *msg_type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_msg_type");
+
 	if (msg_type == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Message Type "
@@ -550,6 +604,8 @@ static int wps_validate_msg_type(const u8 *msg_type, int mandatory)
 
 static int wps_validate_mac_addr(const u8 *mac_addr, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_mac_addr");
+
 	if (mac_addr == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: MAC Address "
@@ -569,6 +625,8 @@ static int wps_validate_mac_addr(const u8 *mac_addr, int mandatory)
 
 static int wps_validate_enrollee_nonce(const u8 *enrollee_nonce, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_enrollee_nonce");
+
 	if (enrollee_nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Enrollee Nonce "
@@ -584,6 +642,8 @@ static int wps_validate_enrollee_nonce(const u8 *enrollee_nonce, int mandatory)
 static int wps_validate_registrar_nonce(const u8 *registrar_nonce,
 					int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_registrar_nonce");
+
 	if (registrar_nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Registrar Nonce "
@@ -599,6 +659,8 @@ static int wps_validate_registrar_nonce(const u8 *registrar_nonce,
 static int wps_validate_public_key(const u8 *public_key, size_t len,
 				   int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_public_key");
+
 	if (public_key == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Public Key "
@@ -618,6 +680,8 @@ static int wps_validate_public_key(const u8 *public_key, size_t len,
 
 static int num_bits_set(u16 val)
 {
+    ESP_LOGV("FUNC", "num_bits_set");
+
 	int c;
 	for (c = 0; val; c++)
 		val &= val - 1;
@@ -627,6 +691,8 @@ static int num_bits_set(u16 val)
 
 static int wps_validate_auth_type_flags(const u8 *flags, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_auth_type_flags");
+
 	u16 val;
 
 	if (flags == NULL) {
@@ -649,6 +715,8 @@ static int wps_validate_auth_type_flags(const u8 *flags, int mandatory)
 
 static int wps_validate_auth_type(const u8 *type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_auth_type");
+
 	u16 val;
 
 	if (type == NULL) {
@@ -673,6 +741,8 @@ static int wps_validate_auth_type(const u8 *type, int mandatory)
 
 static int wps_validate_encr_type_flags(const u8 *flags, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_encr_type_flags");
+
 	u16 val;
 
 	if (flags == NULL) {
@@ -695,6 +765,8 @@ static int wps_validate_encr_type_flags(const u8 *flags, int mandatory)
 
 static int wps_validate_encr_type(const u8 *type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_encr_type");
+
 	u16 val;
 
 	if (type == NULL) {
@@ -718,6 +790,8 @@ static int wps_validate_encr_type(const u8 *type, int mandatory)
 
 static int wps_validate_conn_type_flags(const u8 *flags, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_conn_type_flags");
+
 	if (flags == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Connection Type "
@@ -738,6 +812,8 @@ static int wps_validate_conn_type_flags(const u8 *flags, int mandatory)
 
 static int wps_validate_os_version(const u8 *os_version, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_os_version");
+
 	if (os_version == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: OS Version "
@@ -752,6 +828,8 @@ static int wps_validate_os_version(const u8 *os_version, int mandatory)
 
 static int wps_validate_authenticator(const u8 *authenticator, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_authenticator");
+
 	if (authenticator == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Authenticator "
@@ -766,6 +844,8 @@ static int wps_validate_authenticator(const u8 *authenticator, int mandatory)
 
 static int wps_validate_e_hash1(const u8 *hash, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_e_hash1");
+
 	if (hash == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: E-Hash1 "
@@ -780,6 +860,8 @@ static int wps_validate_e_hash1(const u8 *hash, int mandatory)
 
 static int wps_validate_e_hash2(const u8 *hash, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_e_hash2");
+
 	if (hash == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: E-Hash2 "
@@ -794,6 +876,8 @@ static int wps_validate_e_hash2(const u8 *hash, int mandatory)
 
 static int wps_validate_r_hash1(const u8 *hash, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_r_hash1");
+
 	if (hash == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: R-Hash1 "
@@ -808,6 +892,8 @@ static int wps_validate_r_hash1(const u8 *hash, int mandatory)
 
 static int wps_validate_r_hash2(const u8 *hash, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_r_hash2");
+
 	if (hash == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: R-Hash2 "
@@ -823,6 +909,8 @@ static int wps_validate_r_hash2(const u8 *hash, int mandatory)
 static int wps_validate_encr_settings(const u8 *encr_settings, size_t len,
 				   int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_encr_settings");
+
 	if (encr_settings == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Encrypted Settings "
@@ -842,6 +930,8 @@ static int wps_validate_encr_settings(const u8 *encr_settings, size_t len,
 
 static int wps_validate_settings_delay_time(const u8 *delay, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_settings_delay_time");
+
 	if (delay == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Settings Delay Time "
@@ -856,6 +946,8 @@ static int wps_validate_settings_delay_time(const u8 *delay, int mandatory)
 
 static int wps_validate_r_snonce1(const u8 *nonce, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_r_snonce1");
+
 	if (nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: R-SNonce1 "
@@ -870,6 +962,8 @@ static int wps_validate_r_snonce1(const u8 *nonce, int mandatory)
 
 static int wps_validate_r_snonce2(const u8 *nonce, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_r_snonce2");
+
 	if (nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: R-SNonce2 "
@@ -884,6 +978,8 @@ static int wps_validate_r_snonce2(const u8 *nonce, int mandatory)
 
 static int wps_validate_e_snonce1(const u8 *nonce, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_e_snonce1");
+
 	if (nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: E-SNonce1 "
@@ -898,6 +994,8 @@ static int wps_validate_e_snonce1(const u8 *nonce, int mandatory)
 
 static int wps_validate_e_snonce2(const u8 *nonce, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_e_snonce2");
+
 	if (nonce == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: E-SNonce2 "
@@ -912,6 +1010,8 @@ static int wps_validate_e_snonce2(const u8 *nonce, int mandatory)
 
 static int wps_validate_key_wrap_auth(const u8 *auth, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_key_wrap_auth");
+
 	if (auth == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Key Wrap "
@@ -926,6 +1026,8 @@ static int wps_validate_key_wrap_auth(const u8 *auth, int mandatory)
 
 static int wps_validate_ssid(const u8 *ssid, size_t ssid_len, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_ssid");
+
 	if (ssid == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: SSID "
@@ -945,6 +1047,8 @@ static int wps_validate_ssid(const u8 *ssid, size_t ssid_len, int mandatory)
 
 static int wps_validate_network_key_index(const u8 *idx, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_network_key_index");
+
 	if (idx == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Network Key Index "
@@ -959,6 +1063,8 @@ static int wps_validate_network_key_index(const u8 *idx, int mandatory)
 
 static int wps_validate_network_idx(const u8 *idx, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_network_idx");
+
 	if (idx == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Network Index "
@@ -974,6 +1080,8 @@ static int wps_validate_network_idx(const u8 *idx, int mandatory)
 static int wps_validate_network_key(const u8 *key, size_t key_len,
 				    const u8 *encr_type, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_network_key");
+
 	if (key == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Network Key "
@@ -995,6 +1103,8 @@ static int wps_validate_network_key(const u8 *key, size_t key_len,
 
 static int wps_validate_network_key_shareable(const u8 *val, int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_network_key_shareable");
+
 	if (val == NULL) {
 		if (mandatory) {
 			wpa_printf(MSG_INFO, "WPS-STRICT: Network Key "
@@ -1014,6 +1124,8 @@ static int wps_validate_network_key_shareable(const u8 *val, int mandatory)
 
 static int wps_validate_cred(const u8 *cred, size_t len)
 {
+    ESP_LOGV("FUNC", "wps_validate_cred");
+
 	struct wps_parse_attr *attr;
 	struct wpabuf buf;
 	int ret;
@@ -1062,6 +1174,8 @@ _out:
 static int wps_validate_credential(const u8 *cred[], size_t len[], size_t num,
 				   int mandatory)
 {
+    ESP_LOGV("FUNC", "wps_validate_credential");
+
 	size_t i;
 
 	if (num == 0) {
@@ -1084,6 +1198,8 @@ static int wps_validate_credential(const u8 *cred[], size_t len[], size_t num,
 
 int wps_validate_beacon(const struct wpabuf *wps_ie)
 {
+    ESP_LOGV("FUNC", "wps_validate_beacon");
+
 	struct wps_parse_attr *attr;
 	int wps2, sel_reg;
 	int ret;
@@ -1138,6 +1254,8 @@ _out:
 int wps_validate_beacon_probe_resp(const struct wpabuf *wps_ie, int probe,
 				   const u8 *addr)
 {
+    ESP_LOGV("FUNC", "wps_validate_beacon_probe_resp");
+
 	struct wps_parse_attr *attr;
 	int wps2, sel_reg;
 	int ret;
@@ -1213,6 +1331,8 @@ _out:
 
 int wps_validate_probe_req(const struct wpabuf *wps_ie, const u8 *addr)
 {
+    ESP_LOGV("FUNC", "wps_validate_probe_req");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1275,6 +1395,8 @@ _out:
 
 int wps_validate_assoc_req(const struct wpabuf *wps_ie)
 {
+    ESP_LOGV("FUNC", "wps_validate_assoc_req");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1319,6 +1441,8 @@ _out:
 
 int wps_validate_assoc_resp(const struct wpabuf *wps_ie)
 {
+    ESP_LOGV("FUNC", "wps_validate_assoc_resp");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1364,6 +1488,8 @@ _out:
 
 int wps_validate_m1(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m1");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1438,6 +1564,8 @@ _out:
 
 int wps_validate_m2(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m2");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1511,6 +1639,8 @@ _out:
 
 int wps_validate_m2d(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m2d");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1580,6 +1710,8 @@ _out:
 
 int wps_validate_m3(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m3");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1633,6 +1765,8 @@ _out:
 
 int wps_validate_m4(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m4");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1688,6 +1822,8 @@ _out:
 
 int wps_validate_m4_encr(const struct wpabuf *tlvs, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_validate_m4_encr");
+
 	struct wps_parse_attr *attr;
 	int ret;
 
@@ -1737,6 +1873,8 @@ _out:
 
 int wps_validate_m5(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m5");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1790,6 +1928,8 @@ _out:
 
 int wps_validate_m5_encr(const struct wpabuf *tlvs, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_validate_m5_encr");
+
 	struct wps_parse_attr *attr;
 	int ret;
 
@@ -1838,6 +1978,8 @@ _out:
 
 int wps_validate_m6(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m6");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1891,6 +2033,8 @@ _out:
 
 int wps_validate_m6_encr(const struct wpabuf *tlvs, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_validate_m6_encr");
+
 	struct wps_parse_attr *attr;
 	int ret;
 
@@ -1939,6 +2083,8 @@ _out:
 
 int wps_validate_m7(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m7");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -1993,6 +2139,8 @@ _out:
 
 int wps_validate_m7_encr(const struct wpabuf *tlvs, int ap, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_validate_m7_encr");
+
 	struct wps_parse_attr *attr;
 	int ret;
 
@@ -2048,6 +2196,8 @@ _out:
 
 int wps_validate_m8(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_m8");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -2101,6 +2251,8 @@ _out:
 
 int wps_validate_m8_encr(const struct wpabuf *tlvs, int ap, int wps2)
 {
+    ESP_LOGV("FUNC", "wps_validate_m8_encr");
+
 	struct wps_parse_attr *attr;
 	int ret;
 
@@ -2155,6 +2307,8 @@ _out:
 
 int wps_validate_wsc_ack(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_wsc_ack");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -2206,6 +2360,8 @@ _out:
 
 int wps_validate_wsc_nack(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_wsc_nack");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -2257,6 +2413,8 @@ _out:
 
 int wps_validate_wsc_done(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_wsc_done");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int ret;
@@ -2308,6 +2466,8 @@ _out:
 
 int wps_validate_upnp_set_selected_registrar(const struct wpabuf *tlvs)
 {
+    ESP_LOGV("FUNC", "wps_validate_upnp_set_selected_registrar");
+
 	struct wps_parse_attr *attr;
 	int wps2;
 	int sel_reg;

@@ -26,11 +26,7 @@
 #include "crypto.h"
 #include "sha1_i.h"
 #include "md5_i.h"
-#ifdef USE_MBEDTLS_CRYPTO
-#include "mbedtls/sha256.h"
-#else
 #include "sha256_i.h"
-#endif
 
 struct crypto_hash {
 	enum crypto_hash_alg alg;
@@ -38,11 +34,7 @@ struct crypto_hash {
 		struct MD5Context md5;
 		struct SHA1Context sha1;
 #ifdef CONFIG_SHA256
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_context sha256;
-#else /* USE_MBEDTLS_CRYPTO */
 		struct sha256_state sha256;
-#endif /* USE_MBEDTLS_CRYPTO */
 #endif /* CONFIG_SHA256 */
 	} u;
 	u8 key[64];
@@ -53,6 +45,8 @@ struct crypto_hash {
 struct crypto_hash *  crypto_hash_init(enum crypto_hash_alg alg, const u8 *key,
 				      size_t key_len)
 {
+    ESP_LOGV("FUNC", "crypto_hash_init");
+
 	struct crypto_hash *ctx;
 	u8 k_pad[64];
 	u8 tk[32];
@@ -73,12 +67,7 @@ struct crypto_hash *  crypto_hash_init(enum crypto_hash_alg alg, const u8 *key,
 		break;
 #ifdef CONFIG_SHA256
 	case CRYPTO_HASH_ALG_SHA256:
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_init(&ctx->u.sha256);
-		mbedtls_sha256_starts_ret(&ctx->u.sha256, 0);
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_init(&ctx->u.sha256);
-#endif /* USE_MBEDTLS_CRYPTO */
 		break;
 #endif /* CONFIG_SHA256 */
 	case CRYPTO_HASH_ALG_HMAC_MD5:
@@ -122,17 +111,9 @@ struct crypto_hash *  crypto_hash_init(enum crypto_hash_alg alg, const u8 *key,
 #ifdef CONFIG_SHA256
 	case CRYPTO_HASH_ALG_HMAC_SHA256:
 		if (key_len > sizeof(k_pad)) {
-#ifdef USE_MBEDTLS_CRYPTO
-			mbedtls_sha256_init(&ctx->u.sha256);
-			mbedtls_sha256_starts_ret(&ctx->u.sha256, 0);
-			mbedtls_sha256_update_ret(&ctx->u.sha256, key, key_len);
-			mbedtls_sha256_finish_ret(&ctx->u.sha256, tk);
-			mbedtls_sha256_free(&ctx->u.sha256);
-#else /* USE_MBEDTLS_CRYPTO */
 			sha256_init(&ctx->u.sha256);
 			sha256_process(&ctx->u.sha256, key, key_len);
 			sha256_done(&ctx->u.sha256, tk);
-#endif /* USE_MBEDTLS_CRYPTO */
 			key = tk;
 			key_len = 32;
 		}
@@ -144,14 +125,8 @@ struct crypto_hash *  crypto_hash_init(enum crypto_hash_alg alg, const u8 *key,
 			os_memset(k_pad + key_len, 0, sizeof(k_pad) - key_len);
 		for (i = 0; i < sizeof(k_pad); i++)
 			k_pad[i] ^= 0x36;
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_init(&ctx->u.sha256);
-		mbedtls_sha256_starts_ret(&ctx->u.sha256, 0);
-		mbedtls_sha256_update_ret(&ctx->u.sha256, k_pad, sizeof(k_pad));
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_init(&ctx->u.sha256);
 		sha256_process(&ctx->u.sha256, k_pad, sizeof(k_pad));
-#endif /* USE_MBEDTLS_CRYPTO */
 		break;
 #endif /* CONFIG_SHA256 */
 	default:
@@ -165,6 +140,8 @@ struct crypto_hash *  crypto_hash_init(enum crypto_hash_alg alg, const u8 *key,
 
 void  crypto_hash_update(struct crypto_hash *ctx, const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "crypto_hash_update");
+
 	if (ctx == NULL)
 		return;
 
@@ -180,11 +157,7 @@ void  crypto_hash_update(struct crypto_hash *ctx, const u8 *data, size_t len)
 #ifdef CONFIG_SHA256
 	case CRYPTO_HASH_ALG_SHA256:
 	case CRYPTO_HASH_ALG_HMAC_SHA256:
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_update_ret(&ctx->u.sha256, data, len);
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_process(&ctx->u.sha256, data, len);
-#endif /* USE_MBEDTLS_CRYPTO */
 		break;
 #endif /* CONFIG_SHA256 */
 	default:
@@ -195,6 +168,8 @@ void  crypto_hash_update(struct crypto_hash *ctx, const u8 *data, size_t len)
 
 int  crypto_hash_finish(struct crypto_hash *ctx, u8 *mac, size_t *len)
 {
+    ESP_LOGV("FUNC", "crypto_hash_finish");
+
 	u8 k_pad[64];
 	size_t i;
 
@@ -233,12 +208,7 @@ int  crypto_hash_finish(struct crypto_hash *ctx, u8 *mac, size_t *len)
 			return -1;
 		}
 		*len = 32;
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_finish_ret(&ctx->u.sha256, mac);
-		mbedtls_sha256_free(&ctx->u.sha256);
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_done(&ctx->u.sha256, mac);
-#endif /* USE_MBEDTLS_CRYPTO */
 		break;
 #endif /* CONFIG_SHA256 */
 	case CRYPTO_HASH_ALG_HMAC_MD5:
@@ -290,31 +260,17 @@ int  crypto_hash_finish(struct crypto_hash *ctx, u8 *mac, size_t *len)
 		}
 		*len = 32;
 
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_finish_ret(&ctx->u.sha256, mac);
-		mbedtls_sha256_free(&ctx->u.sha256);
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_done(&ctx->u.sha256, mac);
-#endif /* USE_MBEDTLS_CRYPTO */
 
 		os_memcpy(k_pad, ctx->key, ctx->key_len);
 		os_memset(k_pad + ctx->key_len, 0,
 			  sizeof(k_pad) - ctx->key_len);
 		for (i = 0; i < sizeof(k_pad); i++)
 			k_pad[i] ^= 0x5c;
-#ifdef USE_MBEDTLS_CRYPTO
-		mbedtls_sha256_init(&ctx->u.sha256);
-		mbedtls_sha256_starts_ret(&ctx->u.sha256, 0);
-		mbedtls_sha256_update_ret(&ctx->u.sha256, k_pad, sizeof(k_pad));
-		mbedtls_sha256_update_ret(&ctx->u.sha256, mac, 32);
-		mbedtls_sha256_finish_ret(&ctx->u.sha256, mac);
-		mbedtls_sha256_free(&ctx->u.sha256);
-#else /* USE_MBEDTLS_CRYPTO */
 		sha256_init(&ctx->u.sha256);
 		sha256_process(&ctx->u.sha256, k_pad, sizeof(k_pad));
 		sha256_process(&ctx->u.sha256, mac, 32);
 		sha256_done(&ctx->u.sha256, mac);
-#endif /* USE_MBEDTLS_CRYPTO */
 		break;
 #endif /* CONFIG_SHA256 */
 	default:
@@ -330,10 +286,14 @@ int  crypto_hash_finish(struct crypto_hash *ctx, u8 *mac, size_t *len)
 
 int  crypto_global_init(void)
 {
+    ESP_LOGV("FUNC", "crypto_global_init");
+
 	return 0;
 }
 
 
 void  crypto_global_deinit(void)
 {
+    ESP_LOGV("FUNC", "crypto_global_deinit");
+
 }

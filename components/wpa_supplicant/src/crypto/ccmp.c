@@ -18,6 +18,8 @@
 static void ccmp_aad_nonce(const struct ieee80211_hdr *hdr, const u8 *data,
                            u8 *aad, size_t *aad_len, u8 *nonce, bool espnow_pkt)
 {
+    ESP_LOGV("FUNC", "ccmp_aad_nonce");
+
 	u16 fc, stype, seq;
 	int qos = 0, addr4 = 0;
 	u8 *pos;
@@ -81,6 +83,8 @@ static void ccmp_aad_nonce_pv1(const u8 *hdr, const u8 *a1, const u8 *a2,
 			       const u8 *a3, const u8 *pn,
 			       u8 *aad, size_t *aad_len, u8 *nonce)
 {
+    ESP_LOGV("FUNC", "ccmp_aad_nonce_pv1");
+
 	u16 fc, type;
 	u8 *pos;
 
@@ -138,6 +142,8 @@ static void ccmp_aad_nonce_pv1(const u8 *hdr, const u8 *a1, const u8 *a2,
 u8 * ccmp_decrypt(const u8 *tk, const u8 *hdr, const u8 *data,
 		  size_t data_len, size_t *decrypted_len, bool espnow_pkt)
 {
+    ESP_LOGV("FUNC", "ccmp_decrypt");
+
 	u8 aad[30], nonce[13];
 	size_t aad_len;
 	size_t mlen;
@@ -171,6 +177,8 @@ u8 * ccmp_decrypt(const u8 *tk, const u8 *hdr, const u8 *data,
 
 void ccmp_get_pn(u8 *pn, const u8 *data)
 {
+    ESP_LOGV("FUNC", "ccmp_get_pn");
+
 	pn[0] = data[7]; /* PN5 */
 	pn[1] = data[6]; /* PN4 */
 	pn[2] = data[5]; /* PN3 */
@@ -183,6 +191,8 @@ void ccmp_get_pn(u8 *pn, const u8 *data)
 u8 * ccmp_encrypt(const u8 *tk, u8 *frame, size_t len, size_t hdrlen,
 		  u8 *pn, int keyid, size_t *encrypted_len)
 {
+    ESP_LOGV("FUNC", "ccmp_encrypt");
+
 	u8 aad[30], nonce[13];
 	size_t aad_len, plen;
 	u8 *crypt, *pos;
@@ -233,6 +243,8 @@ u8 * ccmp_encrypt_pv1(const u8 *tk, const u8 *a1, const u8 *a2, const u8 *a3,
 		      size_t hdrlen, const u8 *pn, int keyid,
 		      size_t *encrypted_len)
 {
+    ESP_LOGV("FUNC", "ccmp_encrypt_pv1");
+
 	u8 aad[24], nonce[13];
 	size_t aad_len, plen;
 	u8 *crypt, *pos;
@@ -273,6 +285,8 @@ u8 * ccmp_encrypt_pv1(const u8 *tk, const u8 *a1, const u8 *a2, const u8 *a3,
 u8 * ccmp_256_decrypt(const u8 *tk, const u8 *hdr, const u8 *data,
 		      size_t data_len, size_t *decrypted_len)
 {
+    ESP_LOGV("FUNC", "ccmp_256_decrypt");
+
 	u8 aad[30], nonce[13];
 	size_t aad_len;
 	size_t mlen;
@@ -308,6 +322,8 @@ u8 * ccmp_256_decrypt(const u8 *tk, const u8 *hdr, const u8 *data,
 u8 * ccmp_256_encrypt(const u8 *tk, u8 *frame, size_t len, size_t hdrlen,
 		      u8 *pn, int keyid, size_t *encrypted_len)
 {
+    ESP_LOGV("FUNC", "ccmp_256_encrypt");
+
 	u8 aad[30], nonce[13];
 	size_t aad_len, plen;
 	u8 *crypt, *pos;

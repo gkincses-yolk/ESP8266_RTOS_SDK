@@ -78,6 +78,8 @@ struct tls_connection {
 
 static void tls_mbedtls_cleanup(tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "tls_mbedtls_cleanup");
+
 	if (!tls) {
 		return;
 	}
@@ -93,6 +95,8 @@ static void tls_mbedtls_cleanup(tls_context_t *tls)
 
 static void tls_mbedtls_conn_delete(tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "tls_mbedtls_conn_delete");
+
 	if (tls != NULL) {
 		tls_mbedtls_cleanup(tls);
 	}
@@ -100,6 +104,8 @@ static void tls_mbedtls_conn_delete(tls_context_t *tls)
 
 static int tls_mbedtls_write(void *ctx, const unsigned char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "tls_mbedtls_write");
+
 	struct tls_connection *conn = (struct tls_connection *)ctx;
 	struct tls_data *data = &conn->tls_io_data;
 
@@ -116,6 +122,8 @@ static int tls_mbedtls_write(void *ctx, const unsigned char *buf, size_t len)
 
 static int tls_mbedtls_read(void *ctx, unsigned char *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "tls_mbedtls_read");
+
 	struct tls_connection *conn = (struct tls_connection *)ctx;
 	struct tls_data *data = &conn->tls_io_data;
 	struct wpabuf *local_buf;
@@ -143,6 +151,8 @@ static int tls_mbedtls_read(void *ctx, unsigned char *buf, size_t len)
 
 static int set_pki_context(tls_context_t *tls, const struct tls_connection_params *cfg)
 {
+    ESP_LOGV("FUNC", "set_pki_context");
+
 	int ret;
 
 	if (cfg->client_cert_blob == NULL || cfg->private_key_blob  == NULL) {
@@ -179,6 +189,8 @@ static int set_pki_context(tls_context_t *tls, const struct tls_connection_param
 
 static int set_ca_cert(tls_context_t *tls, const unsigned char *cacert, size_t cacert_len)
 {
+    ESP_LOGV("FUNC", "set_ca_cert");
+
 	tls->cacert_ptr = &tls->cacert;
 	mbedtls_x509_crt_init(tls->cacert_ptr);
 	int ret = mbedtls_x509_crt_parse(tls->cacert_ptr, cacert, cacert_len);
@@ -228,6 +240,8 @@ const mbedtls_x509_crt_profile eap_mbedtls_x509_crt_profile =
 
 static void tls_enable_sha1_config(tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "tls_enable_sha1_config");
+
 	const mbedtls_x509_crt_profile *crt_profile = &eap_mbedtls_x509_crt_profile;
 	mbedtls_ssl_conf_cert_profile(&tls->conf, crt_profile);
 	mbedtls_ssl_conf_sig_hashes(&tls->conf, tls_sig_hashes_for_eap);
@@ -380,6 +394,8 @@ static const int eap_ciphersuite_preference[] =
 
 static void tls_set_ciphersuite(tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "tls_set_ciphersuite");
+
 	/* Only set ciphersuite if cert's key length is high or ciphersuites are set by user */
 	if (tls->ciphersuite[0]) {
 		mbedtls_ssl_conf_ciphersuites(&tls->conf, tls->ciphersuite);
@@ -391,6 +407,8 @@ static void tls_set_ciphersuite(tls_context_t *tls)
 
 static int set_client_config(const struct tls_connection_params *cfg, tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "set_client_config");
+
 	int ret;
 	assert(cfg != NULL);
 	assert(tls != NULL);
@@ -436,6 +454,8 @@ static int set_client_config(const struct tls_connection_params *cfg, tls_contex
 static int tls_create_mbedtls_handle(const struct tls_connection_params *params,
 				     tls_context_t *tls)
 {
+    ESP_LOGV("FUNC", "tls_create_mbedtls_handle");
+
 	int ret;
 
 	assert(params != NULL);
@@ -480,17 +500,23 @@ exit:
 
 void *tls_init()
 {
+    ESP_LOGV("FUNC", "tls_init");
+
 	tls_instance_count++;
 	return &tls_instance_count;
 }
 
 void tls_deinit(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_deinit");
+
 	tls_instance_count--;
 }
 
 struct tls_connection * tls_connection_init(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_connection_init");
+
 	struct tls_connection *conn = os_zalloc(sizeof(*conn));
 	if (!conn) {
 		wpa_printf(MSG_ERROR, "TLS: Failed to allocate connection memory");
@@ -502,6 +528,8 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 
 void tls_connection_deinit(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_deinit");
+
 	/* Free ssl ctx and data */
 	tls_mbedtls_conn_delete((tls_context_t *) conn->tls);
 	os_free(conn->tls);
@@ -512,11 +540,15 @@ void tls_connection_deinit(void *tls_ctx, struct tls_connection *conn)
 
 int tls_get_errors(void *tls_ctx)
 {
+    ESP_LOGV("FUNC", "tls_get_errors");
+
 	return 0;
 }
 
 int tls_connection_established(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_established");
+
 	mbedtls_ssl_context *ssl = &conn->tls->ssl;
 
 	if (ssl->state == MBEDTLS_SSL_HANDSHAKE_OVER) {
@@ -528,6 +560,8 @@ int tls_connection_established(void *tls_ctx, struct tls_connection *conn)
 
 int tls_global_set_verify(void *tls_ctx, int check_crl)
 {
+    ESP_LOGV("FUNC", "tls_global_set_verify");
+
 	wpa_printf(MSG_INFO, "TLS: global settings are not supported");
 	return -1;
 }
@@ -535,6 +569,8 @@ int tls_global_set_verify(void *tls_ctx, int check_crl)
 int tls_connection_set_verify(void *tls_ctx, struct tls_connection *conn,
 			      int verify_peer)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_verify");
+
 	wpa_printf(MSG_INFO, "TLS: tls_connection_set_verify not supported");
 	return -1;
 }
@@ -544,6 +580,8 @@ struct wpabuf * tls_connection_handshake(void *tls_ctx,
 					 const struct wpabuf *in_data,
 					 struct wpabuf **appl_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_handshake");
+
 	tls_context_t *tls = conn->tls;
 	int ret = 0;
 
@@ -617,6 +655,8 @@ struct wpabuf * tls_connection_server_handshake(void *tls_ctx,
 						const struct wpabuf *in_data,
 						struct wpabuf **appl_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_server_handshake");
+
 	wpa_printf(MSG_ERROR, "%s: not supported %d", __func__, __LINE__);
 	return NULL;
 }
@@ -626,6 +666,8 @@ struct wpabuf * tls_connection_encrypt(void *tls_ctx,
 				       struct tls_connection *conn,
 				       const struct wpabuf *in_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_encrypt");
+
 	/* Reset dangling pointer */
 	conn->tls_io_data.out_data = NULL;
 
@@ -645,6 +687,8 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 		struct tls_connection *conn,
 		const struct wpabuf *in_data)
 {
+    ESP_LOGV("FUNC", "tls_connection_decrypt");
+
 	unsigned char buf[1200];
 	int ret;
 	conn->tls_io_data.in_data = wpabuf_dup(in_data);
@@ -663,6 +707,8 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 
 int tls_connection_resumed(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_resumed");
+
 	if (conn && conn->tls && conn->tls->ssl.handshake) {
 		return conn->tls->ssl.handshake->resume;
 	}
@@ -675,6 +721,8 @@ int tls_connection_resumed(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 				   u8 *ciphers)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_cipher_list");
+
 	int i = 0;
 
 	while (*ciphers != 0 && i < MAX_CIPHERSUITE) {
@@ -687,6 +735,8 @@ int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 int tls_get_version(void *tls_ctx, struct tls_connection *conn,
 		    char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "tls_get_version");
+
 	const char *name;
 
 	if (conn == NULL) {
@@ -706,6 +756,8 @@ int tls_get_version(void *tls_ctx, struct tls_connection *conn,
 int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
 		   char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "tls_get_cipher");
+
 	const char *name;
 	if (conn == NULL) {
 		return -1;
@@ -725,23 +777,31 @@ int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
 int tls_connection_enable_workaround(void *tls_ctx,
 				     struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_enable_workaround");
+
 	wpa_printf(MSG_ERROR, "%s: not supported %d", __func__, __LINE__);
 	return -1;
 }
 
 int tls_connection_get_failed(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_failed");
+
 	return 0;
 }
 
 int tls_connection_get_read_alerts(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_read_alerts");
+
 	wpa_printf(MSG_ERROR, "%s: not supported %d", __func__, __LINE__);
 	return 0;
 }
 
 int tls_connection_get_write_alerts(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_write_alerts");
+
 	wpa_printf(MSG_ERROR, "%s: not supported %d", __func__, __LINE__);
 	return 0;
 }
@@ -749,6 +809,8 @@ int tls_connection_get_write_alerts(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_set_params(void *tls_ctx, struct tls_connection *conn,
 			      const struct tls_connection_params *params)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_params");
+
 	int ret = 0;
 	tls_context_t *tls = (tls_context_t *)os_zalloc(sizeof(tls_context_t));
 
@@ -779,6 +841,8 @@ err:
 int tls_global_set_params(void *tls_ctx,
 			  const struct tls_connection_params *params)
 {
+    ESP_LOGV("FUNC", "tls_global_set_params");
+
 	wpa_printf(MSG_INFO, "TLS: Global parameters not supported");
 	return -1;
 }
@@ -788,6 +852,8 @@ int tls_connection_set_session_ticket_cb(void *tls_ctx,
 					 tls_session_ticket_cb cb,
 					 void *ctx)
 {
+    ESP_LOGV("FUNC", "tls_connection_set_session_ticket_cb");
+
 	wpa_printf(MSG_ERROR, "TLS: %s not supported", __func__);
 	return -1;
 }
@@ -796,6 +862,8 @@ static int tls_connection_prf(void *tls_ctx, struct tls_connection *conn,
 		       const char *label, int server_random_first,
 		       u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tls_connection_prf");
+
 	int ret;
 	u8 seed[2 * TLS_RANDOM_LEN];
 	mbedtls_ssl_context *ssl = &conn->tls->ssl;
@@ -842,11 +910,15 @@ static int tls_connection_prf(void *tls_ctx, struct tls_connection *conn,
 int tls_connection_export_key(void *tls_ctx, struct tls_connection *conn,
 			      const char *label, u8 *out, size_t out_len)
 {
+    ESP_LOGV("FUNC", "tls_connection_export_key");
+
 	return tls_connection_prf(tls_ctx, conn, label, 0, out, out_len);
 }
 
 int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn)
 {
+    ESP_LOGV("FUNC", "tls_connection_shutdown");
+
 	if (conn->tls_io_data.in_data) {
 		wpabuf_free(conn->tls_io_data.in_data);
 	}
@@ -861,6 +933,8 @@ int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn)
 int tls_connection_get_random(void *tls_ctx, struct tls_connection *conn,
 			    struct tls_random *data)
 {
+    ESP_LOGV("FUNC", "tls_connection_get_random");
+
 	mbedtls_ssl_context *ssl = &conn->tls->ssl;
 
 	os_memset(data, 0, sizeof(*data));

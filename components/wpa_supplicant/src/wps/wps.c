@@ -37,6 +37,8 @@ enum wps_process_res wps_process_msg(struct wps_data *wps,
                      enum wsc_op_code op_code,
                      const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_msg");
+
     if (wps->registrar)
         return wps_registrar_process_msg(wps, op_code, msg);
     else
@@ -55,6 +57,8 @@ enum wps_process_res wps_process_msg(struct wps_data *wps,
  */
 struct wpabuf * wps_get_msg(struct wps_data *wps, enum wsc_op_code *op_code)
 {
+    ESP_LOGV("FUNC", "wps_get_msg");
+
     if (wps->registrar)
         return wps_registrar_get_msg(wps, op_code);
     else
@@ -69,6 +73,8 @@ struct wpabuf * wps_get_msg(struct wps_data *wps, enum wsc_op_code *op_code)
  */
 int wps_is_selected_pbc_registrar(const struct wpabuf *msg, u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wps_is_selected_pbc_registrar");
+
 	struct wps_sm *sm = wps_sm_get();
     struct wps_parse_attr *attr = (struct wps_parse_attr *)os_zalloc(sizeof(struct wps_parse_attr));
     int i = 0;
@@ -116,6 +122,8 @@ int wps_is_selected_pbc_registrar(const struct wpabuf *msg, u8 *bssid)
 
 static int is_selected_pin_registrar(struct wps_parse_attr *attr, u8 *bssid)
 {
+    ESP_LOGV("FUNC", "is_selected_pin_registrar");
+
 	struct wps_sm *sm = wps_sm_get();
 	int i = 0;
 
@@ -163,6 +171,8 @@ static int is_selected_pin_registrar(struct wps_parse_attr *attr, u8 *bssid)
  */
 int wps_is_selected_pin_registrar(const struct wpabuf *msg, u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wps_is_selected_pin_registrar");
+
     struct wps_parse_attr *attr;
     int ret;
 
@@ -193,6 +203,8 @@ int wps_is_selected_pin_registrar(const struct wpabuf *msg, u8 *bssid)
 int wps_is_addr_authorized(const struct wpabuf *msg, const u8 *addr,
                int ver1_compat)
 {
+    ESP_LOGV("FUNC", "wps_is_addr_authorized");
+
 	struct wps_sm *sm = wps_sm_get();
     struct wps_parse_attr *attr;
     int ret = 0;
@@ -262,6 +274,8 @@ _out:
 int wps_ap_priority_compar(const struct wpabuf *wps_a,
                            const struct wpabuf *wps_b)
 {
+    ESP_LOGV("FUNC", "wps_ap_priority_compar");
+
     struct wps_parse_attr *attr = NULL;
     int sel_a, sel_b;
     int ret = 0; /* No preference */
@@ -308,6 +322,8 @@ exit:
  */
 const u8 * wps_get_uuid_e(const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_get_uuid_e");
+
     struct wps_parse_attr *attr;
     const u8 *uuid_e;
 
@@ -330,6 +346,8 @@ const u8 * wps_get_uuid_e(const struct wpabuf *msg)
  */
 int wps_is_20(const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_is_20");
+
     struct wps_parse_attr *attr;
     int ret;
 
@@ -356,6 +374,8 @@ int wps_is_20(const struct wpabuf *msg)
  */
 struct wpabuf * wps_build_assoc_req_ie(enum wps_request_type req_type)
 {
+    ESP_LOGV("FUNC", "wps_build_assoc_req_ie");
+
     struct wpabuf *ie;
     u8 *len;
 
@@ -390,6 +410,8 @@ struct wpabuf * wps_build_assoc_req_ie(enum wps_request_type req_type)
  */
 struct wpabuf * wps_build_assoc_resp_ie(void)
 {
+    ESP_LOGV("FUNC", "wps_build_assoc_resp_ie");
+
     struct wpabuf *ie;
     u8 *len;
 
@@ -436,6 +458,8 @@ struct wpabuf * wps_build_probe_req_ie(u16 pw_id, struct wps_device_data *dev,
                        unsigned int num_req_dev_types,
                        const u8 *req_dev_types)
 {
+    ESP_LOGV("FUNC", "wps_build_probe_req_ie");
+
     struct wpabuf *ie;
 
     wpa_printf(MSG_DEBUG,  "WPS: Building WPS IE for Probe Request\n");
@@ -484,6 +508,8 @@ struct wpabuf * wps_build_probe_req_ie(u16 pw_id, struct wps_device_data *dev,
 
 void wps_free_pending_msgs(struct upnp_pending_message *msgs)
 {
+    ESP_LOGV("FUNC", "wps_free_pending_msgs");
+
     struct upnp_pending_message *p, *prev;
     p = msgs;
     while (p) {
@@ -498,6 +524,8 @@ void wps_free_pending_msgs(struct upnp_pending_message *msgs)
 
 int wps_attr_text(struct wpabuf *data, char *buf, char *end)
 {
+    ESP_LOGV("FUNC", "wps_attr_text");
+
     struct wps_parse_attr *attr;
     char *pos = buf;
     int ret;

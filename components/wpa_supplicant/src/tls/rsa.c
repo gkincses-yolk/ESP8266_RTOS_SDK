@@ -30,6 +30,8 @@ struct crypto_rsa_key {
 static const u8 * crypto_rsa_parse_integer(const u8 *pos, const u8 *end,
 					   struct bignum *num)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_parse_integer");
+
 	struct asn1_hdr hdr;
 
 	if (pos == NULL)
@@ -57,9 +59,10 @@ static const u8 * crypto_rsa_parse_integer(const u8 *pos, const u8 *end,
  * @len: Key buffer length in bytes
  * Returns: Pointer to the public key or %NULL on failure
  */
-struct crypto_rsa_key *
-crypto_rsa_import_public_key(const u8 *buf, size_t len)
+struct crypto_rsa_key * crypto_rsa_import_public_key(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_import_public_key");
+
 	struct crypto_rsa_key *key;
 	struct asn1_hdr hdr;
 	const u8 *pos, *end;
@@ -121,9 +124,10 @@ error:
  * @len: Key buffer length in bytes
  * Returns: Pointer to the private key or %NULL on failure
  */
-struct crypto_rsa_key *
-crypto_rsa_import_private_key(const u8 *buf, size_t len)
+struct crypto_rsa_key * crypto_rsa_import_private_key(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_import_private_key");
+
 	struct crypto_rsa_key *key;
 	struct bignum *zero;
 	struct asn1_hdr hdr;
@@ -224,6 +228,8 @@ error:
  */
 size_t crypto_rsa_get_modulus_len(struct crypto_rsa_key *key)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_get_modulus_len");
+
 	return bignum_get_unsigned_bin_len(key->n);
 }
 
@@ -241,6 +247,8 @@ size_t crypto_rsa_get_modulus_len(struct crypto_rsa_key *key)
 int crypto_rsa_exptmod(const u8 *in, size_t inlen, u8 *out, size_t *outlen,
 		       struct crypto_rsa_key *key, int use_private)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_exptmod");
+
 	struct bignum *tmp, *a = NULL, *b = NULL;
 	int ret = -1;
 	size_t modlen;
@@ -338,6 +346,8 @@ error:
  */
 void crypto_rsa_free(struct crypto_rsa_key *key)
 {
+    ESP_LOGV("FUNC", "crypto_rsa_free");
+
 	if (key) {
 		bignum_deinit(key->n);
 		bignum_deinit(key->e);

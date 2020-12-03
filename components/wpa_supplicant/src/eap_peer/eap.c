@@ -51,6 +51,8 @@ static struct eap_method *eap_methods = NULL;
 
 const struct eap_method * eap_peer_get_eap_method(int vendor, EapType method)
 {
+    ESP_LOGV("FUNC", "eap_peer_get_eap_method");
+
 	struct eap_method *m;
 	for (m = eap_methods; m; m = m->next) {
 		if (m->vendor == vendor && m->method == method)
@@ -61,6 +63,8 @@ const struct eap_method * eap_peer_get_eap_method(int vendor, EapType method)
 
 const struct eap_method * eap_peer_get_methods(size_t *count)
 {
+    ESP_LOGV("FUNC", "eap_peer_get_methods");
+
 	int c = 0;
 	struct eap_method *m;
 
@@ -73,6 +77,8 @@ const struct eap_method * eap_peer_get_methods(size_t *count)
 
 EapType eap_peer_get_type(const char *name, int *vendor)
 {
+    ESP_LOGV("FUNC", "eap_peer_get_type");
+
 	struct eap_method *m;
 	for (m = eap_methods; m; m = m->next) {
 		if (os_strcmp(m->name, name) == 0) {
@@ -84,9 +90,10 @@ EapType eap_peer_get_type(const char *name, int *vendor)
 	return EAP_TYPE_NONE;
 }
 
-static int 
-eap_allowed_phase2_type(int vendor, int type)
+static int eap_allowed_phase2_type(int vendor, int type)
 {
+    ESP_LOGV("FUNC", "eap_allowed_phase2_type");
+
 	if (vendor != EAP_VENDOR_IETF)
 		return 0;
 	return type != EAP_TYPE_PEAP && type != EAP_TYPE_TTLS &&
@@ -95,6 +102,8 @@ eap_allowed_phase2_type(int vendor, int type)
 
 u32 eap_get_phase2_type(const char *name, int *vendor)
 {
+    ESP_LOGV("FUNC", "eap_get_phase2_type");
+
 	int v;
 	u8 type = eap_peer_get_type(name, &v);
 	if (eap_allowed_phase2_type(v, type)) {
@@ -108,6 +117,8 @@ u32 eap_get_phase2_type(const char *name, int *vendor)
 struct eap_method_type * eap_get_phase2_types(struct eap_peer_config *config,
 		     size_t *count)
 {
+    ESP_LOGV("FUNC", "eap_get_phase2_types");
+
 	struct eap_method_type *buf;
 	u32 method;
 	int vendor;
@@ -142,6 +153,8 @@ struct eap_method_type * eap_get_phase2_types(struct eap_peer_config *config,
 struct eap_method * eap_peer_method_alloc(int vendor, EapType method,
 		      const char *name)
 {
+    ESP_LOGV("FUNC", "eap_peer_method_alloc");
+
 	struct eap_method *eap;
 	eap = (struct eap_method *)os_zalloc(sizeof(*eap));
 	if (eap == NULL)
@@ -154,11 +167,15 @@ struct eap_method * eap_peer_method_alloc(int vendor, EapType method,
 
 void eap_peer_method_free(struct eap_method *method)
 {
+    ESP_LOGV("FUNC", "eap_peer_method_free");
+
 	os_free(method);
 }
 
 int eap_peer_method_register(struct eap_method *method)
 {
+    ESP_LOGV("FUNC", "eap_peer_method_register");
+
 	struct eap_method *m, *last = NULL;
 
 	if (method == NULL || method->name == NULL)
@@ -179,6 +196,8 @@ int eap_peer_method_register(struct eap_method *method)
 
 void eap_peer_unregister_methods(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_unregister_methods");
+
 	struct eap_method *m;
 	while (eap_methods) {
 		m = eap_methods;
@@ -193,6 +212,8 @@ void eap_peer_unregister_methods(void)
 
 int eap_peer_register_methods(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_register_methods");
+
 	int ret = 0;
 
 #ifdef EAP_MD5
@@ -225,6 +246,8 @@ int eap_peer_register_methods(void)
 
 void eap_deinit_prev_method(struct eap_sm *sm, const char *txt)
 {
+    ESP_LOGV("FUNC", "eap_deinit_prev_method");
+
 	if (sm->m == NULL || sm->eap_method_priv == NULL)
 		return;
 	sm->m->deinit(sm, sm->eap_method_priv);
@@ -234,6 +257,8 @@ void eap_deinit_prev_method(struct eap_sm *sm, const char *txt)
 
 struct wpabuf * eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypted)
 {
+    ESP_LOGV("FUNC", "eap_sm_build_identity_resp");
+
 	const u8 *identity;
 	size_t identity_len;
 	struct wpabuf *eap_buf = NULL;
@@ -273,6 +298,8 @@ struct wpabuf * eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypt
 
 struct wpabuf * eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
 {
+    ESP_LOGV("FUNC", "eap_sm_build_nak");
+
 	size_t count = 0;
 	int found = 0;
 	struct wpabuf *resp;
@@ -336,6 +363,8 @@ int eap_peer_config_init(
 	struct eap_sm *sm, const u8 *private_key_passwd,
 	int private_key_passwd_len)
 {
+    ESP_LOGV("FUNC", "eap_peer_config_init");
+
 	if (!sm)
 		return -1;
 
@@ -395,6 +424,8 @@ int eap_peer_config_init(
 
 void eap_peer_config_deinit(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_peer_config_deinit");
+
 	if (!sm)
 		return;
 
@@ -407,6 +438,8 @@ void eap_peer_config_deinit(struct eap_sm *sm)
 
 int eap_peer_blob_init(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_peer_blob_init");
+
 	int i, ret;
 
 	if (!sm)
@@ -460,6 +493,8 @@ _out:
 
 void eap_peer_blob_deinit(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_peer_blob_deinit");
+
 	int i;
 	for (i = 0; i < BLOB_NUM; i++) {
 		if (sm->blob[i].name) {
@@ -476,6 +511,8 @@ void eap_peer_blob_deinit(struct eap_sm *sm)
 
 void eap_sm_abort(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_sm_abort");
+
 	wpabuf_free(sm->lastRespData);
 	sm->lastRespData = NULL;
 }
@@ -492,11 +529,15 @@ void eap_sm_abort(struct eap_sm *sm)
  */
 struct eap_peer_config * eap_get_config(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_get_config");
+
 	return &sm->config;
 }
 
 const u8 * eap_get_config_identity(struct eap_sm *sm, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_get_config_identity");
+
 	struct eap_peer_config *config = eap_get_config(sm);
 	if (config == NULL)
 		return NULL;
@@ -506,6 +547,8 @@ const u8 * eap_get_config_identity(struct eap_sm *sm, size_t *len)
 
 const u8 * eap_get_config_password(struct eap_sm *sm, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_get_config_password");
+
 	struct eap_peer_config *config = eap_get_config(sm);
 	if (config == NULL)
 		return NULL;
@@ -515,6 +558,8 @@ const u8 * eap_get_config_password(struct eap_sm *sm, size_t *len)
 
 const u8 * eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash)
 {
+    ESP_LOGV("FUNC", "eap_get_config_password2");
+
 	struct eap_peer_config *config = eap_get_config(sm);
 	if (config == NULL)
 		return NULL;
@@ -527,6 +572,8 @@ const u8 * eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash)
 
 const u8 * eap_get_config_new_password(struct eap_sm *sm, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_get_config_new_password");
+
 	struct eap_peer_config *config = eap_get_config(sm);
 	if (config == NULL)
 		return NULL;
@@ -542,6 +589,8 @@ const u8 * eap_get_config_new_password(struct eap_sm *sm, size_t *len)
 const struct wpa_config_blob * eap_get_config_blob(struct eap_sm *sm,
 						   const char *name)
 {
+    ESP_LOGV("FUNC", "eap_get_config_blob");
+
 	int i;
 
 	if (!sm)

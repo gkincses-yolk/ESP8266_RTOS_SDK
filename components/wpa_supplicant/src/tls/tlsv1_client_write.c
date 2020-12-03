@@ -24,6 +24,8 @@
 
 static size_t tls_client_cert_chain_der_len(struct tlsv1_client *conn)
 {
+    ESP_LOGV("FUNC", "tls_client_cert_chain_der_len");
+
 	size_t len = 0;
 	struct x509_certificate *cert;
 
@@ -45,6 +47,8 @@ static size_t tls_client_cert_chain_der_len(struct tlsv1_client *conn)
 
 u8 * tls_send_client_hello(struct tlsv1_client *conn, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tls_send_client_hello");
+
 	u8 *hello, *end, *pos, *hs_length, *hs_start, *rhdr;
 	struct os_time now;
 	size_t len, i;
@@ -130,6 +134,8 @@ u8 * tls_send_client_hello(struct tlsv1_client *conn, size_t *out_len)
 static int tls_write_client_certificate(struct tlsv1_client *conn,
 					u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_client_certificate");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length, *cert_start;
 	size_t rlen;
 	struct x509_certificate *cert;
@@ -208,6 +214,8 @@ static int tls_write_client_certificate(struct tlsv1_client *conn,
 
 static int tlsv1_key_x_anon_dh(struct tlsv1_client *conn, u8 **pos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tlsv1_key_x_anon_dh");
+
 	/* ClientDiffieHellmanPublic */
 	u8 *csecret, *csecret_start, *dh_yc, *shared;
 	size_t csecret_len, dh_yc_len, shared_len;
@@ -324,6 +332,8 @@ static int tlsv1_key_x_anon_dh(struct tlsv1_client *conn, u8 **pos, u8 *end)
 
 static int tlsv1_key_x_rsa(struct tlsv1_client *conn, u8 **pos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tlsv1_key_x_rsa");
+
 	u8 pre_master_secret[TLS_PRE_MASTER_SECRET_LEN];
 	size_t clen;
 	int res;
@@ -372,6 +382,8 @@ static int tlsv1_key_x_rsa(struct tlsv1_client *conn, u8 **pos, u8 *end)
 static int tls_write_client_key_exchange(struct tlsv1_client *conn,
 					 u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_client_key_exchange");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length;
 	size_t rlen;
 	tls_key_exchange keyx;
@@ -430,6 +442,8 @@ static int tls_write_client_key_exchange(struct tlsv1_client *conn,
 static int tls_write_client_certificate_verify(struct tlsv1_client *conn,
 					       u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_client_certificate_verify");
+
 	u8 *pos, *rhdr, *hs_start, *hs_length, *signed_start;
 	size_t rlen, hlen, clen;
 	u8 hash[100], *hpos;
@@ -608,6 +622,8 @@ static int tls_write_client_certificate_verify(struct tlsv1_client *conn,
 static int tls_write_client_change_cipher_spec(struct tlsv1_client *conn,
 					       u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_client_change_cipher_spec");
+
 	size_t rlen;
 	u8 payload[1];
 
@@ -641,6 +657,8 @@ static int tls_write_client_change_cipher_spec(struct tlsv1_client *conn,
 static int tls_write_client_finished(struct tlsv1_client *conn,
 				     u8 **msgpos, u8 *end)
 {
+    ESP_LOGV("FUNC", "tls_write_client_finished");
+
 	u8 *pos, *hs_start;
 	size_t rlen, hlen;
 	u8 verify_data[1 + 3 + TLS_VERIFY_DATA_LEN];
@@ -732,6 +750,8 @@ static int tls_write_client_finished(struct tlsv1_client *conn,
 static u8 * tls_send_client_key_exchange(struct tlsv1_client *conn,
 					 size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tls_send_client_key_exchange");
+
 	u8 *msg, *end, *pos;
 	size_t msglen;
 
@@ -774,6 +794,8 @@ static u8 * tls_send_client_key_exchange(struct tlsv1_client *conn,
 static u8 * tls_send_change_cipher_spec(struct tlsv1_client *conn,
 					size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tls_send_change_cipher_spec");
+
 	u8 *msg, *end, *pos;
 
 	*out_len = 0;
@@ -805,6 +827,8 @@ static u8 * tls_send_change_cipher_spec(struct tlsv1_client *conn,
 u8 * tlsv1_client_handshake_write(struct tlsv1_client *conn, size_t *out_len,
 				  int no_appl_data)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_handshake_write");
+
 	switch (conn->state) {
 	case CLIENT_KEY_EXCHANGE:
 		return tls_send_client_key_exchange(conn, out_len);
@@ -831,6 +855,8 @@ u8 * tlsv1_client_handshake_write(struct tlsv1_client *conn, size_t *out_len,
 u8 * tlsv1_client_send_alert(struct tlsv1_client *conn, u8 level,
 			     u8 description, size_t *out_len)
 {
+    ESP_LOGV("FUNC", "tlsv1_client_send_alert");
+
 	u8 *alert, *pos, *length;
 
 	wpa_printf(MSG_DEBUG, "TLSv1: Send Alert(%d:%d)", level, description);

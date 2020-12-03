@@ -108,6 +108,8 @@ static const struct tls_cipher_data tls_ciphers[] = {
  */
 const struct tls_cipher_suite * tls_get_cipher_suite(u16 suite)
 {
+    ESP_LOGV("FUNC", "tls_get_cipher_suite");
+
 	size_t i;
 	for (i = 0; i < NUM_TLS_CIPHER_SUITES; i++)
 		if (tls_cipher_suites[i].suite == suite)
@@ -118,6 +120,8 @@ const struct tls_cipher_suite * tls_get_cipher_suite(u16 suite)
 
 const struct tls_cipher_data * tls_get_cipher_data(tls_cipher cipher)
 {
+    ESP_LOGV("FUNC", "tls_get_cipher_data");
+
 	size_t i;
 	for (i = 0; i < NUM_TLS_CIPHER_DATA; i++)
 		if (tls_ciphers[i].cipher == cipher)
@@ -128,6 +132,8 @@ const struct tls_cipher_data * tls_get_cipher_data(tls_cipher cipher)
 
 int tls_server_key_exchange_allowed(tls_cipher cipher)
 {
+    ESP_LOGV("FUNC", "tls_server_key_exchange_allowed");
+
 	const struct tls_cipher_suite *suite;
 
 	/* RFC 2246, Section 7.4.3 */
@@ -164,6 +170,8 @@ int tls_server_key_exchange_allowed(tls_cipher cipher)
  */
 int tls_parse_cert(const u8 *buf, size_t len, struct crypto_public_key **pk)
 {
+    ESP_LOGV("FUNC", "tls_parse_cert");
+
 	struct x509_certificate *cert;
 
 	wpa_hexdump(MSG_MSGDUMP, "TLSv1: Parse ASN.1 DER certificate",
@@ -207,6 +215,8 @@ int tls_parse_cert(const u8 *buf, size_t len, struct crypto_public_key **pk)
 
 int tls_verify_hash_init(struct tls_verify_hash *verify)
 {
+    ESP_LOGV("FUNC", "tls_verify_hash_init");
+
 	tls_verify_hash_free(verify);
 	verify->md5_client = crypto_hash_init(CRYPTO_HASH_ALG_MD5, NULL, 0);
 	verify->md5_server = crypto_hash_init(CRYPTO_HASH_ALG_MD5, NULL, 0);
@@ -239,6 +249,8 @@ int tls_verify_hash_init(struct tls_verify_hash *verify)
 void tls_verify_hash_add(struct tls_verify_hash *verify, const u8 *buf,
 			 size_t len)
 {
+    ESP_LOGV("FUNC", "tls_verify_hash_add");
+
 	if (verify->md5_client && verify->sha1_client) {
 		crypto_hash_update(verify->md5_client, buf, len);
 		crypto_hash_update(verify->sha1_client, buf, len);
@@ -264,6 +276,8 @@ void tls_verify_hash_add(struct tls_verify_hash *verify, const u8 *buf,
 
 void tls_verify_hash_free(struct tls_verify_hash *verify)
 {
+    ESP_LOGV("FUNC", "tls_verify_hash_free");
+
 	crypto_hash_finish(verify->md5_client, NULL, NULL);
 	crypto_hash_finish(verify->md5_server, NULL, NULL);
 	crypto_hash_finish(verify->md5_cert, NULL, NULL);
@@ -289,6 +303,8 @@ void tls_verify_hash_free(struct tls_verify_hash *verify)
 
 int tls_version_ok(u16 ver)
 {
+    ESP_LOGV("FUNC", "tls_version_ok");
+
 	if (ver == TLS_VERSION_1)
 		return 1;
 #ifdef CONFIG_TLSV11
@@ -306,6 +322,8 @@ int tls_version_ok(u16 ver)
 
 const char * tls_version_str(u16 ver)
 {
+    ESP_LOGV("FUNC", "tls_version_str");
+
 	switch (ver) {
 	case TLS_VERSION_1:
 		return "1.0";
@@ -322,6 +340,8 @@ const char * tls_version_str(u16 ver)
 int tls_prf(u16 ver, const u8 *secret, size_t secret_len, const char *label,
 	    const u8 *seed, size_t seed_len, u8 *out, size_t outlen)
 {
+    ESP_LOGV("FUNC", "tls_prf");
+
 #ifdef CONFIG_TLSV12
 	if (ver >= TLS_VERSION_1_2) {
 		tls_prf_sha256(secret, secret_len, label, seed, seed_len,

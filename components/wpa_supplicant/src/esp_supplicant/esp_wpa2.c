@@ -72,6 +72,8 @@ static bool s_disable_time_check = true;
 
 static void wpa2_api_lock(void)
 {
+    ESP_LOGV("FUNC", "wpa2_api_lock");
+
     if (s_wpa2_api_lock == NULL) {
         s_wpa2_api_lock = xSemaphoreCreateRecursiveMutex();
         if (!s_wpa2_api_lock) {
@@ -85,6 +87,8 @@ static void wpa2_api_lock(void)
 
 static void wpa2_api_unlock(void)
 {
+    ESP_LOGV("FUNC", "wpa2_api_unlock");
+
     if (s_wpa2_api_lock) {
         xSemaphoreGiveRecursive(s_wpa2_api_lock);
     }
@@ -92,21 +96,29 @@ static void wpa2_api_unlock(void)
 
 static bool inline wpa2_is_enabled(void)
 {
+    ESP_LOGV("FUNC", "wpa2_is_enabled");
+
     return (s_wpa2_state == WPA2_STATE_ENABLED);
 }
 
 static bool inline wpa2_is_disabled(void)
 {
+    ESP_LOGV("FUNC", "wpa2_is_disabled");
+
     return (s_wpa2_state == WPA2_STATE_DISABLED);
 }
 
 static void inline wpa2_set_state(wpa2_state_t state)
 {
+    ESP_LOGV("FUNC", "wpa2_set_state");
+
     s_wpa2_state = state;
 }
 
 static void wpa2_set_eap_state(wpa2_ent_eap_state_t state)
 {
+    ESP_LOGV("FUNC", "wpa2_set_eap_state");
+
     if (!gEapSm) {
         return;
     }
@@ -117,6 +129,8 @@ static void wpa2_set_eap_state(wpa2_ent_eap_state_t state)
 
 static inline void wpa2_task_delete(void *arg)
 {
+    ESP_LOGV("FUNC", "wpa2_task_delete");
+
     void *my_task_hdl = xTaskGetCurrentTaskHandle();
     int ret = ESP_OK;
 
@@ -145,6 +159,8 @@ static STAILQ_HEAD(, wpa2_rx_param) s_wpa2_rxq;
 
 static void wpa2_rxq_init(void)
 {
+    ESP_LOGV("FUNC", "wpa2_rxq_init");
+
     DATA_MUTEX_TAKE();
     STAILQ_INIT(&s_wpa2_rxq);
     DATA_MUTEX_GIVE();
@@ -152,6 +168,8 @@ static void wpa2_rxq_init(void)
 
 static void wpa2_rxq_enqueue(struct wpa2_rx_param *param)
 {
+    ESP_LOGV("FUNC", "wpa2_rxq_enqueue");
+
     DATA_MUTEX_TAKE();
     STAILQ_INSERT_TAIL(&s_wpa2_rxq,param, bqentry);
     DATA_MUTEX_GIVE();
@@ -159,6 +177,8 @@ static void wpa2_rxq_enqueue(struct wpa2_rx_param *param)
 
 static struct wpa2_rx_param * wpa2_rxq_dequeue(void)
 {
+    ESP_LOGV("FUNC", "wpa2_rxq_dequeue");
+
     struct wpa2_rx_param *param = NULL;
     DATA_MUTEX_TAKE();
     if ((param = STAILQ_FIRST(&s_wpa2_rxq)) != NULL) {
@@ -171,6 +191,8 @@ static struct wpa2_rx_param * wpa2_rxq_dequeue(void)
 
 static void wpa2_rxq_deinit(void)
 {
+    ESP_LOGV("FUNC", "wpa2_rxq_deinit");
+
     struct wpa2_rx_param *param = NULL;
     DATA_MUTEX_TAKE();
     while ((param = STAILQ_FIRST(&s_wpa2_rxq)) != NULL) {
@@ -184,6 +206,8 @@ static void wpa2_rxq_deinit(void)
 
 void wpa2_task(void *pvParameters )
 {
+    ESP_LOGV("FUNC", "wpa2_task");
+
     ETSEvent *e;
     struct eap_sm *sm = gEapSm;
     bool task_del = false;
@@ -255,6 +279,8 @@ void wpa2_task(void *pvParameters )
 
 int wpa2_post(uint32_t sig, uint32_t par)
 {
+    ESP_LOGV("FUNC", "wpa2_post");
+
     struct eap_sm *sm = gEapSm;
 
     if (!sm) {
@@ -295,12 +321,16 @@ int wpa2_post(uint32_t sig, uint32_t par)
 
 static void wpa2_sendto_wrapper(void *buffer, uint16_t len)
 {
+    ESP_LOGV("FUNC", "wpa2_sendto_wrapper");
+
     esp_wifi_internal_tx(WIFI_IF_STA, buffer, len);
 }
 
 static inline int wpa2_sm_ether_send(struct eap_sm *sm, const u8 *dest, u16 proto,
                                      const u8 *data, size_t data_len)
 {
+    ESP_LOGV("FUNC", "wpa2_sm_ether_send");
+
     void *buffer = (void *)(data - sizeof(struct l2_ethhdr));
     struct l2_ethhdr *eth = NULL;
 
@@ -322,6 +352,8 @@ u8 *wpa2_sm_alloc_eapol(struct eap_sm *sm, u8 type,
                         const void *data, u16 data_len,
                         size_t *msg_len, void **data_pos)
 {
+    ESP_LOGV("FUNC", "wpa2_sm_alloc_eapol");
+
     void *buffer;
     struct ieee802_1x_hdr *hdr;
 
@@ -354,6 +386,8 @@ u8 *wpa2_sm_alloc_eapol(struct eap_sm *sm, u8 type,
 
 void wpa2_sm_free_eapol(u8 *buffer)
 {
+    ESP_LOGV("FUNC", "wpa2_sm_free_eapol");
+
     if (buffer != NULL) {
         buffer = buffer - sizeof(struct l2_ethhdr);
         os_free(buffer);
@@ -363,6 +397,8 @@ void wpa2_sm_free_eapol(u8 *buffer)
 
 int eap_sm_send_eapol(struct eap_sm *sm, struct wpabuf *resp)
 {
+    ESP_LOGV("FUNC", "eap_sm_send_eapol");
+
     size_t outlen;
     int ret;
     u8 *outbuf = NULL;
@@ -393,6 +429,8 @@ int eap_sm_send_eapol(struct eap_sm *sm, struct wpabuf *resp)
 
 int eap_sm_process_request(struct eap_sm *sm, struct wpabuf *reqData)
 {
+    ESP_LOGV("FUNC", "eap_sm_process_request");
+
     size_t plen;
     u32 reqVendor, reqVendorMethod;
     u8 type, *pos;
@@ -511,6 +549,8 @@ out:
 
 static int eap_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len, uint8_t *bssid)
 {
+    ESP_LOGV("FUNC", "eap_sm_rx_eapol");
+
     struct eap_sm *sm = gEapSm;
 
     if (!sm) {
@@ -545,6 +585,8 @@ static int eap_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len, uint8_t *bssid)
 
 static int wpa2_ent_rx_eapol(u8 *src_addr, u8 *buf, u32 len, uint8_t *bssid)
 {
+    ESP_LOGV("FUNC", "wpa2_ent_rx_eapol");
+
     struct ieee802_1x_hdr *hdr;
     int ret = ESP_OK;
 
@@ -569,6 +611,8 @@ static int wpa2_ent_rx_eapol(u8 *src_addr, u8 *buf, u32 len, uint8_t *bssid)
 
 static int eap_sm_rx_eapol_internal(u8 *src_addr, u8 *buf, u32 len, uint8_t *bssid)
 {
+    ESP_LOGV("FUNC", "eap_sm_rx_eapol_internal");
+
     struct eap_sm *sm = gEapSm;
     u32 plen, data_len;
     struct ieee802_1x_hdr *hdr;
@@ -676,6 +720,8 @@ _out:
 
 static int wpa2_start_eapol(void)
 {
+    ESP_LOGV("FUNC", "wpa2_start_eapol");
+
 #ifdef USE_WPA2_TASK
     return wpa2_post(SIG_WPA2_START, 0);
 #else
@@ -685,6 +731,8 @@ static int wpa2_start_eapol(void)
 
 static int wpa2_start_eapol_internal(void)
 {
+    ESP_LOGV("FUNC", "wpa2_start_eapol_internal");
+
     struct eap_sm *sm = gEapSm;
     int ret = 0;
     u8 bssid[6];
@@ -734,6 +782,8 @@ static int wpa2_start_eapol_internal(void)
  */
 static int eap_peer_sm_init(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_sm_init");
+
     int ret = 0;
     struct eap_sm *sm;
 
@@ -817,6 +867,8 @@ static int eap_peer_sm_init(void)
  */
 static void eap_peer_sm_deinit(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_sm_deinit");
+
     struct eap_sm *sm = gEapSm;
 
     if (sm == NULL) {
@@ -853,6 +905,8 @@ static void eap_peer_sm_deinit(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_enable_fn(void *arg)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_enable_fn");
+
     struct wpa2_funcs *wpa2_cb;
 
     wpa_printf(MSG_INFO, "WPA2 ENTERPRISE VERSION: [%s] enable\n",
@@ -883,6 +937,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_enable_fn(void *arg)
 
 esp_err_t esp_wifi_sta_wpa2_ent_enable(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_enable");
+
     wifi_wpa2_param_t param;
     esp_err_t ret;
 
@@ -912,6 +968,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_enable(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_disable_fn(void *param)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_disable_fn");
+
     wpa_printf(MSG_INFO, "WPA2 ENTERPRISE VERSION: [%s] disable\n", WPA2_VERSION);
     esp_wifi_unregister_wpa2_cb_internal();
 
@@ -931,6 +989,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_disable_fn(void *param)
 
 esp_err_t esp_wifi_sta_wpa2_ent_disable(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_disable");
+
     wifi_wpa2_param_t param;
     esp_err_t ret;
 
@@ -959,6 +1019,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_disable(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_cert_key(const unsigned char *client_cert, int client_cert_len, const unsigned char *private_key, int private_key_len, const unsigned char *private_key_passwd, int private_key_passwd_len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_cert_key");
+
     if (client_cert && client_cert_len > 0) {
         g_wpa_client_cert = client_cert;
         g_wpa_client_cert_len = client_cert_len;
@@ -977,6 +1039,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_cert_key(const unsigned char *client_cert, i
 
 void esp_wifi_sta_wpa2_ent_clear_cert_key(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_cert_key");
+
     esp_wifi_unregister_wpa2_cb_internal();
 
     g_wpa_client_cert = NULL;
@@ -989,6 +1053,8 @@ void esp_wifi_sta_wpa2_ent_clear_cert_key(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_ca_cert(const unsigned char *ca_cert, int ca_cert_len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_ca_cert");
+
     if (ca_cert && ca_cert_len > 0) {
         g_wpa_ca_cert = ca_cert;
         g_wpa_ca_cert_len = ca_cert_len;
@@ -999,6 +1065,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_ca_cert(const unsigned char *ca_cert, int ca
 
 void esp_wifi_sta_wpa2_ent_clear_ca_cert(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_ca_cert");
+
     g_wpa_ca_cert = NULL;
     g_wpa_ca_cert_len = 0;
 }
@@ -1006,6 +1074,8 @@ void esp_wifi_sta_wpa2_ent_clear_ca_cert(void)
 #define ANONYMOUS_ID_LEN_MAX 128
 esp_err_t esp_wifi_sta_wpa2_ent_set_identity(const unsigned char *identity, int len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_identity");
+
     if (len <= 0 || len > ANONYMOUS_ID_LEN_MAX) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -1028,6 +1098,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_identity(const unsigned char *identity, int 
 
 void esp_wifi_sta_wpa2_ent_clear_identity(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_identity");
+
     if (g_wpa_anonymous_identity) {
         os_free(g_wpa_anonymous_identity);
     }
@@ -1039,6 +1111,8 @@ void esp_wifi_sta_wpa2_ent_clear_identity(void)
 #define USERNAME_LEN_MAX 128
 esp_err_t esp_wifi_sta_wpa2_ent_set_username(const unsigned char *username, int len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_username");
+
     if (len <= 0 || len > USERNAME_LEN_MAX) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -1061,6 +1135,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_username(const unsigned char *username, int 
 
 void esp_wifi_sta_wpa2_ent_clear_username(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_username");
+
     if (g_wpa_username) {
         os_free(g_wpa_username);
     }
@@ -1071,6 +1147,8 @@ void esp_wifi_sta_wpa2_ent_clear_username(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_password(const unsigned char *password, int len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_password");
+
     if (len <= 0) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -1093,6 +1171,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_password(const unsigned char *password, int 
 
 void esp_wifi_sta_wpa2_ent_clear_password(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_password");
+
     if (g_wpa_password) {
         os_free(g_wpa_password);
     }
@@ -1102,6 +1182,8 @@ void esp_wifi_sta_wpa2_ent_clear_password(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_new_password(const unsigned char *new_password, int len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_new_password");
+
     if (len <= 0) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -1124,6 +1206,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_new_password(const unsigned char *new_passwo
 
 void esp_wifi_sta_wpa2_ent_clear_new_password(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_clear_new_password");
+
     if (g_wpa_new_password) {
         os_free(g_wpa_new_password);
     }
@@ -1133,17 +1217,23 @@ void esp_wifi_sta_wpa2_ent_clear_new_password(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_disable_time_check(bool disable)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_set_disable_time_check");
+
     s_disable_time_check = disable;
     return ESP_OK;
 }
 
 bool wifi_sta_get_enterprise_disable_time_check(void)
 {
+    ESP_LOGV("FUNC", "wifi_sta_get_enterprise_disable_time_check");
+
     return s_disable_time_check;
 }
 
 esp_err_t esp_wifi_sta_wpa2_ent_get_disable_time_check(bool *disable)
 {
+    ESP_LOGV("FUNC", "esp_wifi_sta_wpa2_ent_get_disable_time_check");
+
     *disable = wifi_sta_get_enterprise_disable_time_check();
     return ESP_OK;
 }

@@ -17,7 +17,6 @@
 #include "tls/pkcs1.h"
 #include "tls/pkcs8.h"
 
-#ifndef USE_MBEDTLS_CRYPTO
 /* Dummy structures; these are just typecast to struct crypto_rsa_key */
 struct crypto_public_key;
 struct crypto_private_key;
@@ -25,6 +24,8 @@ struct crypto_private_key;
 
 struct crypto_public_key *  crypto_public_key_import(const u8 *key, size_t len)
 {
+    ESP_LOGV("FUNC", "crypto_public_key_import");
+
 	return (struct crypto_public_key *)
 		crypto_rsa_import_public_key(key, len);
 }
@@ -33,6 +34,8 @@ struct crypto_private_key *  crypto_private_key_import(const u8 *key,
 						      size_t len,
 						      const char *passwd)
 {
+    ESP_LOGV("FUNC", "crypto_private_key_import");
+
 	struct crypto_private_key *res;
 
 	/* First, check for possible PKCS #8 encoding */
@@ -58,6 +61,8 @@ struct crypto_private_key *  crypto_private_key_import(const u8 *key,
 struct crypto_public_key *  crypto_public_key_from_cert(const u8 *buf,
 						       size_t len)
 {
+    ESP_LOGV("FUNC", "crypto_public_key_from_cert");
+
 	/* No X.509 support in crypto_internal.c */
 	return NULL;
 }
@@ -67,6 +72,8 @@ int  crypto_public_key_encrypt_pkcs1_v15(struct crypto_public_key *key,
 					const u8 *in, size_t inlen,
 					u8 *out, size_t *outlen)
 {
+    ESP_LOGV("FUNC", "crypto_public_key_encrypt_pkcs1_v15");
+
 	return pkcs1_encrypt(2, (struct crypto_rsa_key *) key,
 			     0, in, inlen, out, outlen);
 }
@@ -76,6 +83,8 @@ int  crypto_private_key_decrypt_pkcs1_v15(struct crypto_private_key *key,
 					 const u8 *in, size_t inlen,
 					 u8 *out, size_t *outlen)
 {
+    ESP_LOGV("FUNC", "crypto_private_key_decrypt_pkcs1_v15");
+
 	return pkcs1_v15_private_key_decrypt((struct crypto_rsa_key *) key,
 					     in, inlen, out, outlen);
 }
@@ -85,6 +94,8 @@ int  crypto_private_key_sign_pkcs1(struct crypto_private_key *key,
 				  const u8 *in, size_t inlen,
 				  u8 *out, size_t *outlen)
 {
+    ESP_LOGV("FUNC", "crypto_private_key_sign_pkcs1");
+
 	return pkcs1_encrypt(1, (struct crypto_rsa_key *) key,
 			     1, in, inlen, out, outlen);
 }
@@ -92,12 +103,16 @@ int  crypto_private_key_sign_pkcs1(struct crypto_private_key *key,
 
 void  crypto_public_key_free(struct crypto_public_key *key)
 {
+    ESP_LOGV("FUNC", "crypto_public_key_free");
+
 	crypto_rsa_free((struct crypto_rsa_key *) key);
 }
 
 
 void  crypto_private_key_free(struct crypto_private_key *key)
 {
+    ESP_LOGV("FUNC", "crypto_private_key_free");
+
 	crypto_rsa_free((struct crypto_rsa_key *) key);
 }
 
@@ -106,7 +121,8 @@ int  crypto_public_key_decrypt_pkcs1(struct crypto_public_key *key,
 				    const u8 *crypt, size_t crypt_len,
 				    u8 *plain, size_t *plain_len)
 {
+    ESP_LOGV("FUNC", "crypto_public_key_decrypt_pkcs1");
+
 	return pkcs1_decrypt_public_key((struct crypto_rsa_key *) key,
 					crypt, crypt_len, plain, plain_len);
 }
-#endif

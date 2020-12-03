@@ -30,6 +30,8 @@
 void ieee802_1x_receive(struct hostapd_data *hapd, const u8 *sa, const u8 *buf,
 			size_t len)
 {
+    ESP_LOGV("FUNC", "ieee802_1x_receive");
+
 	struct sta_info *sta;
 	struct ieee802_1x_hdr *hdr;
 	struct ieee802_1x_eapol_key *key;

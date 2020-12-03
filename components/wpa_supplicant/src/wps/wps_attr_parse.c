@@ -19,6 +19,8 @@
 static int wps_set_vendor_ext_wfa_subelem(struct wps_parse_attr *attr,
 					  u8 id, u8 len, const u8 *pos)
 {
+    ESP_LOGV("FUNC", "wps_set_vendor_ext_wfa_subelem");
+
 	wpa_printf(MSG_DEBUG, "WPS: WFA subelement id=%u len=%u",
 		   id, len);
 	switch (id) {
@@ -71,6 +73,8 @@ static int wps_set_vendor_ext_wfa_subelem(struct wps_parse_attr *attr,
 static int wps_parse_vendor_ext_wfa(struct wps_parse_attr *attr, const u8 *pos,
 				    u16 len)
 {
+    ESP_LOGV("FUNC", "wps_parse_vendor_ext_wfa");
+
 	const u8 *end = pos + len;
 	u8 id, elen;
 
@@ -91,6 +95,8 @@ static int wps_parse_vendor_ext_wfa(struct wps_parse_attr *attr, const u8 *pos,
 static int wps_parse_vendor_ext(struct wps_parse_attr *attr, const u8 *pos,
 				u16 len)
 {
+    ESP_LOGV("FUNC", "wps_parse_vendor_ext");
+
 	u32 vendor_id;
 
 	if (len < 3) {
@@ -130,6 +136,8 @@ static int wps_parse_vendor_ext(struct wps_parse_attr *attr, const u8 *pos,
 
 static u16 wps_ignore_null_padding_in_attr(const u8 *pos, u16 type, u16 attr_data_len)
 {
+    ESP_LOGV("FUNC", "wps_ignore_null_padding_in_attr");
+
 	u16 len = attr_data_len;
 
 	if (len == 0)
@@ -162,6 +170,8 @@ static u16 wps_ignore_null_padding_in_attr(const u8 *pos, u16 type, u16 attr_dat
 static int wps_set_attr(struct wps_parse_attr *attr, u16 type,
 			const u8 *pos, u16 attr_data_len)
 {
+    ESP_LOGV("FUNC", "wps_set_attr");
+
 	u16 len;
 
 	len = wps_ignore_null_padding_in_attr(pos, type, attr_data_len);
@@ -595,6 +605,8 @@ static int wps_set_attr(struct wps_parse_attr *attr, u16 type,
 
 int wps_parse_msg(const struct wpabuf *msg, struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_parse_msg");
+
 	const u8 *pos, *end;
 	u16 type, len;
 #ifdef WPS_WORKAROUNDS

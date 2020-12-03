@@ -29,10 +29,11 @@
  * @mac: Buffer for the hash (16 bytes)
  * Returns: 0 on success, -1 on failure
  */
-int 
-hmac_md5_vector(const u8 *key, size_t key_len, size_t num_elem,
+int hmac_md5_vector(const u8 *key, size_t key_len, size_t num_elem,
 		    const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "hmac_md5_vector");
+
 	u8 k_pad[64]; /* padding - key XORd with ipad/opad */
 	u8 tk[16];
 	const u8 *_addr[6];
@@ -105,9 +106,10 @@ hmac_md5_vector(const u8 *key, size_t key_len, size_t num_elem,
  * @mac: Buffer for the hash (16 bytes)
  * Returns: 0 on success, -1 on failure
  */
-int 
-hmac_md5(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
+int hmac_md5(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
 	      u8 *mac)
 {
+    ESP_LOGV("FUNC", "hmac_md5");
+
 	return hmac_md5_vector(key, key_len, 1, &data, &data_len, mac);
 }

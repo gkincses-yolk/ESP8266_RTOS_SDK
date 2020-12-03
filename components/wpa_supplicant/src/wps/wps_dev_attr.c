@@ -13,6 +13,8 @@
 
 int wps_build_manufacturer(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_manufacturer");
+
 	size_t len;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Manufacturer");
 	wpabuf_put_be16(msg, ATTR_MANUFACTURER);
@@ -37,6 +39,8 @@ int wps_build_manufacturer(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_model_name(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_model_name");
+
 	size_t len;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Model Name");
 	wpabuf_put_be16(msg, ATTR_MODEL_NAME);
@@ -61,6 +65,8 @@ int wps_build_model_name(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_model_number(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_model_number");
+
 	size_t len;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Model Number");
 	wpabuf_put_be16(msg, ATTR_MODEL_NUMBER);
@@ -86,6 +92,8 @@ int wps_build_model_number(struct wps_device_data *dev, struct wpabuf *msg)
 static int wps_build_serial_number(struct wps_device_data *dev,
 				   struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_serial_number");
+
 	size_t len;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Serial Number");
 	wpabuf_put_be16(msg, ATTR_SERIAL_NUMBER);
@@ -110,6 +118,8 @@ static int wps_build_serial_number(struct wps_device_data *dev,
 
 int wps_build_primary_dev_type(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_primary_dev_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Primary Device Type");
 	wpabuf_put_be16(msg, ATTR_PRIMARY_DEV_TYPE);
 	wpabuf_put_be16(msg, WPS_DEV_TYPE_LEN);
@@ -121,6 +131,8 @@ int wps_build_primary_dev_type(struct wps_device_data *dev, struct wpabuf *msg)
 int wps_build_secondary_dev_type(struct wps_device_data *dev,
 				  struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_secondary_dev_type");
+
 	if (!dev->num_sec_dev_types)
 		return 0;
 
@@ -138,6 +150,8 @@ int wps_build_req_dev_type(struct wps_device_data *dev, struct wpabuf *msg,
 			   unsigned int num_req_dev_types,
 			   const u8 *req_dev_types)
 {
+    ESP_LOGV("FUNC", "wps_build_req_dev_type");
+
 	unsigned int i;
 
 	for (i = 0; i < num_req_dev_types; i++) {
@@ -156,6 +170,8 @@ int wps_build_req_dev_type(struct wps_device_data *dev, struct wpabuf *msg,
 
 int wps_build_dev_name(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_dev_name");
+
 	size_t len;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Device Name");
 	wpabuf_put_be16(msg, ATTR_DEV_NAME);
@@ -180,6 +196,8 @@ int wps_build_dev_name(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_device_attrs(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_device_attrs");
+
 	if (wps_build_manufacturer(dev, msg) ||
 	    wps_build_model_name(dev, msg) ||
 	    wps_build_model_number(dev, msg) ||
@@ -193,6 +211,8 @@ int wps_build_device_attrs(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_os_version(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_os_version");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * OS Version");
 	wpabuf_put_be16(msg, ATTR_OS_VERSION);
 	wpabuf_put_be16(msg, 4);
@@ -203,6 +223,8 @@ int wps_build_os_version(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_vendor_ext_m1(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_vendor_ext_m1");
+
 	if (dev->vendor_ext_m1 != NULL) {
 		wpa_hexdump(MSG_DEBUG, "WPS:  * Vendor Extension M1",
 			    wpabuf_head_u8(dev->vendor_ext_m1),
@@ -217,6 +239,8 @@ int wps_build_vendor_ext_m1(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_rf_bands(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_rf_bands");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * RF Bands (%x)", dev->rf_bands);
 	wpabuf_put_be16(msg, ATTR_RF_BANDS);
 	wpabuf_put_be16(msg, 1);
@@ -227,6 +251,8 @@ int wps_build_rf_bands(struct wps_device_data *dev, struct wpabuf *msg)
 
 int wps_build_vendor_ext(struct wps_device_data *dev, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_vendor_ext");
+
 	int i;
 
 	for (i = 0; i < MAX_WPS_VENDOR_EXTENSIONS; i++) {
@@ -247,6 +273,8 @@ int wps_build_vendor_ext(struct wps_device_data *dev, struct wpabuf *msg)
 static int wps_process_manufacturer(struct wps_device_data *dev, const u8 *str,
 				    size_t str_len)
 {
+    ESP_LOGV("FUNC", "wps_process_manufacturer");
+
 	if (str == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Manufacturer received");
 		return -1;
@@ -268,6 +296,8 @@ static int wps_process_manufacturer(struct wps_device_data *dev, const u8 *str,
 static int wps_process_model_name(struct wps_device_data *dev, const u8 *str,
 				  size_t str_len)
 {
+    ESP_LOGV("FUNC", "wps_process_model_name");
+
 	if (str == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Model Name received");
 		return -1;
@@ -289,6 +319,8 @@ static int wps_process_model_name(struct wps_device_data *dev, const u8 *str,
 static int wps_process_model_number(struct wps_device_data *dev, const u8 *str,
 				    size_t str_len)
 {
+    ESP_LOGV("FUNC", "wps_process_model_number");
+
 	if (str == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Model Number received");
 		return -1;
@@ -310,6 +342,8 @@ static int wps_process_model_number(struct wps_device_data *dev, const u8 *str,
 static int wps_process_serial_number(struct wps_device_data *dev,
 				     const u8 *str, size_t str_len)
 {
+    ESP_LOGV("FUNC", "wps_process_serial_number");
+
 	if (str == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Serial Number received");
 		return -1;
@@ -331,6 +365,8 @@ static int wps_process_serial_number(struct wps_device_data *dev,
 static int wps_process_dev_name(struct wps_device_data *dev, const u8 *str,
 				size_t str_len)
 {
+    ESP_LOGV("FUNC", "wps_process_dev_name");
+
 	if (str == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Device Name received");
 		return -1;
@@ -352,6 +388,8 @@ static int wps_process_dev_name(struct wps_device_data *dev, const u8 *str,
 static int wps_process_primary_dev_type(struct wps_device_data *dev,
 					const u8 *dev_type)
 {
+    ESP_LOGV("FUNC", "wps_process_primary_dev_type");
+
 	if (dev_type == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Primary Device Type received");
 		return -1;
@@ -366,6 +404,8 @@ static int wps_process_primary_dev_type(struct wps_device_data *dev,
 int wps_process_device_attrs(struct wps_device_data *dev,
 			     struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_device_attrs");
+
 	if (wps_process_manufacturer(dev, attr->manufacturer,
 				     attr->manufacturer_len) ||
 	    wps_process_model_name(dev, attr->model_name,
@@ -383,6 +423,8 @@ int wps_process_device_attrs(struct wps_device_data *dev,
 
 int wps_process_os_version(struct wps_device_data *dev, const u8 *ver)
 {
+    ESP_LOGV("FUNC", "wps_process_os_version");
+
 	if (ver == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No OS Version received");
 		return -1;
@@ -397,6 +439,8 @@ int wps_process_os_version(struct wps_device_data *dev, const u8 *ver)
 
 int wps_process_rf_bands(struct wps_device_data *dev, const u8 *bands)
 {
+    ESP_LOGV("FUNC", "wps_process_rf_bands");
+
 	if (bands == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No RF Bands received");
 		return -1;
@@ -412,6 +456,8 @@ int wps_process_rf_bands(struct wps_device_data *dev, const u8 *bands)
 void wps_device_data_dup(struct wps_device_data *dst,
 			 const struct wps_device_data *src)
 {
+    ESP_LOGV("FUNC", "wps_device_data_dup");
+
 	if (src->device_name)
 		dst->device_name = os_strdup(src->device_name);
 	if (src->manufacturer)
@@ -430,6 +476,8 @@ void wps_device_data_dup(struct wps_device_data *dst,
 
 void wps_device_data_free(struct wps_device_data *dev)
 {
+    ESP_LOGV("FUNC", "wps_device_data_free");
+
 	os_free(dev->device_name);
 	dev->device_name = NULL;
 	os_free(dev->manufacturer);

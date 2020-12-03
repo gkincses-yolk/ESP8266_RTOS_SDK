@@ -29,10 +29,11 @@
  * @mac: Buffer for the hash (20 bytes)
  * Returns: 0 on success, -1 on failure
  */
-int 
-hmac_sha1_vector(const u8 *key, size_t key_len, size_t num_elem,
+int hmac_sha1_vector(const u8 *key, size_t key_len, size_t num_elem,
 		     const u8 *addr[], const size_t *len, u8 *mac)
 {
+    //ESP_LOGV("FUNC", "hmac_sha1_vector");
+
 	unsigned char k_pad[64]; /* padding - key XORd with ipad/opad */
 	unsigned char tk[20];
 	const u8 *_addr[6];
@@ -104,10 +105,11 @@ hmac_sha1_vector(const u8 *key, size_t key_len, size_t num_elem,
  * @mac: Buffer for the hash (20 bytes)
  * Returns: 0 on success, -1 of failure
  */
-int 
-hmac_sha1(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
+int hmac_sha1(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
 	       u8 *mac)
 {
+    //ESP_LOGV("FUNC", "hmac_sha1");
+
 	return hmac_sha1_vector(key, key_len, 1, &data, &data_len, mac);
 }
 
@@ -125,10 +127,11 @@ hmac_sha1(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
  * This function is used to derive new, cryptographically separate keys from a
  * given key (e.g., PMK in IEEE 802.11i).
  */
-int 
-sha1_prf(const u8 *key, size_t key_len, const char *label,
+int sha1_prf(const u8 *key, size_t key_len, const char *label,
 	     const u8 *data, size_t data_len, u8 *buf, size_t buf_len)
 {
+    ESP_LOGV("FUNC", "sha1_prf");
+
 	u8 counter = 0;
 	size_t pos, plen;
 	u8 hash[SHA1_MAC_LEN];

@@ -426,7 +426,7 @@ uint32_t esp_get_old_sysconf_addr(void)
 
 void os_update_cpu_frequency(uint32_t ticks_per_us)
 {
-    ESP_LOGV("FUNC", "os_update_cpu_frequency");
+    //ESP_LOGV("FUNC", "os_update_cpu_frequency");
 
     extern uint32_t _xt_tick_divisor;
 

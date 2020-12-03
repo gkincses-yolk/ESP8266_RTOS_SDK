@@ -27,6 +27,8 @@ int g_allowed_groups[] = { IANA_SECP256R1, 0 };
 
 static esp_err_t wpa3_build_sae_commit(u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wpa3_build_sae_commit");
+
     int default_group = IANA_SECP256R1;
     u32 len = 0;
     u8 own_addr[ETH_ALEN];
@@ -91,6 +93,8 @@ reuse_data:
 
 static esp_err_t wpa3_build_sae_confirm(void)
 {
+    ESP_LOGV("FUNC", "wpa3_build_sae_confirm");
+
     if (g_sae_data.state != SAE_COMMITTED)
         return ESP_FAIL;
 
@@ -118,6 +122,8 @@ static esp_err_t wpa3_build_sae_confirm(void)
 
 void esp_wpa3_free_sae_data(void)
 {
+    ESP_LOGV("FUNC", "esp_wpa3_free_sae_data");
+
     if (g_sae_commit) {
         wpabuf_free(g_sae_commit);
         g_sae_commit = NULL;
@@ -132,6 +138,8 @@ void esp_wpa3_free_sae_data(void)
 
 static u8 *wpa3_build_sae_msg(u8 *bssid, u32 sae_msg_type, u32 *sae_msg_len)
 {
+    ESP_LOGV("FUNC", "wpa3_build_sae_msg");
+
     u8 *buf = NULL;
 
     switch (sae_msg_type) {
@@ -156,6 +164,8 @@ static u8 *wpa3_build_sae_msg(u8 *bssid, u32 sae_msg_type, u32 *sae_msg_len)
 
 static int wpa3_parse_sae_commit(u8 *buf, u32 len, u16 status)
 {
+    ESP_LOGV("FUNC", "wpa3_parse_sae_commit");
+
     int ret;
 
     if (g_sae_data.state != SAE_COMMITTED) {
@@ -188,6 +198,8 @@ static int wpa3_parse_sae_commit(u8 *buf, u32 len, u16 status)
 
 static int wpa3_parse_sae_confirm(u8 *buf, u32 len)
 {
+    ESP_LOGV("FUNC", "wpa3_parse_sae_confirm");
+
     if (g_sae_data.state != SAE_CONFIRMED) {
         wpa_printf(MSG_ERROR, "wpa3: failed to parse SAE commit in state(%d)!",
                    g_sae_data.state);
@@ -207,6 +219,8 @@ static int wpa3_parse_sae_confirm(u8 *buf, u32 len)
 
 static int wpa3_parse_sae_msg(u8 *buf, u32 len, u32 sae_msg_type, u16 status)
 {
+    ESP_LOGV("FUNC", "wpa3_parse_sae_msg");
+
     int ret = ESP_OK;
 
     switch (sae_msg_type) {
@@ -228,6 +242,8 @@ static int wpa3_parse_sae_msg(u8 *buf, u32 len, u32 sae_msg_type, u16 status)
 
 void esp_wifi_register_wpa3_cb(struct wpa_funcs *wpa_cb)
 {
+    ESP_LOGV("FUNC", "esp_wifi_register_wpa3_cb");
+
     wpa_cb->wpa3_build_sae_msg = wpa3_build_sae_msg;
     wpa_cb->wpa3_parse_sae_msg = wpa3_parse_sae_msg;
 }

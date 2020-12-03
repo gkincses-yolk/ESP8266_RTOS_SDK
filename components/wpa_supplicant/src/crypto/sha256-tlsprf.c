@@ -29,6 +29,8 @@
 int tls_prf_sha256(const u8 *secret, size_t secret_len, const char *label,
 		   const u8 *seed, size_t seed_len, u8 *out, size_t outlen)
 {
+    ESP_LOGV("FUNC", "tls_prf_sha256");
+
 	size_t clen;
 	u8 A[SHA256_MAC_LEN];
 	u8 P[SHA256_MAC_LEN];

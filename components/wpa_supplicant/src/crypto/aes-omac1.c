@@ -14,6 +14,8 @@
 
 static void gf_mulx(u8 *pad)
 {
+    ESP_LOGV("FUNC", "gf_mulx");
+
 	int i, carry;
 
 	carry = pad[0] & 0x80;
@@ -42,6 +44,8 @@ static void gf_mulx(u8 *pad)
 int omac1_aes_vector(const u8 *key, size_t key_len, size_t num_elem,
 		     const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "omac1_aes_vector");
+
 	void *ctx;
 	u8 cbc[AES_BLOCK_SIZE], pad[AES_BLOCK_SIZE];
 	const u8 *pos, *end;
@@ -129,6 +133,8 @@ int omac1_aes_vector(const u8 *key, size_t key_len, size_t num_elem,
 int omac1_aes_128_vector(const u8 *key, size_t num_elem,
 			 const u8 *addr[], const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "omac1_aes_128_vector");
+
 	return omac1_aes_vector(key, 16, num_elem, addr, len, mac);
 }
 
@@ -147,6 +153,8 @@ int omac1_aes_128_vector(const u8 *key, size_t num_elem,
  */
 int omac1_aes_128(const u8 *key, const u8 *data, size_t data_len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "omac1_aes_128");
+
 	return omac1_aes_128_vector(key, 1, &data, &data_len, mac);
 }
 
@@ -165,5 +173,7 @@ int omac1_aes_128(const u8 *key, const u8 *data, size_t data_len, u8 *mac)
  */
 int omac1_aes_256(const u8 *key, const u8 *data, size_t data_len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "omac1_aes_256");
+
 	return omac1_aes_vector(key, 32, 1, &data, &data_len, mac);
 }

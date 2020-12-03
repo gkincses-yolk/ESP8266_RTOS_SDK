@@ -35,6 +35,8 @@ struct wps_nfc_pw_token {
 
 static void wps_remove_nfc_pw_token(struct wps_nfc_pw_token *token)
 {
+    ESP_LOGV("FUNC", "wps_remove_nfc_pw_token");
+
 	dl_list_del(&token->list);
 	os_free(token);
 }
@@ -42,6 +44,8 @@ static void wps_remove_nfc_pw_token(struct wps_nfc_pw_token *token)
 
 static void wps_free_nfc_pw_tokens(struct dl_list *tokens, u16 pw_id)
 {
+    ESP_LOGV("FUNC", "wps_free_nfc_pw_tokens");
+
 	struct wps_nfc_pw_token *token, *prev;
 	dl_list_for_each_safe(token, prev, tokens, struct wps_nfc_pw_token,
 			      list) {
@@ -54,6 +58,8 @@ static void wps_free_nfc_pw_tokens(struct dl_list *tokens, u16 pw_id)
 static struct wps_nfc_pw_token * wps_get_nfc_pw_token(struct dl_list *tokens,
 						      u16 pw_id)
 {
+    ESP_LOGV("FUNC", "wps_get_nfc_pw_token");
+
 	struct wps_nfc_pw_token *token;
 	dl_list_for_each(token, tokens, struct wps_nfc_pw_token, list) {
 		if (pw_id == token->pw_id)
@@ -86,6 +92,8 @@ struct wps_uuid_pin {
 
 static void wps_free_pin(struct wps_uuid_pin *pin)
 {
+    ESP_LOGV("FUNC", "wps_free_pin");
+
 	os_free(pin->pin);
 	os_free(pin);
 }
@@ -93,6 +101,8 @@ static void wps_free_pin(struct wps_uuid_pin *pin)
 
 static void wps_remove_pin(struct wps_uuid_pin *pin)
 {
+    ESP_LOGV("FUNC", "wps_remove_pin");
+
 	dl_list_del(&pin->list);
 	wps_free_pin(pin);
 }
@@ -100,6 +110,8 @@ static void wps_remove_pin(struct wps_uuid_pin *pin)
 
 static void wps_free_pins(struct dl_list *pins)
 {
+    ESP_LOGV("FUNC", "wps_free_pins");
+
 	struct wps_uuid_pin *pin, *prev;
 	dl_list_for_each_safe(pin, prev, pins, struct wps_uuid_pin, list);
 	wps_remove_pin(pin);
@@ -117,6 +129,8 @@ struct wps_pbc_session {
 
 static void wps_free_pbc_sessions(struct wps_pbc_session *pbc)
 {
+    ESP_LOGV("FUNC", "wps_free_pbc_sessions");
+
 	struct wps_pbc_session *prev;
 
 	while (pbc) {
@@ -196,6 +210,8 @@ static void wps_registrar_remove_pin(struct wps_registrar *reg,
 static void wps_registrar_add_authorized_mac(struct wps_registrar *reg,
 					     const u8 *addr)
 {
+    ESP_LOGV("FUNC", "wps_registrar_add_authorized_mac");
+
 	int i;
 	wpa_printf(MSG_DEBUG,  "WPS: Add authorized MAC " MACSTR,
 		   MAC2STR(addr));
@@ -217,6 +233,8 @@ static void wps_registrar_add_authorized_mac(struct wps_registrar *reg,
 static void wps_registrar_remove_authorized_mac(struct wps_registrar *reg,
 						const u8 *addr)
 {
+    ESP_LOGV("FUNC", "wps_registrar_remove_authorized_mac");
+
 	int i;
 	wpa_printf(MSG_DEBUG,  "WPS: Remove authorized MAC " MACSTR,
 		   MAC2STR(addr));
@@ -241,6 +259,8 @@ static void wps_registrar_remove_authorized_mac(struct wps_registrar *reg,
 
 static void wps_free_devices(struct wps_registrar_device *dev)
 {
+    ESP_LOGV("FUNC", "wps_free_devices");
+
 	struct wps_registrar_device *prev;
 
 	while (dev) {
@@ -255,6 +275,8 @@ static void wps_free_devices(struct wps_registrar_device *dev)
 static struct wps_registrar_device * wps_device_get(struct wps_registrar *reg,
 						    const u8 *addr)
 {
+    ESP_LOGV("FUNC", "wps_device_get");
+
 	struct wps_registrar_device *dev;
 
 	for (dev = reg->devices; dev; dev = dev->next) {
@@ -268,6 +290,8 @@ static struct wps_registrar_device * wps_device_get(struct wps_registrar *reg,
 static void wps_device_clone_data(struct wps_device_data *dst,
 				  struct wps_device_data *src)
 {
+    ESP_LOGV("FUNC", "wps_device_clone_data");
+
 	os_memcpy(dst->mac_addr, src->mac_addr, ETH_ALEN);
 	os_memcpy(dst->pri_dev_type, src->pri_dev_type, WPS_DEV_TYPE_LEN);
 
@@ -287,6 +311,8 @@ static void wps_device_clone_data(struct wps_device_data *dst,
 int wps_device_store(struct wps_registrar *reg,
 		     struct wps_device_data *dev, const u8 *uuid)
 {
+    ESP_LOGV("FUNC", "wps_device_store");
+
 	struct wps_registrar_device *d;
 
 	d = wps_device_get(reg, dev->mac_addr);
@@ -308,6 +334,8 @@ int wps_device_store(struct wps_registrar *reg,
 static void wps_registrar_add_pbc_session(struct wps_registrar *reg,
 					  const u8 *addr, const u8 *uuid_e)
 {
+    ESP_LOGV("FUNC", "wps_registrar_add_pbc_session");
+
 	struct wps_pbc_session *pbc, *prev = NULL;
 	struct os_time now;
 
@@ -360,6 +388,8 @@ static void wps_registrar_remove_pbc_session(struct wps_registrar *reg,
 					     const u8 *uuid_e,
 					     const u8 *p2p_dev_addr)
 {
+    ESP_LOGV("FUNC", "wps_registrar_remove_pbc_session");
+
 	struct wps_pbc_session *pbc, *prev = NULL, *tmp;
 
 	pbc = reg->pbc_sessions;
@@ -390,6 +420,8 @@ static void wps_registrar_remove_pbc_session(struct wps_registrar *reg,
 int wps_registrar_pbc_overlap(struct wps_registrar *reg,
 			      const u8 *addr, const u8 *uuid_e)
 {
+    ESP_LOGV("FUNC", "wps_registrar_pbc_overlap");
+
 	int count = 0;
 	struct wps_pbc_session *pbc;
 	struct wps_pbc_session *first = NULL;
@@ -438,6 +470,8 @@ int wps_registrar_pbc_overlap(struct wps_registrar *reg,
 
 static int wps_build_wps_state(struct wps_context *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_wps_state");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Wi-Fi Protected Setup State (%d)",
 		   wps->wps_state);
 	wpabuf_put_be16(msg, ATTR_WPS_STATE);
@@ -450,6 +484,8 @@ static int wps_build_wps_state(struct wps_context *wps, struct wpabuf *msg)
 #ifdef CONFIG_WPS_UPNP
 static void wps_registrar_free_pending_m2(struct wps_context *wps)
 {
+    ESP_LOGV("FUNC", "wps_registrar_free_pending_m2");
+
 	struct upnp_pending_message *p, *p2, *prev = NULL;
 	p = wps->upnp_msgs;
 	while (p) {
@@ -475,6 +511,8 @@ static void wps_registrar_free_pending_m2(struct wps_context *wps)
 static int wps_build_ap_setup_locked(struct wps_context *wps,
 				     struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_ap_setup_locked");
+
 	if (wps->ap_setup_locked && wps->ap_setup_locked != 2) {
 		wpa_printf(MSG_DEBUG,  "WPS:  * AP Setup Locked");
 		wpabuf_put_be16(msg, ATTR_AP_SETUP_LOCKED);
@@ -488,6 +526,8 @@ static int wps_build_ap_setup_locked(struct wps_context *wps,
 static int wps_build_selected_registrar(struct wps_registrar *reg,
 					struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_selected_registrar");
+
 	if (!reg->sel_reg_union)
 		return 0;
 	wpa_printf(MSG_DEBUG,  "WPS:  * Selected Registrar");
@@ -501,6 +541,8 @@ static int wps_build_selected_registrar(struct wps_registrar *reg,
 static int wps_build_sel_reg_dev_password_id(struct wps_registrar *reg,
 					     struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_sel_reg_dev_password_id");
+
 	u16 id = reg->pbc ? DEV_PW_PUSHBUTTON : DEV_PW_DEFAULT;
 	if (!reg->sel_reg_union)
 		return 0;
@@ -517,6 +559,8 @@ static int wps_build_sel_reg_dev_password_id(struct wps_registrar *reg,
 static int wps_build_sel_pbc_reg_uuid_e(struct wps_registrar *reg,
 					struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_sel_pbc_reg_uuid_e");
+
 	u16 id = reg->pbc ? DEV_PW_PUSHBUTTON : DEV_PW_DEFAULT;
 	if (!reg->sel_reg_union)
 		return 0;
@@ -530,6 +574,8 @@ static int wps_build_sel_pbc_reg_uuid_e(struct wps_registrar *reg,
 
 static void wps_set_pushbutton(u16 *methods, u16 conf_methods)
 {
+    ESP_LOGV("FUNC", "wps_set_pushbutton");
+
 	*methods |= WPS_CONFIG_PUSHBUTTON;
 #ifdef CONFIG_WPS2
 	if ((conf_methods & WPS_CONFIG_VIRT_PUSHBUTTON) ==
@@ -556,6 +602,8 @@ static void wps_set_pushbutton(u16 *methods, u16 conf_methods)
 static int wps_build_sel_reg_config_methods(struct wps_registrar *reg,
 					    struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_sel_reg_config_methods");
+
 	u16 methods;
 	if (!reg->sel_reg_union)
 		return 0;
@@ -581,6 +629,8 @@ static int wps_build_sel_reg_config_methods(struct wps_registrar *reg,
 static int wps_build_probe_config_methods(struct wps_registrar *reg,
 					  struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_probe_config_methods");
+
 	u16 methods;
 	/*
 	 * These are the methods that the AP supports as an Enrollee for adding
@@ -602,12 +652,16 @@ static int wps_build_probe_config_methods(struct wps_registrar *reg,
 static int wps_build_config_methods_r(struct wps_registrar *reg,
 				      struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_config_methods_r");
+
 	return wps_build_config_methods(msg, reg->wps->config_methods);
 }
 
 
 const u8 * wps_authorized_macs(struct wps_registrar *reg, size_t *count)
 {
+    ESP_LOGV("FUNC", "wps_authorized_macs");
+
 	*count = 0;
 
 #ifdef CONFIG_WPS2
@@ -637,6 +691,8 @@ const u8 * wps_authorized_macs(struct wps_registrar *reg, size_t *count)
 struct wps_registrar * wps_registrar_init(struct wps_context *wps,
 		   const struct wps_registrar_config *cfg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_init");
+
 	struct wps_registrar *reg = (struct wps_registrar *)os_zalloc(sizeof(*reg));
 	if (reg == NULL)
 		return NULL;
@@ -686,6 +742,8 @@ struct wps_registrar * wps_registrar_init(struct wps_context *wps,
  */
 void wps_registrar_deinit(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_deinit");
+
 	if (reg == NULL)
 		return;
 
@@ -705,6 +763,8 @@ void wps_registrar_deinit(struct wps_registrar *reg)
 
 static void wps_registrar_invalidate_unused(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_invalidate_unused");
+
 	struct wps_uuid_pin *pin;
 
 	dl_list_for_each(pin, &reg->pins, struct wps_uuid_pin, list) {
@@ -732,6 +792,8 @@ int wps_registrar_add_pin(struct wps_registrar *reg, const u8 *addr,
 			  const u8 *uuid, const u8 *pin, size_t pin_len,
 			  int timeout)
 {
+    ESP_LOGV("FUNC", "wps_registrar_add_pin");
+
 	struct wps_uuid_pin *p;
 
 	p = (struct wps_uuid_pin *)os_zalloc(sizeof(*p));
@@ -782,6 +844,8 @@ int wps_registrar_add_pin(struct wps_registrar *reg, const u8 *addr,
 static void wps_registrar_remove_pin(struct wps_registrar *reg,
 				     struct wps_uuid_pin *pin)
 {
+    ESP_LOGV("FUNC", "wps_registrar_remove_pin");
+
 	u8 *addr;
 	u8 bcast[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
@@ -797,6 +861,8 @@ static void wps_registrar_remove_pin(struct wps_registrar *reg,
 
 static void wps_registrar_expire_pins(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_expire_pins");
+
 	struct wps_uuid_pin *pin, *prev;
 	struct os_time now;
 
@@ -824,6 +890,8 @@ static int wps_registrar_invalidate_wildcard_pin(struct wps_registrar *reg,
 						 const u8 *dev_pw,
 						 size_t dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_registrar_invalidate_wildcard_pin");
+
 	struct wps_uuid_pin *pin, *prev;
 
 	dl_list_for_each_safe(pin, prev, &reg->pins, struct wps_uuid_pin, list)
@@ -852,6 +920,8 @@ static int wps_registrar_invalidate_wildcard_pin(struct wps_registrar *reg,
  */
 int wps_registrar_invalidate_pin(struct wps_registrar *reg, const u8 *uuid)
 {
+    ESP_LOGV("FUNC", "wps_registrar_invalidate_pin");
+
 	struct wps_uuid_pin *pin, *prev;
 
 	dl_list_for_each_safe(pin, prev, &reg->pins, struct wps_uuid_pin, list)
@@ -871,6 +941,8 @@ int wps_registrar_invalidate_pin(struct wps_registrar *reg, const u8 *uuid)
 static const u8 * wps_registrar_get_pin(struct wps_registrar *reg,
 					const u8 *uuid, size_t *pin_len)
 {
+    ESP_LOGV("FUNC", "wps_registrar_get_pin");
+
 	struct wps_uuid_pin *pin, *found = NULL;
 
 	wps_registrar_expire_pins(reg);
@@ -929,6 +1001,8 @@ static const u8 * wps_registrar_get_pin(struct wps_registrar *reg,
  */
 int wps_registrar_unlock_pin(struct wps_registrar *reg, const u8 *uuid)
 {
+    ESP_LOGV("FUNC", "wps_registrar_unlock_pin");
+
 	struct wps_uuid_pin *pin;
 
 	dl_list_for_each(pin, &reg->pins, struct wps_uuid_pin, list) {
@@ -949,6 +1023,8 @@ int wps_registrar_unlock_pin(struct wps_registrar *reg, const u8 *uuid)
 
 static void wps_registrar_stop_pbc(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_stop_pbc");
+
 	reg->selected_registrar = 0;
 	reg->pbc = 0;
 	os_memset(reg->p2p_dev_addr, 0, ETH_ALEN);
@@ -960,6 +1036,8 @@ static void wps_registrar_stop_pbc(struct wps_registrar *reg)
 
 static void wps_registrar_pbc_timeout(void *eloop_ctx)
 {
+    ESP_LOGV("FUNC", "wps_registrar_pbc_timeout");
+
 	struct wps_registrar *reg = eloop_ctx;
 
 	wpa_printf(MSG_DEBUG,  "WPS: PBC timed out - disable PBC mode");
@@ -985,6 +1063,8 @@ static void wps_registrar_pbc_timeout(void *eloop_ctx)
 int wps_registrar_button_pushed(struct wps_registrar *reg,
 				const u8 *p2p_dev_addr)
 {
+    ESP_LOGV("FUNC", "wps_registrar_button_pushed");
+
 	if (p2p_dev_addr == NULL &&
 	    wps_registrar_pbc_overlap(reg, NULL, NULL)) {
 		wpa_printf(MSG_DEBUG,  "WPS: PBC overlap - do not start PBC "
@@ -1010,6 +1090,8 @@ int wps_registrar_button_pushed(struct wps_registrar *reg,
 
 static void wps_registrar_pbc_completed(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_pbc_completed");
+
 	wpa_printf(MSG_DEBUG,  "WPS: PBC completed - stopping PBC mode");
 
 	wps_registrar_stop_pbc(reg);
@@ -1019,6 +1101,8 @@ static void wps_registrar_pbc_completed(struct wps_registrar *reg)
 
 static void wps_registrar_pin_completed(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_pin_completed");
+
 	wpa_printf(MSG_DEBUG,  "WPS: PIN completed using internal Registrar");
 	reg->selected_registrar = 0;
 	wps_registrar_selected_registrar_changed(reg);
@@ -1028,6 +1112,8 @@ static void wps_registrar_pin_completed(struct wps_registrar *reg)
 void wps_registrar_complete(struct wps_registrar *registrar, const u8 *uuid_e,
 			    const u8 *dev_pw, size_t dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_registrar_complete");
+
 	if (registrar->pbc) {
 		wps_registrar_remove_pbc_session(registrar,
 						 uuid_e, NULL);
@@ -1052,6 +1138,8 @@ void wps_registrar_complete(struct wps_registrar *registrar, const u8 *uuid_e,
 
 int wps_registrar_wps_cancel(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_wps_cancel");
+
 	if (reg->pbc) {
 		wpa_printf(MSG_DEBUG,  "WPS: PBC is set - cancelling it");
 		wps_registrar_pbc_timeout(reg);
@@ -1085,6 +1173,8 @@ void wps_registrar_probe_req_rx(struct wps_registrar *reg, const u8 *addr,
 				const struct wpabuf *wps_data,
 				int p2p_wildcard)
 {
+    ESP_LOGV("FUNC", "wps_registrar_probe_req_rx");
+
 	struct wps_parse_attr attr;
 	int skip_add = 0;
 
@@ -1167,6 +1257,8 @@ void wps_registrar_probe_req_rx(struct wps_registrar *reg, const u8 *addr,
 static int wps_cb_new_psk(struct wps_registrar *reg, const u8 *mac_addr,
 			  const u8 *psk, size_t psk_len)
 {
+    ESP_LOGV("FUNC", "wps_cb_new_psk");
+
 	if (reg->new_psk_cb == NULL)
 		return 0;
 
@@ -1178,6 +1270,8 @@ static int wps_cb_new_psk(struct wps_registrar *reg, const u8 *mac_addr,
 static void wps_cb_pin_needed(struct wps_registrar *reg, const u8 *uuid_e,
 			      const struct wps_device_data *dev)
 {
+    ESP_LOGV("FUNC", "wps_cb_pin_needed");
+
 	if (reg->pin_needed_cb == NULL)
 		return;
 
@@ -1189,6 +1283,8 @@ static void wps_cb_reg_success(struct wps_registrar *reg, const u8 *mac_addr,
 			       const u8 *uuid_e, const u8 *dev_pw,
 			       size_t dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_cb_reg_success");
+
 	if (reg->reg_success_cb == NULL)
 		return;
 
@@ -1199,12 +1295,16 @@ static void wps_cb_reg_success(struct wps_registrar *reg, const u8 *mac_addr,
 static int wps_cb_set_ie(struct wps_registrar *reg, struct wpabuf *beacon_ie,
 			 struct wpabuf *probe_resp_ie)
 {
+    ESP_LOGV("FUNC", "wps_cb_set_ie");
+
 	return reg->set_ie_cb(reg->cb_ctx, beacon_ie, probe_resp_ie);
 }
 
 
 static void wps_cb_set_sel_reg(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_cb_set_sel_reg");
+
 	u16 methods = 0;
 	if (reg->set_sel_reg_cb == NULL)
 		return;
@@ -1232,6 +1332,8 @@ static void wps_cb_set_sel_reg(struct wps_registrar *reg)
 
 static int wps_set_ie(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_set_ie");
+
 	struct wpabuf *beacon;
 	struct wpabuf *probe;
 	const u8 *auth_macs;
@@ -1344,6 +1446,8 @@ static int wps_set_ie(struct wps_registrar *reg)
 
 static int wps_get_dev_password(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_get_dev_password");
+
 	const u8 *pin;
 	size_t pin_len = 0;
 
@@ -1388,6 +1492,8 @@ static int wps_get_dev_password(struct wps_data *wps)
 
 static int wps_build_uuid_r(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_uuid_r");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * UUID-R");
 	wpabuf_put_be16(msg, ATTR_UUID_R);
 	wpabuf_put_be16(msg, WPS_UUID_LEN);
@@ -1398,6 +1504,8 @@ static int wps_build_uuid_r(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_r_hash(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_r_hash");
+
 	u8 *hash;
 	const u8 *addr[4];
 	size_t len[4];
@@ -1446,6 +1554,8 @@ static int wps_build_r_hash(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_r_snonce1(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_r_snonce1");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * R-SNonce1");
 	wpabuf_put_be16(msg, ATTR_R_SNONCE1);
 	wpabuf_put_be16(msg, WPS_SECRET_NONCE_LEN);
@@ -1456,6 +1566,8 @@ static int wps_build_r_snonce1(struct wps_data *wps, struct wpabuf *msg)
 
 static int wps_build_r_snonce2(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_r_snonce2");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * R-SNonce2");
 	wpabuf_put_be16(msg, ATTR_R_SNONCE2);
 	wpabuf_put_be16(msg, WPS_SECRET_NONCE_LEN);
@@ -1468,6 +1580,8 @@ static int wps_build_r_snonce2(struct wps_data *wps, struct wpabuf *msg)
 static int wps_build_cred_network_idx(struct wpabuf *msg,
 				      const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_network_idx");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Network Index (1)");
 	wpabuf_put_be16(msg, ATTR_NETWORK_INDEX);
 	wpabuf_put_be16(msg, 1);
@@ -1479,6 +1593,8 @@ static int wps_build_cred_network_idx(struct wpabuf *msg,
 static int wps_build_cred_ssid(struct wpabuf *msg,
 			       const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_ssid");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * SSID");
 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: SSID for Credential",
 			  cred->ssid, cred->ssid_len);
@@ -1492,6 +1608,8 @@ static int wps_build_cred_ssid(struct wpabuf *msg,
 static int wps_build_cred_auth_type(struct wpabuf *msg,
 				    const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_auth_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Authentication Type (0x%x)",
 		   cred->auth_type);
 	wpabuf_put_be16(msg, ATTR_AUTH_TYPE);
@@ -1504,6 +1622,8 @@ static int wps_build_cred_auth_type(struct wpabuf *msg,
 static int wps_build_cred_encr_type(struct wpabuf *msg,
 				    const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_encr_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Encryption Type (0x%x)",
 		   cred->encr_type);
 	wpabuf_put_be16(msg, ATTR_ENCR_TYPE);
@@ -1516,6 +1636,8 @@ static int wps_build_cred_encr_type(struct wpabuf *msg,
 static int wps_build_cred_network_key(struct wpabuf *msg,
 				      const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_network_key");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Network Key (len=%d)",
 		   (int) cred->key_len);
 	wpa_hexdump_key(MSG_DEBUG, "WPS: Network Key",
@@ -1530,6 +1652,8 @@ static int wps_build_cred_network_key(struct wpabuf *msg,
 static int wps_build_cred_mac_addr(struct wpabuf *msg,
 				   const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_cred_mac_addr");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * MAC Address (" MACSTR ")",
 		   MAC2STR(cred->mac_addr));
 	wpabuf_put_be16(msg, ATTR_MAC_ADDR);
@@ -1542,6 +1666,8 @@ static int wps_build_cred_mac_addr(struct wpabuf *msg,
 static int wps_build_credential(struct wpabuf *msg,
 				const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_credential");
+
 	if (wps_build_cred_network_idx(msg, cred) ||
 	    wps_build_cred_ssid(msg, cred) ||
 	    wps_build_cred_auth_type(msg, cred) ||
@@ -1556,6 +1682,8 @@ static int wps_build_credential(struct wpabuf *msg,
 int wps_build_credential_wrap(struct wpabuf *msg,
 			      const struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_build_credential_wrap");
+
 	struct wpabuf *wbuf;
 	wbuf = wpabuf_alloc(200);
 	if (wbuf == NULL)
@@ -1574,6 +1702,8 @@ int wps_build_credential_wrap(struct wpabuf *msg,
 
 int wps_build_cred(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_cred");
+
 	struct wpabuf *cred;
 
 	if (wps->wps->registrar->skip_cred_build)
@@ -1733,6 +1863,8 @@ skip_cred_build:
 
 static int wps_build_ap_settings(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_ap_settings");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * AP Settings");
 
 	if (wps_build_credential(msg, &wps->cred))
@@ -1744,6 +1876,8 @@ static int wps_build_ap_settings(struct wps_data *wps, struct wpabuf *msg)
 
 static struct wpabuf * wps_build_ap_cred(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_ap_cred");
+
 	struct wpabuf *msg, *plain;
 
 	msg = wpabuf_alloc(1000);
@@ -1773,6 +1907,8 @@ static struct wpabuf * wps_build_ap_cred(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m2(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m2");
+
 	struct wpabuf *msg;
 
 	if (random_get_bytes(wps->nonce_r, WPS_NONCE_LEN) < 0)
@@ -1817,6 +1953,8 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m2d(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m2d");
+
 	struct wpabuf *msg;
 	u16 err = wps->config_error;
 
@@ -1855,6 +1993,8 @@ static struct wpabuf * wps_build_m2d(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m4(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m4");
+
 	struct wpabuf *msg, *plain;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M4");
@@ -1893,6 +2033,8 @@ static struct wpabuf * wps_build_m4(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m6(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m6");
+
 	struct wpabuf *msg, *plain;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M6");
@@ -1929,6 +2071,8 @@ static struct wpabuf * wps_build_m6(struct wps_data *wps)
 
 static struct wpabuf * wps_build_m8(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_build_m8");
+
 	struct wpabuf *msg, *plain;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Building Message M8");
@@ -1966,6 +2110,8 @@ static struct wpabuf * wps_build_m8(struct wps_data *wps)
 struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
 				      enum wsc_op_code *op_code)
 {
+    ESP_LOGV("FUNC", "wps_registrar_get_msg");
+
 	struct wpabuf *msg;
 
 #ifdef CONFIG_WPS_UPNP
@@ -2063,6 +2209,8 @@ struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
 
 static int wps_process_enrollee_nonce(struct wps_data *wps, const u8 *e_nonce)
 {
+    ESP_LOGV("FUNC", "wps_process_enrollee_nonce");
+
 	if (e_nonce == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Enrollee Nonce received");
 		return -1;
@@ -2078,6 +2226,8 @@ static int wps_process_enrollee_nonce(struct wps_data *wps, const u8 *e_nonce)
 
 static int wps_process_registrar_nonce(struct wps_data *wps, const u8 *r_nonce)
 {
+    ESP_LOGV("FUNC", "wps_process_registrar_nonce");
+
 	if (r_nonce == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Registrar Nonce received");
 		return -1;
@@ -2094,6 +2244,8 @@ static int wps_process_registrar_nonce(struct wps_data *wps, const u8 *r_nonce)
 
 static int wps_process_uuid_e(struct wps_data *wps, const u8 *uuid_e)
 {
+    ESP_LOGV("FUNC", "wps_process_uuid_e");
+
 	if (uuid_e == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No UUID-E received");
 		return -1;
@@ -2108,6 +2260,8 @@ static int wps_process_uuid_e(struct wps_data *wps, const u8 *uuid_e)
 
 static int wps_process_dev_password_id(struct wps_data *wps, const u8 *pw_id)
 {
+    ESP_LOGV("FUNC", "wps_process_dev_password_id");
+
 	if (pw_id == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Device Password ID received");
 		return -1;
@@ -2122,6 +2276,8 @@ static int wps_process_dev_password_id(struct wps_data *wps, const u8 *pw_id)
 
 static int wps_process_e_hash1(struct wps_data *wps, const u8 *e_hash1)
 {
+    ESP_LOGV("FUNC", "wps_process_e_hash1");
+
 	if (e_hash1 == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No E-Hash1 received");
 		return -1;
@@ -2136,6 +2292,8 @@ static int wps_process_e_hash1(struct wps_data *wps, const u8 *e_hash1)
 
 static int wps_process_e_hash2(struct wps_data *wps, const u8 *e_hash2)
 {
+    ESP_LOGV("FUNC", "wps_process_e_hash2");
+
 	if (e_hash2 == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No E-Hash2 received");
 		return -1;
@@ -2150,6 +2308,8 @@ static int wps_process_e_hash2(struct wps_data *wps, const u8 *e_hash2)
 
 static int wps_process_e_snonce1(struct wps_data *wps, const u8 *e_snonce1)
 {
+    ESP_LOGV("FUNC", "wps_process_e_snonce1");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[4];
 	size_t len[4];
@@ -2189,6 +2349,8 @@ static int wps_process_e_snonce1(struct wps_data *wps, const u8 *e_snonce1)
 
 static int wps_process_e_snonce2(struct wps_data *wps, const u8 *e_snonce2)
 {
+    ESP_LOGV("FUNC", "wps_process_e_snonce2");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[4];
 	size_t len[4];
@@ -2242,6 +2404,8 @@ static int wps_process_e_snonce2(struct wps_data *wps, const u8 *e_snonce2)
 
 static int wps_process_mac_addr(struct wps_data *wps, const u8 *mac_addr)
 {
+    ESP_LOGV("FUNC", "wps_process_mac_addr");
+
 	if (mac_addr == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No MAC Address received");
 		return -1;
@@ -2259,6 +2423,8 @@ static int wps_process_mac_addr(struct wps_data *wps, const u8 *mac_addr)
 static int wps_process_pubkey(struct wps_data *wps, const u8 *pk,
 			      size_t pk_len)
 {
+    ESP_LOGV("FUNC", "wps_process_pubkey");
+
 	if (pk == NULL || pk_len == 0) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Public Key received");
 		return -1;
@@ -2275,6 +2441,8 @@ static int wps_process_pubkey(struct wps_data *wps, const u8 *pk,
 
 static int wps_process_auth_type_flags(struct wps_data *wps, const u8 *auth)
 {
+    ESP_LOGV("FUNC", "wps_process_auth_type_flags");
+
 	u16 auth_types;
 
 	if (auth == NULL) {
@@ -2315,6 +2483,8 @@ static int wps_process_auth_type_flags(struct wps_data *wps, const u8 *auth)
 
 static int wps_process_encr_type_flags(struct wps_data *wps, const u8 *encr)
 {
+    ESP_LOGV("FUNC", "wps_process_encr_type_flags");
+
 	u16 encr_types;
 
 	if (encr == NULL) {
@@ -2355,6 +2525,8 @@ static int wps_process_encr_type_flags(struct wps_data *wps, const u8 *encr)
 
 static int wps_process_conn_type_flags(struct wps_data *wps, const u8 *conn)
 {
+    ESP_LOGV("FUNC", "wps_process_conn_type_flags");
+
 	if (conn == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Connection Type flags "
 			   "received");
@@ -2370,6 +2542,8 @@ static int wps_process_conn_type_flags(struct wps_data *wps, const u8 *conn)
 
 static int wps_process_config_methods(struct wps_data *wps, const u8 *methods)
 {
+    ESP_LOGV("FUNC", "wps_process_config_methods");
+
 	u16 m;
 
 	if (methods == NULL) {
@@ -2408,6 +2582,8 @@ static int wps_process_config_methods(struct wps_data *wps, const u8 *methods)
 
 static int wps_process_wps_state(struct wps_data *wps, const u8 *state)
 {
+    ESP_LOGV("FUNC", "wps_process_wps_state");
+
 	if (state == NULL) {
 		wpa_printf(MSG_DEBUG,  "WPS: No Wi-Fi Protected Setup State "
 			   "received");
@@ -2423,6 +2599,8 @@ static int wps_process_wps_state(struct wps_data *wps, const u8 *state)
 
 static int wps_process_assoc_state(struct wps_data *wps, const u8 *assoc)
 {
+    ESP_LOGV("FUNC", "wps_process_assoc_state");
+
 #ifdef DEBUG_PRINT
     u16 a;
 #endif
@@ -2443,6 +2621,8 @@ static int wps_process_assoc_state(struct wps_data *wps, const u8 *assoc)
 
 static int wps_process_config_error(struct wps_data *wps, const u8 *err)
 {
+    ESP_LOGV("FUNC", "wps_process_config_error");
+
 #ifdef DEBUG_PRINT
     u16 e;
 #endif
@@ -2463,6 +2643,8 @@ static int wps_process_config_error(struct wps_data *wps, const u8 *err)
 
 static int wps_registrar_p2p_dev_addr_match(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_registrar_p2p_dev_addr_match");
+
 #ifdef CONFIG_P2P
 	struct wps_registrar *reg = wps->wps->registrar;
 
@@ -2484,6 +2666,8 @@ static int wps_registrar_p2p_dev_addr_match(struct wps_data *wps)
 
 static int wps_registrar_skip_overlap(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_registrar_skip_overlap");
+
 #ifdef CONFIG_P2P
 	struct wps_registrar *reg = wps->wps->registrar;
 
@@ -2503,6 +2687,8 @@ static int wps_registrar_skip_overlap(struct wps_data *wps)
 static enum wps_process_res wps_process_m1(struct wps_data *wps,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m1");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Received M1");
 
 	if (wps->state != RECV_M1) {
@@ -2615,6 +2801,8 @@ static enum wps_process_res wps_process_m3(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m3");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Received M3");
 
 	if (wps->state != RECV_M3) {
@@ -2650,6 +2838,8 @@ static enum wps_process_res wps_process_m5(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m5");
+
 	struct wpabuf *decrypted;
 	struct wps_parse_attr eattr;
 
@@ -2710,6 +2900,8 @@ static enum wps_process_res wps_process_m5(struct wps_data *wps,
 
 static void wps_sta_cred_cb(struct wps_data *wps)
 {
+    ESP_LOGV("FUNC", "wps_sta_cred_cb");
+
 	/*
 	 * Update credential to only include a single authentication and
 	 * encryption type in case the AP configuration includes more than one
@@ -2733,6 +2925,8 @@ static void wps_sta_cred_cb(struct wps_data *wps)
 static void wps_cred_update(struct wps_credential *dst,
 			    struct wps_credential *src)
 {
+    ESP_LOGV("FUNC", "wps_cred_update");
+
 	os_memcpy(dst->ssid, src->ssid, sizeof(dst->ssid));
 	dst->ssid_len = src->ssid_len;
 	dst->auth_type = src->auth_type;
@@ -2746,6 +2940,8 @@ static void wps_cred_update(struct wps_credential *dst,
 static int wps_process_ap_settings_r(struct wps_data *wps,
 				     struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_ap_settings_r");
+
 	struct wpabuf *msg;
 
 	if (wps->wps->ap || wps->er)
@@ -2802,6 +2998,8 @@ static enum wps_process_res wps_process_m7(struct wps_data *wps,
 					   const struct wpabuf *msg,
 					   struct wps_parse_attr *attr)
 {
+    ESP_LOGV("FUNC", "wps_process_m7");
+
 	struct wpabuf *decrypted;
 	struct wps_parse_attr eattr;
 
@@ -2866,6 +3064,8 @@ static enum wps_process_res wps_process_m7(struct wps_data *wps,
 static enum wps_process_res wps_process_wsc_msg(struct wps_data *wps,
 						const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_msg");
+
 	struct wps_parse_attr attr;
 	enum wps_process_res ret = WPS_CONTINUE;
 
@@ -2949,6 +3149,8 @@ static enum wps_process_res wps_process_wsc_msg(struct wps_data *wps,
 static enum wps_process_res wps_process_wsc_ack(struct wps_data *wps,
 						const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_ack");
+
 	struct wps_parse_attr attr;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Received WSC_ACK");
@@ -3016,6 +3218,8 @@ static enum wps_process_res wps_process_wsc_ack(struct wps_data *wps,
 static enum wps_process_res wps_process_wsc_nack(struct wps_data *wps,
 						 const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_nack");
+
 	struct wps_parse_attr attr;
 	int old_state;
 	u16 config_error;
@@ -3098,6 +3302,8 @@ static enum wps_process_res wps_process_wsc_nack(struct wps_data *wps,
 static enum wps_process_res wps_process_wsc_done(struct wps_data *wps,
 						 const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_process_wsc_done");
+
 	struct wps_parse_attr attr;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Received WSC_Done");
@@ -3217,6 +3423,8 @@ enum wps_process_res wps_registrar_process_msg(struct wps_data *wps,
 					       enum wsc_op_code op_code,
 					       const struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_process_msg");
+
 	enum wps_process_res ret;
 
 	wpa_printf(MSG_DEBUG,  "WPS: Processing received message (len=%lu "
@@ -3288,6 +3496,8 @@ enum wps_process_res wps_registrar_process_msg(struct wps_data *wps,
 
 int wps_registrar_update_ie(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_update_ie");
+
 	return wps_set_ie(reg);
 }
 
@@ -3296,6 +3506,8 @@ int wps_registrar_update_ie(struct wps_registrar *reg)
 static void wps_registrar_sel_reg_add(struct wps_registrar *reg,
 				      struct subscription *s)
 {
+    ESP_LOGV("FUNC", "wps_registrar_sel_reg_add");
+
 	int i, j;
 	wpa_printf(MSG_DEBUG,  "WPS: External Registrar selected (dev_pw_id=%d "
 		   "config_methods=0x%x)",
@@ -3328,6 +3540,8 @@ static void wps_registrar_sel_reg_add(struct wps_registrar *reg,
 
 static void wps_registrar_sel_reg_union(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_sel_reg_union");
+
 #ifdef CONFIG_WPS_UPNP
 	struct subscription *s;
 
@@ -3362,6 +3576,8 @@ static void wps_registrar_sel_reg_union(struct wps_registrar *reg)
  */
 void wps_registrar_selected_registrar_changed(struct wps_registrar *reg)
 {
+    ESP_LOGV("FUNC", "wps_registrar_selected_registrar_changed");
+
 	wpa_printf(MSG_DEBUG,  "WPS: Selected registrar information changed");
 
 	reg->sel_reg_union = reg->selected_registrar;
@@ -3403,6 +3619,8 @@ void wps_registrar_selected_registrar_changed(struct wps_registrar *reg)
 int wps_registrar_get_info(struct wps_registrar *reg, const u8 *addr,
 			   char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "wps_registrar_get_info");
+
 	struct wps_registrar_device *d;
 	int len = 0, ret;
 	char uuid[40];
@@ -3441,6 +3659,8 @@ int wps_registrar_get_info(struct wps_registrar *reg, const u8 *addr,
 int wps_registrar_config_ap(struct wps_registrar *reg,
 			    struct wps_credential *cred)
 {
+    ESP_LOGV("FUNC", "wps_registrar_config_ap");
+
 #ifdef CONFIG_WPS2
 	if (!(cred->encr_type & (WPS_ENCR_NONE | WPS_ENCR_TKIP |
 				 WPS_ENCR_AES))) {
@@ -3483,6 +3703,8 @@ int wps_registrar_add_nfc_pw_token(struct wps_registrar *reg,
 				   const u8 *pubkey_hash, u16 pw_id,
 				   const u8 *dev_pw, size_t dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_registrar_add_nfc_pw_token");
+
 	struct wps_nfc_pw_token *token;
 
 	if (dev_pw_len > WPS_OOB_DEVICE_PASSWORD_LEN)
@@ -3514,6 +3736,8 @@ int wps_registrar_add_nfc_password_token(struct wps_registrar *reg,
 					 const u8 *oob_dev_pw,
 					 size_t oob_dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_registrar_add_nfc_password_token");
+
 	const u8 *pos, *hash, *dev_pw;
 	u16 id;
 	size_t dev_pw_len;
@@ -3545,6 +3769,8 @@ int wps_registrar_add_nfc_password_token(struct wps_registrar *reg,
 void wps_registrar_remove_nfc_pw_token(struct wps_registrar *reg,
 				       struct wps_nfc_pw_token *token)
 {
+    ESP_LOGV("FUNC", "wps_registrar_remove_nfc_pw_token");
+
 	wps_registrar_remove_authorized_mac(reg,
 					    (u8 *) "\xff\xff\xff\xff\xff\xff");
 	wps_registrar_selected_registrar_changed(reg);

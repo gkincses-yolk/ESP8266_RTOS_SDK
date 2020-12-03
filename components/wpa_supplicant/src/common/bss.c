@@ -26,6 +26,8 @@
 void wpa_bss_remove(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
 		    const char *reason)
 {
+    ESP_LOGV("FUNC", "wpa_bss_remove");
+
 	if (wpa_s->last_scan_res) {
 		unsigned int i;
 		for (i = 0; i < wpa_s->last_scan_res_used; i++) {
@@ -60,6 +62,8 @@ void wpa_bss_remove(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
 struct wpa_bss * wpa_bss_get(struct wpa_supplicant *wpa_s, const u8 *bssid,
 			     const u8 *ssid, size_t ssid_len)
 {
+    ESP_LOGV("FUNC", "wpa_bss_get");
+
 	struct wpa_bss *bss;
 	dl_list_for_each(bss, &wpa_s->bss, struct wpa_bss, list) {
 		if (os_memcmp(bss->bssid, bssid, ETH_ALEN) == 0 &&
@@ -75,6 +79,8 @@ void calculate_update_time(const struct os_reltime *fetch_time,
 			   unsigned int age_ms,
 			   struct os_reltime *update_time)
 {
+    ESP_LOGV("FUNC", "calculate_update_time");
+
 	os_time_t usec;
 
 	update_time->sec = fetch_time->sec;
@@ -92,6 +98,8 @@ void calculate_update_time(const struct os_reltime *fetch_time,
 static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
 			     struct os_reltime *fetch_time)
 {
+    ESP_LOGV("FUNC", "wpa_bss_copy_res");
+
 	dst->flags = src->flags;
 	os_memcpy(dst->bssid, src->bssid, ETH_ALEN);
 	dst->channel = src->chan;
@@ -108,6 +116,8 @@ static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
 #ifdef ESP_SUPPLICANT
 static int wpa_bss_known(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 {
+    ESP_LOGV("FUNC", "wpa_bss_known");
+
 	struct wifi_ssid *ssid = esp_wifi_sta_get_prof_ssid_internal();
 
 	if (ssid->ssid == NULL || ssid->len == 0)
@@ -121,6 +131,8 @@ static int wpa_bss_known(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 
 static int wpa_bss_in_use(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 {
+    ESP_LOGV("FUNC", "wpa_bss_in_use");
+
 	if (bss == wpa_s->current_bss)
 		return 1;
 
@@ -138,6 +150,8 @@ static int wpa_bss_in_use(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 
 static int wpa_bss_remove_oldest_unknown(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_remove_oldest_unknown");
+
 	struct wpa_bss *bss;
 
 	dl_list_for_each(bss, &wpa_s->bss, struct wpa_bss, list) {
@@ -152,6 +166,8 @@ static int wpa_bss_remove_oldest_unknown(struct wpa_supplicant *wpa_s)
 
 static int wpa_bss_remove_oldest(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_remove_oldest");
+
 	struct wpa_bss *bss;
 
 	/*
@@ -179,6 +195,8 @@ static struct wpa_bss * wpa_bss_add(struct wpa_supplicant *wpa_s,
 				    struct wpa_scan_res *res,
 				    struct os_reltime *fetch_time)
 {
+    ESP_LOGV("FUNC", "wpa_bss_add");
+
 	struct wpa_bss *bss;
 
 	if ((wpa_s->num_bss + 1 > MAX_BSS_COUNT) &&
@@ -210,10 +228,11 @@ static struct wpa_bss * wpa_bss_add(struct wpa_supplicant *wpa_s,
 	return bss;
 }
 
-static struct wpa_bss *
-wpa_bss_update(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
+static struct wpa_bss * wpa_bss_update(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
 	       struct wpa_scan_res *res, struct os_reltime *fetch_time)
 {
+    ESP_LOGV("FUNC", "wpa_bss_update");
+
 	if (bss->last_update_idx == wpa_s->bss_update_idx) {
 		struct os_reltime update_time;
 
@@ -282,6 +301,8 @@ wpa_bss_update(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
  */
 void wpa_bss_update_start(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_update_start");
+
 	wpa_s->bss_update_idx++;
 	wpa_dbg(wpa_s, MSG_DEBUG, "BSS: Start scan result update %u",
 		wpa_s->bss_update_idx);
@@ -303,6 +324,8 @@ void wpa_bss_update_scan_res(struct wpa_supplicant *wpa_s,
 			     struct wpa_scan_res *res,
 			     struct os_reltime *fetch_time)
 {
+    ESP_LOGV("FUNC", "wpa_bss_update_scan_res");
+
 	const u8 *ssid;
 	struct wpa_bss *bss;
 
@@ -371,6 +394,8 @@ void wpa_bss_update_scan_res(struct wpa_supplicant *wpa_s,
  */
 void wpa_bss_update_end(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_update_end");
+
 	os_get_reltime(&wpa_s->last_scan);
 }
 
@@ -384,6 +409,8 @@ void wpa_bss_update_end(struct wpa_supplicant *wpa_s)
  */
 int wpa_bss_init(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_init");
+
 	dl_list_init(&wpa_s->bss);
 	dl_list_init(&wpa_s->bss_id);
 	return 0;
@@ -396,6 +423,8 @@ int wpa_bss_init(struct wpa_supplicant *wpa_s)
  */
 void wpa_bss_flush(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_flush");
+
 	struct wpa_bss *bss, *n;
 
 	if (wpa_s->bss.next == NULL)
@@ -415,6 +444,8 @@ void wpa_bss_flush(struct wpa_supplicant *wpa_s)
  */
 void wpa_bss_deinit(struct wpa_supplicant *wpa_s)
 {
+    ESP_LOGV("FUNC", "wpa_bss_deinit");
+
 	wpa_bss_flush(wpa_s);
 }
 
@@ -428,6 +459,8 @@ void wpa_bss_deinit(struct wpa_supplicant *wpa_s)
 struct wpa_bss * wpa_bss_get_bssid(struct wpa_supplicant *wpa_s,
 				   const u8 *bssid)
 {
+    ESP_LOGV("FUNC", "wpa_bss_get_bssid");
+
 	struct wpa_bss *bss;
 	dl_list_for_each_reverse(bss, &wpa_s->bss, struct wpa_bss, list) {
 		if (os_memcmp(bss->bssid, bssid, ETH_ALEN) == 0)
@@ -446,6 +479,8 @@ struct wpa_bss * wpa_bss_get_bssid(struct wpa_supplicant *wpa_s,
 struct wpa_bss * wpa_bss_get_next_bss(struct wpa_supplicant *wpa_s,
 				   struct wpa_bss *prev_bss)
 {
+    ESP_LOGV("FUNC", "wpa_bss_get_next_bss");
+
 	struct wpa_bss *bss;
 
 	if (!prev_bss)
@@ -468,11 +503,15 @@ struct wpa_bss * wpa_bss_get_next_bss(struct wpa_supplicant *wpa_s,
  */
 const u8 * wpa_bss_get_ie(const struct wpa_bss *bss, u8 ie)
 {
+    ESP_LOGV("FUNC", "wpa_bss_get_ie");
+
 	return get_ie((const u8 *) (bss + 1), bss->ie_len, ie);
 }
 
 int wpa_bss_ext_capab(const struct wpa_bss *bss, unsigned int capab)
 {
+    ESP_LOGV("FUNC", "wpa_bss_ext_capab");
+
 	return ieee802_11_ext_capab(wpa_bss_get_ie(bss, WLAN_EID_EXT_CAPAB),
 				    capab);
 }

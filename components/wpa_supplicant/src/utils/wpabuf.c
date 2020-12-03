@@ -28,6 +28,8 @@ struct wpabuf_trace {
 
 static struct wpabuf_trace * wpabuf_get_trace(const struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "wpabuf_get_trace");
+
 	return (struct wpabuf_trace *)
 		((const u8 *) buf - sizeof(struct wpabuf_trace));
 }
@@ -36,6 +38,8 @@ static struct wpabuf_trace * wpabuf_get_trace(const struct wpabuf *buf)
 
 static void wpabuf_overflow(const struct wpabuf *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_overflow");
+
 #ifdef WPA_TRACE
 	struct wpabuf_trace *trace = wpabuf_get_trace(buf);
 	if (trace->magic != WPABUF_MAGIC) {
@@ -51,6 +55,8 @@ static void wpabuf_overflow(const struct wpabuf *buf, size_t len)
 
 int wpabuf_resize(struct wpabuf **_buf, size_t add_len)
 {
+    ESP_LOGV("FUNC", "wpabuf_resize");
+
 	struct wpabuf *buf = *_buf;
 #ifdef WPA_TRACE
 	struct wpabuf_trace *trace;
@@ -115,6 +121,8 @@ int wpabuf_resize(struct wpabuf **_buf, size_t add_len)
  */
 struct wpabuf * wpabuf_alloc(size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_alloc");
+
 #ifdef WPA_TRACE
 	struct wpabuf_trace *trace = os_zalloc(sizeof(struct wpabuf_trace) +
 					       sizeof(struct wpabuf) + len);
@@ -135,6 +143,8 @@ struct wpabuf * wpabuf_alloc(size_t len)
 
 struct wpabuf * wpabuf_alloc_ext_data(u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_alloc_ext_data");
+
 #ifdef WPA_TRACE
 	struct wpabuf_trace *trace = os_zalloc(sizeof(struct wpabuf_trace) +
 					       sizeof(struct wpabuf));
@@ -159,6 +169,8 @@ struct wpabuf * wpabuf_alloc_ext_data(u8 *data, size_t len)
 
 struct wpabuf * wpabuf_alloc_copy(const void *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_alloc_copy");
+
 	struct wpabuf *buf = wpabuf_alloc(len);
 	if (buf)
 		wpabuf_put_data(buf, data, len);
@@ -168,6 +180,8 @@ struct wpabuf * wpabuf_alloc_copy(const void *data, size_t len)
 
 struct wpabuf * wpabuf_dup(const struct wpabuf *src)
 {
+    ESP_LOGV("FUNC", "wpabuf_dup");
+
 	struct wpabuf *buf = wpabuf_alloc(wpabuf_len(src));
 	if (buf)
 		wpabuf_put_data(buf, wpabuf_head(src), wpabuf_len(src));
@@ -181,6 +195,8 @@ struct wpabuf * wpabuf_dup(const struct wpabuf *src)
  */
 void wpabuf_free(struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "wpabuf_free");
+
 #ifdef WPA_TRACE
 	struct wpabuf_trace *trace;
 	if (buf == NULL)
@@ -204,6 +220,8 @@ void wpabuf_free(struct wpabuf *buf)
 
 void * wpabuf_put(struct wpabuf *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_put");
+
 	void *tmp = wpabuf_mhead_u8(buf) + wpabuf_len(buf);
 	buf->used += len;
 	if (buf->used > buf->size) {
@@ -224,6 +242,8 @@ void * wpabuf_put(struct wpabuf *buf, size_t len)
  */
 struct wpabuf * wpabuf_concat(struct wpabuf *a, struct wpabuf *b)
 {
+    ESP_LOGV("FUNC", "wpabuf_concat");
+
 	struct wpabuf *n = NULL;
 	size_t len = 0;
 
@@ -264,6 +284,8 @@ struct wpabuf * wpabuf_concat(struct wpabuf *a, struct wpabuf *b)
  */
 struct wpabuf * wpabuf_zeropad(struct wpabuf *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpabuf_zeropad");
+
 	struct wpabuf *ret;
 	size_t blen;
 
@@ -286,6 +308,8 @@ struct wpabuf * wpabuf_zeropad(struct wpabuf *buf, size_t len)
 
 void wpabuf_printf(struct wpabuf *buf, const char *fmt, ...)
 {
+    ESP_LOGV("FUNC", "wpabuf_printf");
+
 	va_list ap;
 	void *tmp = wpabuf_mhead_u8(buf) + wpabuf_len(buf);
 	int res;

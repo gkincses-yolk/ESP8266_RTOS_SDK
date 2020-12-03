@@ -22,6 +22,8 @@
 
 void hostapd_config_defaults_bss(struct hostapd_bss_config *bss)
 {
+    ESP_LOGV("FUNC", "hostapd_config_defaults_bss");
+
     bss->auth_algs = WPA_AUTH_ALG_OPEN | WPA_AUTH_ALG_SHARED;
 
     bss->wep_rekeying_period = 300;
@@ -68,6 +70,8 @@ void hostapd_config_defaults_bss(struct hostapd_bss_config *bss)
 
 struct hostapd_config * hostapd_config_defaults(void)
 {
+    ESP_LOGV("FUNC", "hostapd_config_defaults");
+
 #define ecw2cw(ecw) ((1 << (ecw)) - 1)
 
     struct hostapd_config *conf;
@@ -105,12 +109,16 @@ struct hostapd_config * hostapd_config_defaults(void)
 
 int hostapd_mac_comp(const void *a, const void *b)
 {
+    ESP_LOGV("FUNC", "hostapd_mac_comp");
+
     return memcmp(a, b, sizeof(macaddr));
 }
 
 
 int hostapd_mac_comp_empty(const void *a)
 {
+    ESP_LOGV("FUNC", "hostapd_mac_comp_empty");
+
     u8 empty[ETH_ALEN];
 
     os_bzero(empty, ETH_ALEN);
@@ -120,6 +128,8 @@ int hostapd_mac_comp_empty(const void *a)
 
 static int hostapd_derive_psk(struct hostapd_ssid *ssid)
 {
+    ESP_LOGV("FUNC", "hostapd_derive_psk");
+
     ssid->wpa_psk = (struct hostapd_wpa_psk *)os_zalloc(sizeof(struct hostapd_wpa_psk));
     if (ssid->wpa_psk == NULL) {
     	wpa_printf(MSG_ERROR, "Unable to alloc space for PSK");
@@ -146,6 +156,8 @@ static int hostapd_derive_psk(struct hostapd_ssid *ssid)
 
 int hostapd_setup_wpa_psk(struct hostapd_bss_config *conf)
 {
+    ESP_LOGV("FUNC", "hostapd_setup_wpa_psk");
+
     struct hostapd_ssid *ssid = &conf->ssid;
 
     if (ssid->wpa_passphrase != NULL) {
@@ -167,6 +179,8 @@ int hostapd_setup_wpa_psk(struct hostapd_bss_config *conf)
 
 int hostapd_wep_key_cmp(struct hostapd_wep_keys *a, struct hostapd_wep_keys *b)
 {
+    ESP_LOGV("FUNC", "hostapd_wep_key_cmp");
+
     int i;
 
     if (a->idx != b->idx || a->default_len != b->default_len)
@@ -191,6 +205,8 @@ int hostapd_wep_key_cmp(struct hostapd_wep_keys *a, struct hostapd_wep_keys *b)
 int hostapd_maclist_found(struct mac_acl_entry *list, int num_entries,
               const u8 *addr, int *vlan_id)
 {
+    ESP_LOGV("FUNC", "hostapd_maclist_found");
+
     int start, end, middle, res;
 
     start = 0;
@@ -216,6 +232,8 @@ int hostapd_maclist_found(struct mac_acl_entry *list, int num_entries,
 
 int hostapd_rate_found(int *list, int rate)
 {
+    ESP_LOGV("FUNC", "hostapd_rate_found");
+
     int i;
 
     if (list == NULL)
@@ -231,6 +249,8 @@ int hostapd_rate_found(int *list, int rate)
 const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,
 			   const u8 *addr, const u8 *prev_psk)
 {
+    ESP_LOGV("FUNC", "hostapd_get_psk");
+
     struct hostapd_wpa_psk *psk;
     int next_ok = prev_psk == NULL;
 

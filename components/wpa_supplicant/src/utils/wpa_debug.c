@@ -16,10 +16,11 @@
 #include "utils/common.h"
 #include "utils/wpa_debug.h"
 
-static inline int
-_wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len,
+static inline int _wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len,
                   int uppercase, int whitespace)
 {
+    ESP_LOGV("FUNC", "_wpa_snprintf_hex");
+
     size_t i;
     char *pos = buf, *end = buf + buf_size;
     int ret;
@@ -48,17 +49,23 @@ _wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len,
 
 int  wpa_snprintf_hex_uppercase(char *buf, size_t buf_size, const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_snprintf_hex_uppercase");
+
 	return _wpa_snprintf_hex(buf, buf_size, data, len, 1, 0);
 }
 
 int  wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_snprintf_hex");
+
 	return _wpa_snprintf_hex(buf, buf_size, data, len, 0, 0);
 }
 
 #ifdef DEBUG_PRINT
 void  wpa_dump_mem(char* desc, uint8_t *addr, uint16_t len)
 {
+    ESP_LOGV("FUNC", "wpa_dump_mem");
+
     char output[50];
     wpa_printf(MSG_DEBUG, "%s\n", desc);
     if (addr){
@@ -78,6 +85,8 @@ void  wpa_dump_mem(char* desc, uint8_t *addr, uint16_t len)
 
 void  wpa_debug_print_timestamp(void)
 {
+    ESP_LOGV("FUNC", "wpa_debug_print_timestamp");
+
 #ifdef DEBUG_PRINT
     struct os_time tv;
     os_get_time(&tv);
@@ -87,6 +96,8 @@ void  wpa_debug_print_timestamp(void)
 
 void  wpa_hexdump(int level, const char *title, const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_hexdump");
+
 #ifdef DEBUG_PRINT 
 	size_t i;
 	char output[50];
@@ -114,6 +125,8 @@ void  wpa_hexdump(int level, const char *title, const u8 *buf, size_t len)
 
 void  wpa_hexdump_key(int level, const char *title, const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "wpa_hexdump_key");
+
      wpa_hexdump(level, title, buf, len);
 }
 #endif
@@ -121,6 +134,8 @@ void  wpa_hexdump_key(int level, const char *title, const u8 *buf, size_t len)
 int  eloop_cancel_timeout(eloop_timeout_handler handler,
 			 void *eloop_data, void *user_data)
 {
+    ESP_LOGV("FUNC", "eloop_cancel_timeout");
+
     return 0;	
 }
 
@@ -128,6 +143,8 @@ int  eloop_register_timeout(unsigned int secs, unsigned int usecs,
 			   eloop_timeout_handler handler,
 			   void *eloop_data, void *user_data)
 {
+    ESP_LOGV("FUNC", "eloop_register_timeout");
+
     return 0;
 }
 #endif // ESP_SUPPLICANT

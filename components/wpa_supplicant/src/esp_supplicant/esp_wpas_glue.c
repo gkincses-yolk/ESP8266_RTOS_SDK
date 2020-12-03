@@ -24,6 +24,8 @@ u8   *wpa_sm_alloc_eapol(struct wpa_sm *sm, u8 type,
                          const void *data, u16 data_len,
                          size_t *msg_len, void **data_pos)
 {
+    ESP_LOGV("FUNC", "wpa_sm_alloc_eapol");
+
     void *buffer;
     struct ieee802_1x_hdr *hdr;
 
@@ -57,12 +59,16 @@ u8   *wpa_sm_alloc_eapol(struct wpa_sm *sm, u8 type,
 
 void  wpa_sm_free_eapol(u8 *buffer)
 {
+    ESP_LOGV("FUNC", "wpa_sm_free_eapol");
+
     buffer = buffer - sizeof(struct l2_ethhdr);
     os_free(buffer);
 }
 
 void  wpa_sm_deauthenticate(struct wpa_sm *sm, u8 reason_code)
 {
+    ESP_LOGV("FUNC", "wpa_sm_deauthenticate");
+
 
     /*only need send deauth frame when associated*/
     if (WPA_SM_STATE(sm) >= WPA_ASSOCIATED) {
@@ -90,6 +96,8 @@ void  wpa_sm_deauthenticate(struct wpa_sm *sm, u8 reason_code)
 int  wpa_sm_mlme_setprotection(struct wpa_sm *sm, const u8 *addr,
                                int protect_type, int key_type)
 {
+    ESP_LOGV("FUNC", "wpa_sm_mlme_setprotection");
+
     return 0;
 }
 
@@ -98,6 +106,8 @@ int  wpa_sm_mlme_setprotection(struct wpa_sm *sm, const u8 *addr,
 */
 int  wpa_sm_get_beacon_ie(struct wpa_sm *sm)
 {
+    ESP_LOGV("FUNC", "wpa_sm_get_beacon_ie");
+
     return 0;
 }
 
@@ -111,6 +121,8 @@ int  wpa_sm_get_beacon_ie(struct wpa_sm *sm)
  */
 void  wpa_sm_disassociate(struct wpa_sm *sm, int reason_code)
 {
+    ESP_LOGV("FUNC", "wpa_sm_disassociate");
+
     /*check if need clear internal state and data value*/
 }
 #endif

@@ -56,9 +56,10 @@ void wpa_msg(void *ctx, int level, const char *fmt, ...)
 {
 }
 
-static struct wpabuf *
-gas_build_req(u8 action, u8 dialog_token, size_t size)
+static struct wpabuf * gas_build_req(u8 action, u8 dialog_token, size_t size)
 {
+    ESP_LOGV("FUNC", "gas_build_req");
+
     struct wpabuf *buf;
 
     buf = wpabuf_alloc(100 + size);
@@ -75,6 +76,8 @@ gas_build_req(u8 action, u8 dialog_token, size_t size)
 
 struct wpabuf * gas_build_initial_req(u8 dialog_token, size_t size)
 {
+    ESP_LOGV("FUNC", "gas_build_initial_req");
+
     return gas_build_req(WLAN_PA_GAS_INITIAL_REQ, dialog_token,
                  size);
 }
@@ -101,6 +104,8 @@ static int dpp_hash_vector(const struct dpp_curve_params *curve,
 			   size_t num_elem, const u8 *addr[], const size_t *len,
 			   u8 *mac)
 {
+    ESP_LOGV("FUNC", "dpp_hash_vector");
+
 	if (curve->hash_len == 32)
 		return sha256_vector(num_elem, addr, len, mac);
 #ifndef ESP_SUPPLICANT
@@ -116,6 +121,8 @@ static int dpp_hash_vector(const struct dpp_curve_params *curve,
 static int dpp_hkdf_expand(size_t hash_len, const u8 *secret, size_t secret_len,
 			   const char *label, u8 *out, size_t outlen)
 {
+    ESP_LOGV("FUNC", "dpp_hkdf_expand");
+
 	if (hash_len == 32)
 		return hmac_sha256_kdf(secret, secret_len, NULL,
 				       (const u8 *) label, os_strlen(label),
@@ -138,6 +145,8 @@ static int dpp_hmac_vector(size_t hash_len, const u8 *key, size_t key_len,
 			   size_t num_elem, const u8 *addr[],
 			   const size_t *len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "dpp_hmac_vector");
+
 	if (hash_len == 32)
 		return hmac_sha256_vector(key, key_len, num_elem, addr, len,
 					  mac);
@@ -156,6 +165,8 @@ static int dpp_hmac_vector(size_t hash_len, const u8 *key, size_t key_len,
 static int dpp_hmac(size_t hash_len, const u8 *key, size_t key_len,
 		    const u8 *data, size_t data_len, u8 *mac)
 {
+    ESP_LOGV("FUNC", "dpp_hmac");
+
 	if (hash_len == 32)
 		return hmac_sha256(key, key_len, data, data_len, mac);
 #ifndef ESP_SUPPLICANT
@@ -170,6 +181,8 @@ static int dpp_hmac(size_t hash_len, const u8 *key, size_t key_len,
 
 static int dpp_bn2bin_pad(const struct crypto_bignum *bn, u8 *pos, size_t len)
 {
+    ESP_LOGV("FUNC", "dpp_bn2bin_pad");
+
 	if (crypto_bignum_to_bin(bn, pos, len, 0) < 0)
 		return -1;
 
@@ -178,6 +191,8 @@ static int dpp_bn2bin_pad(const struct crypto_bignum *bn, u8 *pos, size_t len)
 
 static struct wpabuf * dpp_get_pubkey_point(struct crypto_key *pkey, int prefix)
 {
+    ESP_LOGV("FUNC", "dpp_get_pubkey_point");
+
 	int len, res;
 	struct wpabuf *buf;
 	unsigned char *pos = NULL;
@@ -218,6 +233,8 @@ static struct wpabuf * dpp_get_pubkey_point(struct crypto_key *pkey, int prefix)
 static struct crypto_key * dpp_set_pubkey_point(struct crypto_key *group_key,
 				       const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "dpp_set_pubkey_point");
+
 	const struct crypto_ec_group *group;
 	struct crypto_key *pkey = NULL;
 
@@ -237,12 +254,16 @@ static struct crypto_key * dpp_set_pubkey_point(struct crypto_key *group_key,
 static int dpp_ecdh(struct crypto_key *own, struct crypto_key *peer,
 		    u8 *secret, size_t *secret_len)
 {
+    ESP_LOGV("FUNC", "dpp_ecdh");
+
     return crypto_ecdh(own, peer, secret, secret_len);
 }
 
 
 static void dpp_auth_fail(struct dpp_authentication *auth, const char *txt)
 {
+    ESP_LOGV("FUNC", "dpp_auth_fail");
+
 	wpa_msg(auth->msg_ctx, MSG_INFO, DPP_EVENT_FAIL "%s", txt);
 }
 
@@ -250,6 +271,8 @@ static void dpp_auth_fail(struct dpp_authentication *auth, const char *txt)
 struct wpabuf * dpp_alloc_msg(enum dpp_public_action_frame_type type,
 			      size_t len)
 {
+    ESP_LOGV("FUNC", "dpp_alloc_msg");
+
 	struct wpabuf *msg;
 
 	msg = wpabuf_alloc(8 + len);
@@ -267,6 +290,8 @@ struct wpabuf * dpp_alloc_msg(enum dpp_public_action_frame_type type,
 
 const u8 * dpp_get_attr(const u8 *buf, size_t len, u16 req_id, u16 *ret_len)
 {
+    ESP_LOGV("FUNC", "dpp_get_attr");
+
 	u16 id, alen;
 	const u8 *pos = buf, *end = buf + len;
 
@@ -291,6 +316,8 @@ const u8 * dpp_get_attr(const u8 *buf, size_t len, u16 req_id, u16 *ret_len)
 static const u8 * dpp_get_attr_next(const u8 *prev, const u8 *buf, size_t len,
 				    u16 req_id, u16 *ret_len)
 {
+    ESP_LOGV("FUNC", "dpp_get_attr_next");
+
 	u16 id, alen;
 	const u8 *pos, *end = buf + len;
 
@@ -318,6 +345,8 @@ static const u8 * dpp_get_attr_next(const u8 *prev, const u8 *buf, size_t len,
 
 int dpp_check_attrs(const u8 *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "dpp_check_attrs");
+
 	const u8 *pos, *end;
 	int wrapped_data = 0;
 
@@ -360,6 +389,8 @@ int dpp_check_attrs(const u8 *buf, size_t len)
 
 void dpp_bootstrap_info_free(struct dpp_bootstrap_info *info)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_info_free");
+
 	if (!info)
 		return;
 	os_free(info->uri);
@@ -371,6 +402,8 @@ void dpp_bootstrap_info_free(struct dpp_bootstrap_info *info)
 
 const char * dpp_bootstrap_type_txt(enum dpp_bootstrap_type type)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_type_txt");
+
 	switch (type) {
 	case DPP_BOOTSTRAP_QR_CODE:
 		return "QRCODE";
@@ -385,6 +418,8 @@ const char * dpp_bootstrap_type_txt(enum dpp_bootstrap_type type)
 
 static int dpp_uri_valid_info(const char *info)
 {
+    ESP_LOGV("FUNC", "dpp_uri_valid_info");
+
 	while (*info) {
 		unsigned char val = *info++;
 
@@ -398,6 +433,8 @@ static int dpp_uri_valid_info(const char *info)
 
 static int dpp_clone_uri(struct dpp_bootstrap_info *bi, const char *uri)
 {
+    ESP_LOGV("FUNC", "dpp_clone_uri");
+
 	bi->uri = os_strdup(uri);
 	return bi->uri ? 0 : -1;
 }
@@ -405,6 +442,8 @@ static int dpp_clone_uri(struct dpp_bootstrap_info *bi, const char *uri)
 int dpp_parse_uri_chan_list(struct dpp_bootstrap_info *bi,
 			    const char *chan_list)
 {
+    ESP_LOGV("FUNC", "dpp_parse_uri_chan_list");
+
 #ifndef ESP_SUPPLICANT
 	const char *pos = chan_list, *pos2;
 	int opclass = -1, channel, freq;
@@ -459,6 +498,8 @@ fail:
 
 int dpp_parse_uri_mac(struct dpp_bootstrap_info *bi, const char *mac)
 {
+    ESP_LOGV("FUNC", "dpp_parse_uri_mac");
+
 	if (!mac)
 		return 0;
 
@@ -474,6 +515,8 @@ int dpp_parse_uri_mac(struct dpp_bootstrap_info *bi, const char *mac)
 
 int dpp_parse_uri_info(struct dpp_bootstrap_info *bi, const char *info)
 {
+    ESP_LOGV("FUNC", "dpp_parse_uri_info");
+
 	const char *end;
 
 	if (!info)
@@ -498,6 +541,8 @@ int dpp_parse_uri_info(struct dpp_bootstrap_info *bi, const char *info)
 
 static const struct dpp_curve_params * dpp_get_curve_group_id(int group_id)
 {
+    ESP_LOGV("FUNC", "dpp_get_curve_group_id");
+
 	unsigned int i;
 
 	if (!group_id)
@@ -512,6 +557,8 @@ static const struct dpp_curve_params * dpp_get_curve_group_id(int group_id)
 
 static int dpp_parse_uri_pk(struct dpp_bootstrap_info *bi, const char *info)
 {
+    ESP_LOGV("FUNC", "dpp_parse_uri_pk");
+
 	const char *end;
 	u8 *data;
 	size_t data_len;
@@ -598,6 +645,8 @@ fail:
 
 static struct dpp_bootstrap_info * dpp_parse_uri(const char *uri)
 {
+    ESP_LOGV("FUNC", "dpp_parse_uri");
+
 	const char *pos = uri;
 	const char *end;
 	const char *chan_list = NULL, *mac = NULL, *info = NULL, *pk = NULL;
@@ -662,6 +711,8 @@ static struct dpp_bootstrap_info * dpp_parse_uri(const char *uri)
 
 static struct crypto_key * dpp_gen_keypair(const struct dpp_curve_params *curve)
 {
+    ESP_LOGV("FUNC", "dpp_gen_keypair");
+
 	struct crypto_key *key = crypto_ec_gen_keypair(curve->ike_group);
 
 	wpa_printf(MSG_DEBUG, "DPP: Generating a keypair");
@@ -672,6 +723,8 @@ static struct crypto_key * dpp_gen_keypair(const struct dpp_curve_params *curve)
 
 static const struct dpp_curve_params *dpp_get_curve_name(const char *name)
 {
+    ESP_LOGV("FUNC", "dpp_get_curve_name");
+
 	int i;
 
 	for (i = 0; dpp_curves[i].name; i++) {
@@ -686,6 +739,8 @@ static const struct dpp_curve_params *dpp_get_curve_name(const char *name)
 
 static const struct dpp_curve_params *dpp_get_curve_jwk_crv(const char *name)
 {
+    ESP_LOGV("FUNC", "dpp_get_curve_jwk_crv");
+
 	int i;
 
 	for (i = 0; dpp_curves[i].name; i++) {
@@ -701,6 +756,8 @@ static const struct dpp_curve_params *dpp_get_curve_jwk_crv(const char *name)
 static struct crypto_key * dpp_set_keypair(const struct dpp_curve_params **curve,
 					   const u8 *privkey, size_t privkey_len)
 {
+    ESP_LOGV("FUNC", "dpp_set_keypair");
+
 	struct crypto_ec_group *group;
 	struct crypto_key *pkey = crypto_ec_get_key(privkey, privkey_len);
 	int id;
@@ -728,6 +785,8 @@ static struct crypto_key * dpp_set_keypair(const struct dpp_curve_params **curve
 
 static struct wpabuf * dpp_bootstrap_key_der(struct crypto_key *key)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_key_der");
+
 	unsigned char *der = NULL;
 	struct wpabuf *ret = NULL;
 	int der_len;
@@ -745,6 +804,8 @@ static struct wpabuf * dpp_bootstrap_key_der(struct crypto_key *key)
 
 int dpp_bootstrap_key_hash(struct dpp_bootstrap_info *bi)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_key_hash");
+
 	struct wpabuf *der;
 	int res;
 	const u8 *addr[1];
@@ -772,6 +833,8 @@ int dpp_bootstrap_key_hash(struct dpp_bootstrap_info *bi)
 char * dpp_keygen(struct dpp_bootstrap_info *bi, const char *curve,
 		  u8 *privkey, size_t privkey_len)
 {
+    ESP_LOGV("FUNC", "dpp_keygen");
+
 	char *base64 = NULL;
 	char *pos, *end;
 	size_t len;
@@ -836,6 +899,8 @@ fail:
 static int dpp_derive_k1(const u8 *Mx, size_t Mx_len, u8 *k1,
 			 unsigned int hash_len)
 {
+    ESP_LOGV("FUNC", "dpp_derive_k1");
+
 	u8 salt[DPP_MAX_HASH_LEN], prk[DPP_MAX_HASH_LEN];
 	const char *info = "first intermediate key";
 	int res;
@@ -864,6 +929,8 @@ static int dpp_derive_k1(const u8 *Mx, size_t Mx_len, u8 *k1,
 static int dpp_derive_k2(const u8 *Nx, size_t Nx_len, u8 *k2,
 			 unsigned int hash_len)
 {
+    ESP_LOGV("FUNC", "dpp_derive_k2");
+
 	u8 salt[DPP_MAX_HASH_LEN], prk[DPP_MAX_HASH_LEN];
 	const char *info = "second intermediate key";
 	int res;
@@ -893,6 +960,8 @@ static int dpp_derive_k2(const u8 *Nx, size_t Nx_len, u8 *k2,
 static int dpp_derive_ke(struct dpp_authentication *auth, u8 *ke,
 			 unsigned int hash_len)
 {
+    ESP_LOGV("FUNC", "dpp_derive_ke");
+
 	size_t nonce_len;
 	u8 nonces[2 * DPP_MAX_NONCE_LEN];
 	const char *info_ke = "DPP Key";
@@ -952,6 +1021,8 @@ static int dpp_derive_ke(struct dpp_authentication *auth, u8 *ke,
 static void dpp_build_attr_status(struct wpabuf *msg,
 				  enum dpp_status_error status)
 {
+    ESP_LOGV("FUNC", "dpp_build_attr_status");
+
 	wpa_printf(MSG_DEBUG, "DPP: Status %d", status);
 	wpabuf_put_le16(msg, DPP_ATTR_STATUS);
 	wpabuf_put_le16(msg, 1);
@@ -962,6 +1033,8 @@ static void dpp_build_attr_status(struct wpabuf *msg,
 static void dpp_build_attr_r_bootstrap_key_hash(struct wpabuf *msg,
 						const u8 *hash)
 {
+    ESP_LOGV("FUNC", "dpp_build_attr_r_bootstrap_key_hash");
+
 	if (hash) {
 		wpa_printf(MSG_DEBUG, "DPP: R-Bootstrap Key Hash");
 		wpabuf_put_le16(msg, DPP_ATTR_R_BOOTSTRAP_KEY_HASH);
@@ -974,6 +1047,8 @@ static void dpp_build_attr_r_bootstrap_key_hash(struct wpabuf *msg,
 static void dpp_build_attr_i_bootstrap_key_hash(struct wpabuf *msg,
 						const u8 *hash)
 {
+    ESP_LOGV("FUNC", "dpp_build_attr_i_bootstrap_key_hash");
+
 	if (hash) {
 		wpa_printf(MSG_DEBUG, "DPP: I-Bootstrap Key Hash");
 		wpabuf_put_le16(msg, DPP_ATTR_I_BOOTSTRAP_KEY_HASH);
@@ -990,6 +1065,8 @@ static struct wpabuf * dpp_auth_build_req(struct dpp_authentication *auth,
 					  const u8 *i_pubkey_hash,
 					  unsigned int neg_freq)
 {
+    ESP_LOGV("FUNC", "dpp_auth_build_req");
+
 	struct wpabuf *msg;
 	u8 clear[4 + DPP_MAX_NONCE_LEN + 4 + 1];
 	u8 wrapped_data[4 + DPP_MAX_NONCE_LEN + 4 + 1 + AES_BLOCK_SIZE];
@@ -1149,6 +1226,8 @@ static struct wpabuf * dpp_auth_build_resp(struct dpp_authentication *auth,
 					   size_t wrapped_r_auth_len,
 					   const u8 *siv_key)
 {
+    ESP_LOGV("FUNC", "dpp_auth_build_resp");
+
 	struct wpabuf *msg;
 #define DPP_AUTH_RESP_CLEAR_LEN 2 * (4 + DPP_MAX_NONCE_LEN) + 4 + 1 + \
 		4 + 4 + DPP_MAX_HASH_LEN + AES_BLOCK_SIZE
@@ -1313,6 +1392,8 @@ skip_wrapped_data:
 static int dpp_channel_ok_init(struct hostapd_hw_modes *own_modes,
 			       u16 num_modes, unsigned int freq)
 {
+    ESP_LOGV("FUNC", "dpp_channel_ok_init");
+
 #ifndef ESP_SUPPLICANT
 	u16 m;
 	int c, flag;
@@ -1343,6 +1424,8 @@ static int dpp_channel_ok_init(struct hostapd_hw_modes *own_modes,
 static int freq_included(const unsigned int freqs[], unsigned int num,
 			 unsigned int freq)
 {
+    ESP_LOGV("FUNC", "freq_included");
+
 	while (num > 0) {
 		if (freqs[--num] == freq)
 			return 1;
@@ -1354,6 +1437,8 @@ static int freq_included(const unsigned int freqs[], unsigned int num,
 static void freq_to_start(unsigned int freqs[], unsigned int num,
 			  unsigned int freq)
 {
+    ESP_LOGV("FUNC", "freq_to_start");
+
 	unsigned int i;
 
 	for (i = 0; i < num; i++) {
@@ -1371,6 +1456,8 @@ static int dpp_channel_intersect(struct dpp_authentication *auth,
 				 struct hostapd_hw_modes *own_modes,
 				 u16 num_modes)
 {
+    ESP_LOGV("FUNC", "dpp_channel_intersect");
+
 	struct dpp_bootstrap_info *peer_bi = auth->peer_bi;
 	unsigned int i, freq;
 
@@ -1395,6 +1482,8 @@ static int dpp_channel_local_list(struct dpp_authentication *auth,
 				  struct hostapd_hw_modes *own_modes,
 				  u16 num_modes)
 {
+    ESP_LOGV("FUNC", "dpp_channel_local_list");
+
 #ifndef ESP_SUPPLICANT
 	u16 m;
 	int c, flag;
@@ -1439,6 +1528,8 @@ static int dpp_prepare_channel_list(struct dpp_authentication *auth,
 				    struct hostapd_hw_modes *own_modes,
 				    u16 num_modes)
 {
+    ESP_LOGV("FUNC", "dpp_prepare_channel_list");
+
 	int res;
 	char freqs[DPP_BOOTSTRAP_MAX_FREQ * 6 + 10], *pos, *end;
 	unsigned int i;
@@ -1477,6 +1568,8 @@ static int dpp_prepare_channel_list(struct dpp_authentication *auth,
 
 static int dpp_autogen_bootstrap_key(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_autogen_bootstrap_key");
+
 	struct dpp_bootstrap_info *bi;
 	char *pk = NULL;
 	size_t len;
@@ -1522,6 +1615,8 @@ struct dpp_authentication * dpp_auth_init(void *msg_ctx,
 					  struct hostapd_hw_modes *own_modes,
 					  u16 num_modes)
 {
+    ESP_LOGV("FUNC", "dpp_auth_init");
+
 	struct dpp_authentication *auth;
 	size_t nonce_len;
 	size_t secret_len;
@@ -1658,6 +1753,8 @@ fail:
 static struct wpabuf * dpp_build_conf_req_attr(struct dpp_authentication *auth,
 					       const char *json)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_req_attr");
+
 	size_t nonce_len;
 	size_t json_len, clear_len;
 	struct wpabuf *clear = NULL, *msg = NULL;
@@ -1762,6 +1859,8 @@ fail:
 
 static void dpp_write_adv_proto(struct wpabuf *buf)
 {
+    ESP_LOGV("FUNC", "dpp_write_adv_proto");
+
 	/* Advertisement Protocol IE */
 	wpabuf_put_u8(buf, WLAN_EID_ADV_PROTO);
 	wpabuf_put_u8(buf, 8); /* Length */
@@ -1776,6 +1875,8 @@ static void dpp_write_adv_proto(struct wpabuf *buf)
 
 static void dpp_write_gas_query(struct wpabuf *buf, struct wpabuf *query)
 {
+    ESP_LOGV("FUNC", "dpp_write_gas_query");
+
 	/* GAS Query */
 	wpabuf_put_le16(buf, wpabuf_len(query));
 	wpabuf_put_buf(buf, query);
@@ -1785,6 +1886,8 @@ static void dpp_write_gas_query(struct wpabuf *buf, struct wpabuf *query)
 struct wpabuf * dpp_build_conf_req(struct dpp_authentication *auth,
 				   const char *json)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_req");
+
 	struct wpabuf *buf, *conf_req;
 
 	conf_req = dpp_build_conf_req_attr(auth, json);
@@ -1814,6 +1917,8 @@ struct wpabuf * dpp_build_conf_req_helper(struct dpp_authentication *auth,
 					  enum dpp_netrole netrole,
 					  const char *mud_url, int *opclasses)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_req_helper");
+
 	size_t len, name_len;
 	const char *tech = "infra";
 	const char *dpp_name;
@@ -1871,6 +1976,8 @@ struct wpabuf * dpp_build_conf_req_helper(struct dpp_authentication *auth,
 
 static void dpp_auth_success(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_auth_success");
+
 	wpa_printf(MSG_DEBUG,
 		   "DPP: Authentication success - clear temporary keys");
 	os_memset(auth->Mx, 0, sizeof(auth->Mx));
@@ -1888,6 +1995,8 @@ static void dpp_auth_success(struct dpp_authentication *auth)
 
 static int dpp_gen_r_auth(struct dpp_authentication *auth, u8 *r_auth)
 {
+    ESP_LOGV("FUNC", "dpp_gen_r_auth");
+
 	struct wpabuf *pix, *prx, *bix, *brx;
 	const u8 *addr[7];
 	size_t len[7];
@@ -1966,6 +2075,8 @@ fail:
 
 static int dpp_gen_i_auth(struct dpp_authentication *auth, u8 *i_auth)
 {
+    ESP_LOGV("FUNC", "dpp_gen_i_auth");
+
 	struct wpabuf *pix = NULL, *prx = NULL, *bix = NULL, *brx = NULL;
 	const u8 *addr[7];
 	size_t len[7];
@@ -2049,6 +2160,8 @@ fail:
 
 static int dpp_auth_derive_l_responder(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_auth_derive_l_responder");
+
 	struct crypto_ec_group *group;
 	struct crypto_ec_point *l = NULL;
 	struct crypto_ec_point *BI_point;
@@ -2099,6 +2212,8 @@ fail:
 
 static int dpp_auth_derive_l_initiator(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_auth_derive_l_initiator");
+
 	struct crypto_ec_group *group;
 	struct crypto_ec_point *l = NULL, *sum = NULL;
 	struct crypto_ec_point *BR_point, *PR_point;
@@ -2146,6 +2261,8 @@ fail:
 
 static int dpp_auth_build_resp_ok(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_auth_build_resp_ok");
+
 	size_t nonce_len;
 	size_t secret_len;
 	struct wpabuf *msg, *pr = NULL;
@@ -2331,6 +2448,8 @@ fail:
 static int dpp_auth_build_resp_status(struct dpp_authentication *auth,
 				      enum dpp_status_error status)
 {
+    ESP_LOGV("FUNC", "dpp_auth_build_resp_status");
+
 	struct wpabuf *msg;
 	const u8 *r_pubkey_hash, *i_pubkey_hash, *i_nonce;
 #ifdef CONFIG_WPA_TESTING_OPTIONS
@@ -2393,13 +2512,14 @@ static int dpp_auth_build_resp_status(struct dpp_authentication *auth,
 }
 
 
-struct dpp_authentication *
-dpp_auth_req_rx(void *msg_ctx, u8 dpp_allowed_roles, int qr_mutual,
+struct dpp_authentication * dpp_auth_req_rx(void *msg_ctx, u8 dpp_allowed_roles, int qr_mutual,
 		struct dpp_bootstrap_info *peer_bi,
 		struct dpp_bootstrap_info *own_bi,
 		unsigned int freq, const u8 *hdr, const u8 *attr_start,
 		size_t attr_len)
 {
+    ESP_LOGV("FUNC", "dpp_auth_req_rx");
+
 	struct crypto_key *pi = NULL;
 	size_t secret_len;
 	const u8 *addr[2];
@@ -2646,6 +2766,8 @@ fail:
 int dpp_notify_new_qr_code(struct dpp_authentication *auth,
 			   struct dpp_bootstrap_info *peer_bi)
 {
+    ESP_LOGV("FUNC", "dpp_notify_new_qr_code");
+
 	if (!auth || !auth->response_pending ||
 	    os_memcmp(auth->waiting_pubkey_hash, peer_bi->pubkey_hash,
 		      SHA256_MAC_LEN) != 0)
@@ -2666,6 +2788,8 @@ int dpp_notify_new_qr_code(struct dpp_authentication *auth,
 static struct wpabuf * dpp_auth_build_conf(struct dpp_authentication *auth,
 					   enum dpp_status_error status)
 {
+    ESP_LOGV("FUNC", "dpp_auth_build_conf");
+
 	struct wpabuf *msg;
 	u8 i_auth[4 + DPP_MAX_HASH_LEN];
 	size_t i_auth_len;
@@ -2841,12 +2965,13 @@ fail:
 }
 
 
-static void
-dpp_auth_resp_rx_status(struct dpp_authentication *auth, const u8 *hdr,
+static void dpp_auth_resp_rx_status(struct dpp_authentication *auth, const u8 *hdr,
 			const u8 *attr_start, size_t attr_len,
 			const u8 *wrapped_data, u16 wrapped_data_len,
 			enum dpp_status_error status)
 {
+    ESP_LOGV("FUNC", "dpp_auth_resp_rx_status");
+
 	const u8 *addr[2];
 	size_t len[2];
 	u8 *unwrapped = NULL;
@@ -2939,10 +3064,11 @@ fail:
 }
 
 
-struct wpabuf *
-dpp_auth_resp_rx(struct dpp_authentication *auth, const u8 *hdr,
+struct wpabuf * dpp_auth_resp_rx(struct dpp_authentication *auth, const u8 *hdr,
 		 const u8 *attr_start, size_t attr_len)
 {
+    ESP_LOGV("FUNC", "dpp_auth_resp_rx");
+
 	struct crypto_key *pr;
 	size_t secret_len;
 	const u8 *addr[2];
@@ -3261,6 +3387,8 @@ static int dpp_auth_conf_rx_failure(struct dpp_authentication *auth,
 				    u16 wrapped_data_len,
 				    enum dpp_status_error status)
 {
+    ESP_LOGV("FUNC", "dpp_auth_conf_rx_failure");
+
 	const u8 *addr[2];
 	size_t len[2];
 	u8 *unwrapped = NULL;
@@ -3328,6 +3456,8 @@ fail:
 int dpp_auth_conf_rx(struct dpp_authentication *auth, const u8 *hdr,
 		     const u8 *attr_start, size_t attr_len)
 {
+    ESP_LOGV("FUNC", "dpp_auth_conf_rx");
+
 	const u8 *r_bootstrap, *i_bootstrap, *wrapped_data, *status, *i_auth;
 	u16 r_bootstrap_len, i_bootstrap_len, wrapped_data_len, status_len,
 		i_auth_len;
@@ -3486,12 +3616,16 @@ fail:
 
 static int bin_str_eq(const char *val, size_t len, const char *cmp)
 {
+    ESP_LOGV("FUNC", "bin_str_eq");
+
 	return os_strlen(cmp) == len && os_memcmp(val, cmp, len) == 0;
 }
 
 
 struct dpp_configuration * dpp_configuration_alloc(const char *type)
 {
+    ESP_LOGV("FUNC", "dpp_configuration_alloc");
+
 	struct dpp_configuration *conf;
 	const char *end;
 	size_t len;
@@ -3533,6 +3667,8 @@ fail:
 
 int dpp_akm_psk(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_psk");
+
 	return akm == DPP_AKM_PSK || akm == DPP_AKM_PSK_SAE ||
 		akm == DPP_AKM_PSK_SAE_DPP;
 }
@@ -3540,6 +3676,8 @@ int dpp_akm_psk(enum dpp_akm akm)
 
 int dpp_akm_sae(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_sae");
+
 	return akm == DPP_AKM_SAE || akm == DPP_AKM_PSK_SAE ||
 		akm == DPP_AKM_SAE_DPP || akm == DPP_AKM_PSK_SAE_DPP;
 }
@@ -3547,6 +3685,8 @@ int dpp_akm_sae(enum dpp_akm akm)
 
 int dpp_akm_legacy(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_legacy");
+
 	return akm == DPP_AKM_PSK || akm == DPP_AKM_PSK_SAE ||
 		akm == DPP_AKM_SAE;
 }
@@ -3554,6 +3694,8 @@ int dpp_akm_legacy(enum dpp_akm akm)
 
 int dpp_akm_dpp(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_dpp");
+
 	return akm == DPP_AKM_DPP || akm == DPP_AKM_SAE_DPP ||
 		akm == DPP_AKM_PSK_SAE_DPP;
 }
@@ -3561,12 +3703,16 @@ int dpp_akm_dpp(enum dpp_akm akm)
 
 int dpp_akm_ver2(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_ver2");
+
 	return akm == DPP_AKM_SAE_DPP || akm == DPP_AKM_PSK_SAE_DPP;
 }
 
 
 int dpp_configuration_valid(const struct dpp_configuration *conf)
 {
+    ESP_LOGV("FUNC", "dpp_configuration_valid");
+
 	if (conf->ssid_len == 0)
 		return 0;
 	if (dpp_akm_psk(conf->akm) && !conf->passphrase && !conf->psk_set)
@@ -3579,6 +3725,8 @@ int dpp_configuration_valid(const struct dpp_configuration *conf)
 
 void dpp_configuration_free(struct dpp_configuration *conf)
 {
+    ESP_LOGV("FUNC", "dpp_configuration_free");
+
 	if (!conf)
 		return;
 	str_clear_free(conf->passphrase);
@@ -3590,6 +3738,8 @@ void dpp_configuration_free(struct dpp_configuration *conf)
 static int dpp_configuration_parse_helper(struct dpp_authentication *auth,
 					  const char *cmd, int idx)
 {
+    ESP_LOGV("FUNC", "dpp_configuration_parse_helper");
+
 	const char *pos, *end;
 	struct dpp_configuration *conf_sta = NULL, *conf_ap = NULL;
 	struct dpp_configuration *conf = NULL;
@@ -3717,6 +3867,8 @@ fail:
 static int dpp_configuration_parse(struct dpp_authentication *auth,
 				   const char *cmd)
 {
+    ESP_LOGV("FUNC", "dpp_configuration_parse");
+
 	const char *pos;
 	char *tmp;
 	size_t len;
@@ -3749,9 +3901,10 @@ fail:
 }
 
 
-static struct dpp_configurator *
-dpp_configurator_get_id(struct dpp_global *dpp, unsigned int id)
+static struct dpp_configurator * dpp_configurator_get_id(struct dpp_global *dpp, unsigned int id)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_get_id");
+
 	struct dpp_configurator *conf;
 
 	if (!dpp)
@@ -3770,6 +3923,8 @@ int dpp_set_configurator(struct dpp_global *dpp, void *msg_ctx,
 			 struct dpp_authentication *auth,
 			 const char *cmd)
 {
+    ESP_LOGV("FUNC", "dpp_set_configurator");
+
 	const char *pos;
 
 	if (!cmd)
@@ -3811,6 +3966,8 @@ int dpp_set_configurator(struct dpp_global *dpp, void *msg_ctx,
 
 void dpp_auth_deinit(struct dpp_authentication *auth)
 {
+    ESP_LOGV("FUNC", "dpp_auth_deinit");
+
 	unsigned int i;
 
 	if (!auth)
@@ -3841,10 +3998,11 @@ void dpp_auth_deinit(struct dpp_authentication *auth)
 }
 
 
-static struct wpabuf *
-dpp_build_conf_start(struct dpp_authentication *auth,
+static struct wpabuf * dpp_build_conf_start(struct dpp_authentication *auth,
 		     struct dpp_configuration *conf, size_t tailroom)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_start");
+
 	struct wpabuf *buf;
 
 #ifdef CONFIG_WPA_TESTING_OPTIONS
@@ -3892,6 +4050,8 @@ dpp_build_conf_start(struct dpp_authentication *auth,
 static int dpp_build_jwk(struct wpabuf *buf, const char *name, struct crypto_key *key,
 			 const char *kid, const struct dpp_curve_params *curve)
 {
+    ESP_LOGV("FUNC", "dpp_build_jwk");
+
 	struct wpabuf *pub;
 	const u8 *pos;
 	int ret = -1;
@@ -3927,6 +4087,8 @@ fail:
 static void dpp_build_legacy_cred_params(struct wpabuf *buf,
 					 struct dpp_configuration *conf)
 {
+    ESP_LOGV("FUNC", "dpp_build_legacy_cred_params");
+
 	if (conf->passphrase && os_strlen(conf->passphrase) < 64) {
 		json_add_string_escape(buf, "pass", conf->passphrase,
 				       os_strlen(conf->passphrase));
@@ -3943,6 +4105,8 @@ static void dpp_build_legacy_cred_params(struct wpabuf *buf,
 
 static const char * dpp_netrole_str(enum dpp_netrole netrole)
 {
+    ESP_LOGV("FUNC", "dpp_netrole_str");
+
 	switch (netrole) {
 	case DPP_NETROLE_STA:
 		return "sta";
@@ -3959,6 +4123,8 @@ int dpp_get_config_obj_hash(char *signed1, size_t signed1_len,
 		char *signed2, size_t signed2_len,
 		unsigned char *hash, int hash_len)
 {
+    ESP_LOGV("FUNC", "dpp_get_config_obj_hash");
+
 	const char *dot = ".";
 	int ret = -1;
 	const u8 *addr[3];
@@ -3979,10 +4145,11 @@ int dpp_get_config_obj_hash(char *signed1, size_t signed1_len,
 	return ret;
 }
 
-static struct wpabuf *
-dpp_build_conf_obj_dpp(struct dpp_authentication *auth,
+static struct wpabuf * dpp_build_conf_obj_dpp(struct dpp_authentication *auth,
 		       struct dpp_configuration *conf)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_obj_dpp");
+
 	struct wpabuf *buf = NULL;
 	char *signed1 = NULL, *signed2 = NULL, *signed3 = NULL;
 	size_t tailroom;
@@ -4182,10 +4349,11 @@ fail:
 	goto out;
 }
 
-static struct wpabuf *
-dpp_build_conf_obj_legacy(struct dpp_authentication *auth,
+static struct wpabuf * dpp_build_conf_obj_legacy(struct dpp_authentication *auth,
 			  struct dpp_configuration *conf)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_obj_legacy");
+
 	struct wpabuf *buf;
 	const char *akm_str;
 
@@ -4211,10 +4379,11 @@ dpp_build_conf_obj_legacy(struct dpp_authentication *auth,
 }
 
 
-static struct wpabuf *
-dpp_build_conf_obj(struct dpp_authentication *auth, enum dpp_netrole netrole,
+static struct wpabuf * dpp_build_conf_obj(struct dpp_authentication *auth, enum dpp_netrole netrole,
 		   int idx)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_obj");
+
 	struct dpp_configuration *conf = NULL;
 
 #ifdef CONFIG_WPA_TESTING_OPTIONS
@@ -4252,10 +4421,11 @@ dpp_build_conf_obj(struct dpp_authentication *auth, enum dpp_netrole netrole,
 }
 
 
-static struct wpabuf *
-dpp_build_conf_resp(struct dpp_authentication *auth, const u8 *e_nonce,
+static struct wpabuf * dpp_build_conf_resp(struct dpp_authentication *auth, const u8 *e_nonce,
 		    u16 e_nonce_len, enum dpp_netrole netrole)
 {
+    ESP_LOGV("FUNC", "dpp_build_conf_resp");
+
 	struct wpabuf *conf, *conf2 = NULL;
 	size_t clear_len, attr_len;
 	struct wpabuf *clear = NULL, *msg = NULL;
@@ -4403,10 +4573,11 @@ fail:
 }
 
 
-struct wpabuf *
-dpp_conf_req_rx(struct dpp_authentication *auth, const u8 *attr_start,
+struct wpabuf * dpp_conf_req_rx(struct dpp_authentication *auth, const u8 *attr_start,
 		size_t attr_len)
 {
+    ESP_LOGV("FUNC", "dpp_conf_req_rx");
+
 	const u8 *wrapped_data, *e_nonce, *config_attr;
 	u16 wrapped_data_len, e_nonce_len, config_attr_len;
 	u8 *unwrapped = NULL;
@@ -4551,10 +4722,11 @@ fail:
 }
 
 
-static struct wpabuf *
-dpp_parse_jws_prot_hdr(const struct dpp_curve_params *curve,
+static struct wpabuf * dpp_parse_jws_prot_hdr(const struct dpp_curve_params *curve,
 		       const u8 *prot_hdr, u16 prot_hdr_len)
 {
+    ESP_LOGV("FUNC", "dpp_parse_jws_prot_hdr");
+
 	struct json_token *root, *token;
 	struct wpabuf *kid = NULL;
 
@@ -4616,6 +4788,8 @@ fail:
 static int dpp_parse_cred_legacy(struct dpp_config_obj *conf,
 				 struct json_token *cred)
 {
+    ESP_LOGV("FUNC", "dpp_parse_cred_legacy");
+
 	struct json_token *pass, *psk_hex;
 
 	wpa_printf(MSG_DEBUG, "DPP: Legacy akm=psk credential");
@@ -4663,6 +4837,8 @@ static int dpp_parse_cred_legacy(struct dpp_config_obj *conf,
 static struct crypto_key * dpp_parse_jwk(struct json_token *jwk,
 				const struct dpp_curve_params **key_curve)
 {
+    ESP_LOGV("FUNC", "dpp_parse_jwk");
+
 	struct json_token *token;
 	const struct dpp_curve_params *curve;
 	struct wpabuf *x = NULL, *y = NULL, *a = NULL;
@@ -4743,6 +4919,8 @@ fail:
 
 int dpp_key_expired(const char *timestamp, os_time_t *expiry)
 {
+    ESP_LOGV("FUNC", "dpp_key_expired");
+
 	struct os_time now;
 	unsigned int year, month, day, hour, min, sec;
 	os_time_t utime;
@@ -4825,6 +5003,8 @@ static int dpp_parse_connector(struct dpp_authentication *auth,
 			       const unsigned char *payload,
 			       u16 payload_len)
 {
+    ESP_LOGV("FUNC", "dpp_parse_connector");
+
 	struct json_token *root, *groups, *netkey, *token;
 	int ret = -1;
 	struct crypto_key *key = NULL;
@@ -4918,6 +5098,8 @@ fail:
 
 static int dpp_check_pubkey_match(struct crypto_key *pub, struct wpabuf *r_hash)
 {
+    ESP_LOGV("FUNC", "dpp_check_pubkey_match");
+
 	struct wpabuf *uncomp;
 	int res;
 	u8 hash[SHA256_MAC_LEN];
@@ -4950,6 +5132,8 @@ static int dpp_check_pubkey_match(struct crypto_key *pub, struct wpabuf *r_hash)
 
 static void dpp_copy_csign(struct dpp_config_obj *conf, struct crypto_key *csign)
 {
+    ESP_LOGV("FUNC", "dpp_copy_csign");
+
 	unsigned char *der = NULL;
 	int der_len;
 
@@ -4964,6 +5148,8 @@ static void dpp_copy_csign(struct dpp_config_obj *conf, struct crypto_key *csign
 static void dpp_copy_netaccesskey(struct dpp_authentication *auth,
 				  struct dpp_config_obj *conf)
 {
+    ESP_LOGV("FUNC", "dpp_copy_netaccesskey");
+
 	unsigned char *der = NULL;
 	int der_len;
 
@@ -4981,10 +5167,11 @@ struct dpp_signed_connector_info {
 	size_t payload_len;
 };
 
-static enum dpp_status_error
-dpp_process_signed_connector(struct dpp_signed_connector_info *info,
+static enum dpp_status_error dpp_process_signed_connector(struct dpp_signed_connector_info *info,
 			     struct crypto_key *csign_pub, const char *connector)
 {
+    ESP_LOGV("FUNC", "dpp_process_signed_connector");
+
 	enum dpp_status_error ret = 255;
 	const char *pos, *end, *signed_start, *signed_end;
 	struct wpabuf *kid = NULL;
@@ -5103,6 +5290,8 @@ static int dpp_parse_cred_dpp(struct dpp_authentication *auth,
 			      struct dpp_config_obj *conf,
 			      struct json_token *cred)
 {
+    ESP_LOGV("FUNC", "dpp_parse_cred_dpp");
+
 	struct dpp_signed_connector_info info;
 	struct json_token *token, *csign;
 	int ret = -1;
@@ -5176,6 +5365,8 @@ fail:
 
 const char * dpp_akm_str(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_str");
+
 	switch (akm) {
 	case DPP_AKM_DPP:
 		return "dpp";
@@ -5197,6 +5388,8 @@ const char * dpp_akm_str(enum dpp_akm akm)
 
 const char * dpp_akm_selector_str(enum dpp_akm akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_selector_str");
+
 	switch (akm) {
 	case DPP_AKM_DPP:
 		return "506F9A02";
@@ -5218,6 +5411,8 @@ const char * dpp_akm_selector_str(enum dpp_akm akm)
 
 static enum dpp_akm dpp_akm_from_str(const char *akm)
 {
+    ESP_LOGV("FUNC", "dpp_akm_from_str");
+
 	const char *pos;
 	int dpp = 0, psk = 0, sae = 0;
 
@@ -5272,6 +5467,8 @@ static enum dpp_akm dpp_akm_from_str(const char *akm)
 static int dpp_parse_conf_obj(struct dpp_authentication *auth,
 			      const u8 *conf_obj, u16 conf_obj_len)
 {
+    ESP_LOGV("FUNC", "dpp_parse_conf_obj");
+
 	int ret = -1;
 	struct json_token *root, *token, *discovery, *cred;
 	struct dpp_config_obj *conf;
@@ -5388,6 +5585,8 @@ fail:
 int dpp_conf_resp_rx(struct dpp_authentication *auth,
 		     const struct wpabuf *resp)
 {
+    ESP_LOGV("FUNC", "dpp_conf_resp_rx");
+
 	const u8 *wrapped_data, *e_nonce, *status, *conf_obj;
 	u16 wrapped_data_len, e_nonce_len, status_len, conf_obj_len;
 	const u8 *addr[1];
@@ -5491,6 +5690,8 @@ fail:
 
 void dpp_configurator_free(struct dpp_configurator *conf)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_free");
+
 	if (!conf)
 		return;
 	crypto_ec_free_key(conf->csign);
@@ -5502,6 +5703,8 @@ void dpp_configurator_free(struct dpp_configurator *conf)
 int dpp_configurator_get_key(const struct dpp_configurator *conf, char *buf,
 			     size_t buflen)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_get_key");
+
 	int keylen, ret = -1;
 	unsigned char *key = NULL;
 
@@ -5519,10 +5722,11 @@ int dpp_configurator_get_key(const struct dpp_configurator *conf, char *buf,
 }
 
 
-struct dpp_configurator *
-dpp_keygen_configurator(const char *curve, u8 *privkey,
+struct dpp_configurator * dpp_keygen_configurator(const char *curve, u8 *privkey,
 			size_t privkey_len)
 {
+    ESP_LOGV("FUNC", "dpp_keygen_configurator");
+
 	struct dpp_configurator *conf;
 	struct wpabuf *csign_pub = NULL;
 	u8 kid_hash[SHA256_MAC_LEN];
@@ -5584,6 +5788,8 @@ fail:
 int dpp_configurator_own_config(struct dpp_authentication *auth,
 				const char *curve, int ap)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_own_config");
+
 	struct wpabuf *conf_obj;
 	int ret = -1;
 
@@ -5630,6 +5836,8 @@ fail:
 
 static int dpp_compatible_netrole(const char *role1, const char *role2)
 {
+    ESP_LOGV("FUNC", "dpp_compatible_netrole");
+
 	return (os_strcmp(role1, "sta") == 0 && os_strcmp(role2, "ap") == 0) ||
 		(os_strcmp(role1, "ap") == 0 && os_strcmp(role2, "sta") == 0);
 }
@@ -5638,6 +5846,8 @@ static int dpp_connector_compatible_group(struct json_token *root,
 					  const char *group_id,
 					  const char *net_role)
 {
+    ESP_LOGV("FUNC", "dpp_connector_compatible_group");
+
 	struct json_token *groups, *token;
 
 	groups = json_get_member(root, "groups");
@@ -5670,6 +5880,8 @@ static int dpp_connector_compatible_group(struct json_token *root,
 static int dpp_connector_match_groups(struct json_token *own_root,
 				      struct json_token *peer_root)
 {
+    ESP_LOGV("FUNC", "dpp_connector_match_groups");
+
 	struct json_token *groups, *token;
 
 	groups = json_get_member(peer_root, "groups");
@@ -5711,6 +5923,8 @@ static int dpp_connector_match_groups(struct json_token *own_root,
 static int dpp_derive_pmk(const u8 *Nx, size_t Nx_len, u8 *pmk,
 			  unsigned int hash_len)
 {
+    ESP_LOGV("FUNC", "dpp_derive_pmk");
+
 	u8 salt[DPP_MAX_HASH_LEN], prk[DPP_MAX_HASH_LEN];
 	const char *info = "DPP PMK";
 	int res;
@@ -5739,6 +5953,8 @@ static int dpp_derive_pmk(const u8 *Nx, size_t Nx_len, u8 *pmk,
 static int dpp_derive_pmkid(const struct dpp_curve_params *curve,
 			    struct crypto_key *own_key, struct crypto_key *peer_key, u8 *pmkid)
 {
+    ESP_LOGV("FUNC", "dpp_derive_pmkid");
+
 	struct wpabuf *nkx, *pkx;
 	int ret = -1, res;
 	const u8 *addr[2];
@@ -5776,13 +5992,14 @@ fail:
 }
 
 
-enum dpp_status_error
-dpp_peer_intro(struct dpp_introduction *intro, const char *own_connector,
+enum dpp_status_error dpp_peer_intro(struct dpp_introduction *intro, const char *own_connector,
 	       const u8 *net_access_key, size_t net_access_key_len,
 	       const u8 *csign_key, size_t csign_key_len,
 	       const u8 *peer_connector, size_t peer_connector_len,
 	       os_time_t *expiry)
 {
+    ESP_LOGV("FUNC", "dpp_peer_intro");
+
 	struct json_token *root = NULL, *netkey, *token;
 	struct json_token *own_root = NULL;
 	enum dpp_status_error ret = 255, res;
@@ -5948,11 +6165,15 @@ fail:
 static int dpp_test_gen_invalid_key(struct wpabuf *msg,
 				    const struct dpp_curve_params *curve)
 {
+    ESP_LOGV("FUNC", "dpp_test_gen_invalid_key");
+
 	return 0;
 }
 
 char * dpp_corrupt_connector_signature(const char *connector)
 {
+    ESP_LOGV("FUNC", "dpp_corrupt_connector_signature");
+
 	char *tmp, *pos, *signed3 = NULL;
 	unsigned char *signature = NULL;
 	size_t signature_len = 0, signed3_len;
@@ -6002,6 +6223,8 @@ fail:
 
 static unsigned int dpp_next_id(struct dpp_global *dpp)
 {
+    ESP_LOGV("FUNC", "dpp_next_id");
+
 	struct dpp_bootstrap_info *bi;
 	unsigned int max_id = 0;
 
@@ -6014,6 +6237,8 @@ static unsigned int dpp_next_id(struct dpp_global *dpp)
 
 static int dpp_bootstrap_del(struct dpp_global *dpp, unsigned int id)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_del");
+
 	struct dpp_bootstrap_info *bi, *tmp;
 	int found = 0;
 
@@ -6038,6 +6263,8 @@ static int dpp_bootstrap_del(struct dpp_global *dpp, unsigned int id)
 struct dpp_bootstrap_info * dpp_add_qr_code(struct dpp_global *dpp,
 					    const char *uri)
 {
+    ESP_LOGV("FUNC", "dpp_add_qr_code");
+
 	struct dpp_bootstrap_info *bi;
 
 	if (!dpp)
@@ -6057,6 +6284,8 @@ struct dpp_bootstrap_info * dpp_add_qr_code(struct dpp_global *dpp,
 struct dpp_bootstrap_info * dpp_add_nfc_uri(struct dpp_global *dpp,
 					    const char *uri)
 {
+    ESP_LOGV("FUNC", "dpp_add_nfc_uri");
+
 	struct dpp_bootstrap_info *bi;
 
 	if (!dpp)
@@ -6075,6 +6304,8 @@ struct dpp_bootstrap_info * dpp_add_nfc_uri(struct dpp_global *dpp,
 
 int dpp_bootstrap_gen(struct dpp_global *dpp, const char *cmd)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_gen");
+
 	char *chan = NULL, *mac = NULL, *info = NULL, *pk = NULL, *curve = NULL;
 	char *key = NULL;
 	u8 *privkey = NULL;
@@ -6160,9 +6391,10 @@ fail:
 }
 
 
-struct dpp_bootstrap_info *
-dpp_bootstrap_get_id(struct dpp_global *dpp, unsigned int id)
+struct dpp_bootstrap_info * dpp_bootstrap_get_id(struct dpp_global *dpp, unsigned int id)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_get_id");
+
 	struct dpp_bootstrap_info *bi;
 
 	if (!dpp)
@@ -6178,6 +6410,8 @@ dpp_bootstrap_get_id(struct dpp_global *dpp, unsigned int id)
 
 int dpp_bootstrap_remove(struct dpp_global *dpp, const char *id)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_remove");
+
 	unsigned int id_val;
 
 	if (os_strcmp(id, "*") == 0) {
@@ -6193,6 +6427,8 @@ int dpp_bootstrap_remove(struct dpp_global *dpp, const char *id)
 
 const char * dpp_bootstrap_get_uri(struct dpp_global *dpp, unsigned int id)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_get_uri");
+
 	struct dpp_bootstrap_info *bi;
 
 	bi = dpp_bootstrap_get_id(dpp, id);
@@ -6204,6 +6440,8 @@ const char * dpp_bootstrap_get_uri(struct dpp_global *dpp, unsigned int id)
 int dpp_get_bootstrap_info(struct dpp_global *dpp, int id,
 		       char *reply, int reply_size)
 {
+    ESP_LOGV("FUNC", "dpp_get_bootstrap_info");
+
 	struct dpp_bootstrap_info *bi;
 	char pkhash[2 * SHA256_MAC_LEN + 1];
 
@@ -6232,6 +6470,8 @@ void dpp_bootstrap_find_pair(struct dpp_global *dpp, const u8 *i_bootstrap,
 			     struct dpp_bootstrap_info **own_bi,
 			     struct dpp_bootstrap_info **peer_bi)
 {
+    ESP_LOGV("FUNC", "dpp_bootstrap_find_pair");
+
 	struct dpp_bootstrap_info *bi;
 
 	*own_bi = NULL;
@@ -6265,6 +6505,8 @@ void dpp_bootstrap_find_pair(struct dpp_global *dpp, const u8 *i_bootstrap,
 
 static unsigned int dpp_next_configurator_id(struct dpp_global *dpp)
 {
+    ESP_LOGV("FUNC", "dpp_next_configurator_id");
+
 	struct dpp_configurator *conf;
 	unsigned int max_id = 0;
 
@@ -6279,6 +6521,8 @@ static unsigned int dpp_next_configurator_id(struct dpp_global *dpp)
 
 int dpp_configurator_add(struct dpp_global *dpp, const char *cmd)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_add");
+
 	char *curve = NULL;
 	char *key = NULL;
 	u8 *privkey = NULL;
@@ -6316,6 +6560,8 @@ fail:
 
 static int dpp_configurator_del(struct dpp_global *dpp, unsigned int id)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_del");
+
 	struct dpp_configurator *conf, *tmp;
 	int found = 0;
 
@@ -6339,6 +6585,8 @@ static int dpp_configurator_del(struct dpp_global *dpp, unsigned int id)
 
 int dpp_configurator_remove(struct dpp_global *dpp, const char *id)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_remove");
+
 	unsigned int id_val;
 
 	if (os_strcmp(id, "*") == 0) {
@@ -6356,6 +6604,8 @@ int dpp_configurator_remove(struct dpp_global *dpp, const char *id)
 int dpp_configurator_get_key_id(struct dpp_global *dpp, unsigned int id,
 				char *buf, size_t buflen)
 {
+    ESP_LOGV("FUNC", "dpp_configurator_get_key_id");
+
 	struct dpp_configurator *conf;
 
 	conf = dpp_configurator_get_id(dpp, id);
@@ -6367,6 +6617,8 @@ int dpp_configurator_get_key_id(struct dpp_global *dpp, unsigned int id,
 
 struct dpp_global * dpp_global_init(struct dpp_global_config *config)
 {
+    ESP_LOGV("FUNC", "dpp_global_init");
+
 	struct dpp_global *dpp;
 
 	dpp = os_zalloc(sizeof(*dpp));
@@ -6383,6 +6635,8 @@ struct dpp_global * dpp_global_init(struct dpp_global_config *config)
 
 void dpp_global_clear(struct dpp_global *dpp)
 {
+    ESP_LOGV("FUNC", "dpp_global_clear");
+
 	if (!dpp)
 		return;
 
@@ -6393,6 +6647,8 @@ void dpp_global_clear(struct dpp_global *dpp)
 
 void dpp_global_deinit(struct dpp_global *dpp)
 {
+    ESP_LOGV("FUNC", "dpp_global_deinit");
+
 	dpp_global_clear(dpp);
 	os_free(dpp);
 }

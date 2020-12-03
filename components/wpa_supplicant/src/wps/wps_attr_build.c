@@ -20,6 +20,8 @@
 
 int wps_build_public_key(struct wps_data *wps, struct wpabuf *msg, wps_key_mode_t mode)
 {
+    ESP_LOGV("FUNC", "wps_build_public_key");
+
 	struct wpabuf *pubkey;
 
 	if (mode != WPS_CALC_KEY_NO_CALC) {
@@ -89,6 +91,8 @@ int wps_build_public_key(struct wps_data *wps, struct wpabuf *msg, wps_key_mode_
 
 int wps_build_req_type(struct wpabuf *msg, enum wps_request_type type)
 {
+    ESP_LOGV("FUNC", "wps_build_req_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Request Type");
 	wpabuf_put_be16(msg, ATTR_REQUEST_TYPE);
 	wpabuf_put_be16(msg, 1);
@@ -99,6 +103,8 @@ int wps_build_req_type(struct wpabuf *msg, enum wps_request_type type)
 
 int wps_build_resp_type(struct wpabuf *msg, enum wps_response_type type)
 {
+    ESP_LOGV("FUNC", "wps_build_resp_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Response Type (%d)", type);
 	wpabuf_put_be16(msg, ATTR_RESPONSE_TYPE);
 	wpabuf_put_be16(msg, 1);
@@ -109,6 +115,8 @@ int wps_build_resp_type(struct wpabuf *msg, enum wps_response_type type)
 
 int wps_build_config_methods(struct wpabuf *msg, u16 methods)
 {
+    ESP_LOGV("FUNC", "wps_build_config_methods");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Config Methods (%x)", methods);
 	wpabuf_put_be16(msg, ATTR_CONFIG_METHODS);
 	wpabuf_put_be16(msg, 2);
@@ -119,6 +127,8 @@ int wps_build_config_methods(struct wpabuf *msg, u16 methods)
 
 int wps_build_uuid_e(struct wpabuf *msg, const u8 *uuid)
 {
+    ESP_LOGV("FUNC", "wps_build_uuid_e");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * UUID-E");
 	wpabuf_put_be16(msg, ATTR_UUID_E);
 	wpabuf_put_be16(msg, WPS_UUID_LEN);
@@ -129,6 +139,8 @@ int wps_build_uuid_e(struct wpabuf *msg, const u8 *uuid)
 
 int wps_build_dev_password_id(struct wpabuf *msg, u16 id)
 {
+    ESP_LOGV("FUNC", "wps_build_dev_password_id");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Device Password ID (%d)", id);
 	wpabuf_put_be16(msg, ATTR_DEV_PASSWORD_ID);
 	wpabuf_put_be16(msg, 2);
@@ -139,6 +151,8 @@ int wps_build_dev_password_id(struct wpabuf *msg, u16 id)
 
 int wps_build_config_error(struct wpabuf *msg, u16 err)
 {
+    ESP_LOGV("FUNC", "wps_build_config_error");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Configuration Error (%d)", err);
 	wpabuf_put_be16(msg, ATTR_CONFIG_ERROR);
 	wpabuf_put_be16(msg, 2);
@@ -149,6 +163,8 @@ int wps_build_config_error(struct wpabuf *msg, u16 err)
 
 int wps_build_authenticator(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_authenticator");
+
 	u8 hash[SHA256_MAC_LEN];
 	const u8 *addr[2];
 	size_t len[2];
@@ -178,6 +194,8 @@ int wps_build_authenticator(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_version(struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_version");
+
 	/*
 	 * Note: This attribute is deprecated and set to hardcoded 0x10 for
 	 * backwards compatibility reasons. The real version negotiation is
@@ -194,6 +212,8 @@ int wps_build_version(struct wpabuf *msg)
 int wps_build_wfa_ext(struct wpabuf *msg, int req_to_enroll,
 		      const u8 *auth_macs, size_t auth_macs_count)
 {
+    ESP_LOGV("FUNC", "wps_build_wfa_ext");
+
 #ifdef CONFIG_WPS2
 	u8 *len;
 
@@ -243,6 +263,8 @@ int wps_build_wfa_ext(struct wpabuf *msg, int req_to_enroll,
 
 int wps_build_msg_type(struct wpabuf *msg, enum wps_msg_type msg_type)
 {
+    ESP_LOGV("FUNC", "wps_build_msg_type");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Message Type (%d)", msg_type);
 	wpabuf_put_be16(msg, ATTR_MSG_TYPE);
 	wpabuf_put_be16(msg, 1);
@@ -253,6 +275,8 @@ int wps_build_msg_type(struct wpabuf *msg, enum wps_msg_type msg_type)
 
 int wps_build_enrollee_nonce(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_enrollee_nonce");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Enrollee Nonce");
 	wpabuf_put_be16(msg, ATTR_ENROLLEE_NONCE);
 	wpabuf_put_be16(msg, WPS_NONCE_LEN);
@@ -263,6 +287,8 @@ int wps_build_enrollee_nonce(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_registrar_nonce(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_registrar_nonce");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Registrar Nonce");
 	wpabuf_put_be16(msg, ATTR_REGISTRAR_NONCE);
 	wpabuf_put_be16(msg, WPS_NONCE_LEN);
@@ -273,6 +299,8 @@ int wps_build_registrar_nonce(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_auth_type_flags(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_auth_type_flags");
+
 	u16 auth_types = WPS_AUTH_TYPES;
 #ifdef CONFIG_WPS2
 	auth_types &= ~WPS_AUTH_SHARED;
@@ -287,6 +315,8 @@ int wps_build_auth_type_flags(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_encr_type_flags(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_encr_type_flags");
+
 	u16 encr_types = WPS_ENCR_TYPES;
 #ifdef CONFIG_WPS2
 	encr_types &= ~WPS_ENCR_WEP;
@@ -301,6 +331,8 @@ int wps_build_encr_type_flags(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_conn_type_flags(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_conn_type_flags");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Connection Type Flags");
 	wpabuf_put_be16(msg, ATTR_CONN_TYPE_FLAGS);
 	wpabuf_put_be16(msg, 1);
@@ -311,6 +343,8 @@ int wps_build_conn_type_flags(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_assoc_state(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_assoc_state");
+
 	wpa_printf(MSG_DEBUG,  "WPS:  * Association State");
 	wpabuf_put_be16(msg, ATTR_ASSOC_STATE);
 	wpabuf_put_be16(msg, 2);
@@ -321,6 +355,8 @@ int wps_build_assoc_state(struct wps_data *wps, struct wpabuf *msg)
 
 int wps_build_key_wrap_auth(struct wps_data *wps, struct wpabuf *msg)
 {
+    ESP_LOGV("FUNC", "wps_build_key_wrap_auth");
+
 	u8 hash[SHA256_MAC_LEN];
 
 	wpa_printf(MSG_DEBUG,  "WPS:  * Key Wrap Authenticator");
@@ -336,6 +372,8 @@ int wps_build_key_wrap_auth(struct wps_data *wps, struct wpabuf *msg)
 int wps_build_encr_settings(struct wps_data *wps, struct wpabuf *msg,
 			    struct wpabuf *plain)
 {
+    ESP_LOGV("FUNC", "wps_build_encr_settings");
+
 	size_t pad_len;
 	const size_t block_size = 16;
 	u8 *iv, *data;
@@ -367,6 +405,8 @@ int wps_build_oob_dev_pw(struct wpabuf *msg, u16 dev_pw_id,
 			 const struct wpabuf *pubkey, const u8 *dev_pw,
 			 size_t dev_pw_len)
 {
+    ESP_LOGV("FUNC", "wps_build_oob_dev_pw");
+
 	size_t hash_len;
 	const u8 *addr[1];
 	u8 pubkey_hash[WPS_HASH_LEN];
@@ -388,6 +428,8 @@ int wps_build_oob_dev_pw(struct wpabuf *msg, u16 dev_pw_id,
 /* Encapsulate WPS IE data with one (or more, if needed) IE headers */
 struct wpabuf * wps_ie_encapsulate(struct wpabuf *data)
 {
+    ESP_LOGV("FUNC", "wps_ie_encapsulate");
+
 	struct wpabuf *ie;
 	const u8 *pos, *end;
 

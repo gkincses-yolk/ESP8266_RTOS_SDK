@@ -67,6 +67,8 @@ struct eap_ttls_data {
 
 static void * eap_ttls_init(struct eap_sm *sm)
 {
+    ESP_LOGV("FUNC", "eap_ttls_init");
+
 	struct eap_ttls_data *data;
 	struct eap_peer_config *config = eap_get_config(sm);
 
@@ -124,6 +126,8 @@ static void * eap_ttls_init(struct eap_sm *sm)
 static void eap_ttls_phase2_eap_deinit(struct eap_sm *sm,
 			   struct eap_ttls_data *data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_phase2_eap_deinit");
+
 	if (data->phase2_priv && data->phase2_method) {
 		data->phase2_method->deinit(sm, data->phase2_priv);
 		data->phase2_method = NULL;
@@ -133,6 +137,8 @@ static void eap_ttls_phase2_eap_deinit(struct eap_sm *sm,
 
 static void eap_ttls_deinit(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_ttls_deinit");
+
 	struct eap_ttls_data *data = priv;
 	if (data == NULL)
 		return;
@@ -148,6 +154,8 @@ static void eap_ttls_deinit(struct eap_sm *sm, void *priv)
 static u8 * eap_ttls_avp_hdr(u8 *avphdr, u32 avp_code, u32 vendor_id,
 		 int mandatory, size_t len)
 {
+    ESP_LOGV("FUNC", "eap_ttls_avp_hdr");
+
 	struct ttls_avp_vendor *avp;
 	u8 flags;
 	size_t hdrlen;
@@ -173,6 +181,8 @@ static u8 * eap_ttls_avp_add(u8 *start, u8 *avphdr, u32 avp_code,
 		 u32 vendor_id, int mandatory,
 		 const u8 *data, size_t len)
 {
+    ESP_LOGV("FUNC", "eap_ttls_avp_add");
+
 	u8 *pos;
 	pos = eap_ttls_avp_hdr(avphdr, avp_code, vendor_id, mandatory, len);
 	os_memcpy(pos, data, len);
@@ -184,6 +194,8 @@ static u8 * eap_ttls_avp_add(u8 *start, u8 *avphdr, u32 avp_code,
 static int eap_ttls_v0_derive_key(struct eap_sm *sm,
 		       struct eap_ttls_data *data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_v0_derive_key");
+
 	os_free(data->key_data);
 	data->key_data = eap_peer_tls_derive_key(sm, &data->ssl,
 						 "ttls keying material",
@@ -209,6 +221,8 @@ static int eap_ttls_v0_derive_key(struct eap_sm *sm,
 static u8 * eap_ttls_implicit_challenge(struct eap_sm *sm,
 			    struct eap_ttls_data *data, size_t len)
 {
+    ESP_LOGV("FUNC", "eap_ttls_implicit_challenge");
+
 	return eap_peer_tls_derive_key(sm, &data->ssl, "ttls challenge", len);
 }
 
@@ -217,6 +231,8 @@ static int eap_ttls_phase2_request_mschapv2(struct eap_sm *sm,
 				 struct eap_method_ret *ret,
 				 struct wpabuf **resp)
 {
+    ESP_LOGV("FUNC", "eap_ttls_phase2_request_mschapv2");
+
 #ifdef EAP_MSCHAPv2
 	struct wpabuf *msg;
 	u8 *buf, *pos, *challenge, *peer_challenge;
@@ -317,6 +333,8 @@ static int eap_ttls_phase2_request(struct eap_sm *sm,
 			struct eap_hdr *hdr,
 			struct wpabuf **resp)
 {
+    ESP_LOGV("FUNC", "eap_ttls_phase2_request");
+
 	int res = 0;
 	size_t len;
 	enum phase2_types phase2_type = data->phase2_type;
@@ -413,6 +431,8 @@ struct ttls_parse_avp {
 static int eap_ttls_parse_attr_eap(const u8 *dpos, size_t dlen,
 			struct ttls_parse_avp *parse)
 {
+    ESP_LOGV("FUNC", "eap_ttls_parse_attr_eap");
+
 	wpa_printf(MSG_DEBUG, "EAP-TTLS: AVP - EAP Message\n");
 	if (parse->eapdata == NULL) {
 		parse->eapdata = os_malloc(dlen);
@@ -442,6 +462,8 @@ static int eap_ttls_parse_attr_eap(const u8 *dpos, size_t dlen,
 static int eap_ttls_parse_avp(u8 *pos, size_t left,
 		   struct ttls_parse_avp *parse)
 {
+    ESP_LOGV("FUNC", "eap_ttls_parse_avp");
+
 	struct ttls_avp *avp;
 	u32 avp_code, avp_length, vendor_id = 0;
 	u8 avp_flags, *dpos;
@@ -520,6 +542,8 @@ static int eap_ttls_parse_avp(u8 *pos, size_t left,
 static int eap_ttls_parse_avps(struct wpabuf *in_decrypted,
 		    struct ttls_parse_avp *parse)
 {
+    ESP_LOGV("FUNC", "eap_ttls_parse_avps");
+
 	u8 *pos;
 	size_t left, pad;
 	int avp_length;
@@ -556,6 +580,8 @@ static int eap_ttls_parse_avps(struct wpabuf *in_decrypted,
 
 static u8 * eap_ttls_fake_identity_request(void)
 {
+    ESP_LOGV("FUNC", "eap_ttls_fake_identity_request");
+
 	struct eap_hdr *hdr;
 	u8 *buf;
 
@@ -583,6 +609,8 @@ static int eap_ttls_encrypt_response(struct eap_sm *sm,
 			  struct wpabuf *resp, u8 identifier,
 			  struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_encrypt_response");
+
 	if (resp == NULL)
 		return 0;
 
@@ -602,6 +630,8 @@ static int eap_ttls_process_phase2_mschapv2(struct eap_sm *sm,
 				 struct eap_method_ret *ret,
 				 struct ttls_parse_avp *parse)
 {
+    ESP_LOGV("FUNC", "eap_ttls_process_phase2_mschapv2");
+
 #ifdef EAP_MSCHAPv2
 	if (parse->mschapv2_error) {
 		wpa_printf(MSG_ERROR, "EAP-TTLS/MSCHAPV2: Received "
@@ -665,6 +695,8 @@ static int eap_ttls_process_tnc_start(struct eap_sm *sm,
 				      struct ttls_parse_avp *parse,
 				      struct wpabuf **resp)
 {
+    ESP_LOGV("FUNC", "eap_ttls_process_tnc_start");
+
 	/* TNC uses inner EAP method after non-EAP TTLS phase 2. */
 	if (parse->eapdata == NULL) {
 		wpa_printf(MSG_ERROR, "EAP-TTLS: Phase 2 received "
@@ -698,6 +730,8 @@ static int eap_ttls_process_decrypted(struct eap_sm *sm,
 			   struct wpabuf *in_decrypted,
 			   struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_process_decrypted");
+
 	struct wpabuf *resp = NULL;
 	int res;
 	enum phase2_types phase2_type = data->phase2_type;
@@ -774,6 +808,8 @@ static int eap_ttls_implicit_identity_request(struct eap_sm *sm,
 				   u8 identifier,
 				   struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_implicit_identity_request");
+
 	int retval = 0;
 	struct eap_hdr *hdr;
 	struct wpabuf *resp;
@@ -824,6 +860,8 @@ static int eap_ttls_phase2_start(struct eap_sm *sm, struct eap_ttls_data *data,
 		      struct eap_method_ret *ret, u8 identifier,
 		      struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_phase2_start");
+
 	data->phase2_start = 0;
 
 	/*
@@ -855,6 +893,8 @@ static int eap_ttls_decrypt(struct eap_sm *sm, struct eap_ttls_data *data,
 		 const struct wpabuf *in_data,
 		 struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_decrypt");
+
 	struct wpabuf *in_decrypted = NULL;
 	int retval = 0;
 	struct ttls_parse_avp parse;
@@ -929,6 +969,8 @@ static int eap_ttls_process_handshake(struct eap_sm *sm,
 			   const u8 *in_data, size_t in_len,
 			   struct wpabuf **out_data)
 {
+    ESP_LOGV("FUNC", "eap_ttls_process_handshake");
+
 	int res;
 
 	res = eap_peer_tls_process_helper(sm, &data->ssl, EAP_TYPE_TTLS,
@@ -980,6 +1022,8 @@ static void eap_ttls_check_auth_status(struct eap_sm *sm,
 			   struct eap_ttls_data *data,
 			   struct eap_method_ret *ret)
 {
+    ESP_LOGV("FUNC", "eap_ttls_check_auth_status");
+
 	if (ret->methodState == METHOD_DONE) {
 		ret->allowNotifications = FALSE;
 		if (ret->decision == DECISION_UNCOND_SUCC ||
@@ -1012,6 +1056,8 @@ static struct wpabuf * eap_ttls_process(struct eap_sm *sm, void *priv,
 		 struct eap_method_ret *ret,
 		 const struct wpabuf *reqData)
 {
+    ESP_LOGV("FUNC", "eap_ttls_process");
+
 	size_t left;
 	int res;
 	u8 flags, id;
@@ -1064,6 +1110,8 @@ static struct wpabuf * eap_ttls_process(struct eap_sm *sm, void *priv,
 
 static bool eap_ttls_has_reauth_data(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_ttls_has_reauth_data");
+
 	struct eap_ttls_data *data = priv;
 	return tls_connection_established(sm->ssl_ctx, data->ssl.conn) &&
 		data->phase2_success;
@@ -1072,6 +1120,8 @@ static bool eap_ttls_has_reauth_data(struct eap_sm *sm, void *priv)
 
 static void eap_ttls_deinit_for_reauth(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_ttls_deinit_for_reauth");
+
 	struct eap_ttls_data *data = priv;
 	wpabuf_free(data->pending_phase2_req);
 	data->pending_phase2_req = NULL;
@@ -1084,6 +1134,8 @@ static void eap_ttls_deinit_for_reauth(struct eap_sm *sm, void *priv)
 
 static void * eap_ttls_init_for_reauth(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_ttls_init_for_reauth");
+
 	struct eap_ttls_data *data = priv;
 	os_free(data->key_data);
 	data->key_data = NULL;
@@ -1107,6 +1159,8 @@ static void * eap_ttls_init_for_reauth(struct eap_sm *sm, void *priv)
 static int eap_ttls_get_status(struct eap_sm *sm, void *priv, char *buf,
 		    size_t buflen, int verbose)
 {
+    ESP_LOGV("FUNC", "eap_ttls_get_status");
+
 	struct eap_ttls_data *data = priv;
 	int len, ret;
 
@@ -1149,6 +1203,8 @@ static int eap_ttls_get_status(struct eap_sm *sm, void *priv, char *buf,
 
 static bool eap_ttls_isKeyAvailable(struct eap_sm *sm, void *priv)
 {
+    ESP_LOGV("FUNC", "eap_ttls_isKeyAvailable");
+
 	struct eap_ttls_data *data = priv;
 	return data->key_data != NULL && data->phase2_success;
 }
@@ -1156,6 +1212,8 @@ static bool eap_ttls_isKeyAvailable(struct eap_sm *sm, void *priv)
 
 static u8 * eap_ttls_getKey(struct eap_sm *sm, void *priv, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_ttls_getKey");
+
 	struct eap_ttls_data *data = priv;
 	u8 *key;
 
@@ -1175,6 +1233,8 @@ static u8 * eap_ttls_getKey(struct eap_sm *sm, void *priv, size_t *len)
 
 static u8 * eap_ttls_get_session_id(struct eap_sm *sm, void *priv, size_t *len)
 {
+    ESP_LOGV("FUNC", "eap_ttls_get_session_id");
+
 	struct eap_ttls_data *data = priv;
 	u8 *id;
 
@@ -1193,6 +1253,8 @@ static u8 * eap_ttls_get_session_id(struct eap_sm *sm, void *priv, size_t *len)
 
 int eap_peer_ttls_register(void)
 {
+    ESP_LOGV("FUNC", "eap_peer_ttls_register");
+
 	struct eap_method *eap;
 	int ret;
 
