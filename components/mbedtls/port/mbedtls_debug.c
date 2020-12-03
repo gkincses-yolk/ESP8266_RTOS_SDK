@@ -29,7 +29,10 @@ static void mbedtls_esp_debug(void *ctx, int level,
 
 void mbedtls_esp_enable_debug_log(mbedtls_ssl_config *conf, int threshold)
 {
+    printf("FUNC=mbedtls_esp_enable_debug_log");
+
     esp_log_level_t level = ESP_LOG_NONE;
+    ESP_LOGV(TAG, "log-level=%d", level);
     mbedtls_debug_set_threshold(threshold);
     mbedtls_ssl_conf_dbg(conf, mbedtls_esp_debug, NULL);
     switch(threshold) {
@@ -45,12 +48,16 @@ void mbedtls_esp_enable_debug_log(mbedtls_ssl_config *conf, int threshold)
     case 4:
         level = ESP_LOG_VERBOSE;
         break;
+    default:
+        break;
     }
     esp_log_level_set(TAG, level);
 }
 
 void mbedtls_esp_disable_debug_log(mbedtls_ssl_config *conf)
 {
+    printf("FUNC=mbedtls_esp_disable_debug_log");
+
     mbedtls_ssl_conf_dbg(conf, NULL, NULL);
 }
 

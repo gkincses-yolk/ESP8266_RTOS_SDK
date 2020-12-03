@@ -12,11 +12,13 @@
 #include "esp_heap_caps.h"
 #endif
 
+#include "esp_log.h"
+
 void* ff_memalloc (    /* Returns pointer to the allocated memory block (null on not enough core) */
     unsigned msize     /* Number of bytes to allocate */
 )
 {
-    //ESP_LOGF("FUNC", "ff_memalloc");
+    ESP_LOGV("FUNC", "ff_memalloc");
 
 #ifdef CONFIG_FATFS_ALLOC_EXTRAM_FIRST
     return heap_caps_malloc_prefer(size, 2, MALLOC_CAP_DEFAULT | MALLOC_CAP_SPIRAM,
@@ -35,7 +37,7 @@ void ff_memfree (
     void* mblock    /* Pointer to the memory block to free (nothing to do for null) */
 )
 {
-    //ESP_LOGF("FUNC", "ff_memfree");
+    ESP_LOGV("FUNC", "ff_memfree");
 
     free(mblock);   /* Free the memory block with POSIX API */
 }
@@ -59,7 +61,7 @@ int ff_cre_syncobj (    /* 1:Function succeeded, 0:Could not create the sync obj
     FF_SYNC_t *sobj     /* Pointer to return the created sync object */
 )
 {
-    //ESP_LOGF("FUNC", "ff_cre_syncobj");
+    ESP_LOGV("FUNC", "ff_cre_syncobj");
 
     *sobj = xSemaphoreCreateMutex();
     return (*sobj != NULL) ? 1 : 0;
@@ -78,7 +80,7 @@ int ff_del_syncobj (    /* 1:Function succeeded, 0:Could not delete due to an er
     FF_SYNC_t sobj      /* Sync object tied to the logical drive to be deleted */
 )
 {
-    //ESP_LOGF("FUNC", "ff_del_syncobj");
+    ESP_LOGV("FUNC", "ff_del_syncobj");
 
     vSemaphoreDelete(sobj);
     return 1;
@@ -96,7 +98,7 @@ int ff_req_grant (    /* 1:Got a grant to access the volume, 0:Could not get a g
     FF_SYNC_t sobj    /* Sync object to wait */
 )
 {
-    //ESP_LOGF("FUNC", "ff_req_grant");
+    ESP_LOGV("FUNC", "ff_req_grant");
 
     return (xSemaphoreTake(sobj, FF_FS_TIMEOUT) == pdTRUE) ? 1 : 0;
 }
@@ -112,7 +114,7 @@ void ff_rel_grant (
     FF_SYNC_t sobj    /* Sync object to be signaled */
 )
 {
-    //ESP_LOGF("FUNC", "ff_rel_grant");
+    ESP_LOGV("FUNC", "ff_rel_grant");
 
     xSemaphoreGive(sobj);
 }

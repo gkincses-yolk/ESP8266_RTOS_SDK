@@ -30,21 +30,21 @@ wl_handle_t ff_wl_handles[FF_VOLUMES] = {
 
 DSTATUS ff_wl_initialize (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_wl_initialize ");
+    ESP_LOGV("FUNC", "ff_wl_initialize ");
 
     return 0;
 }
 
 DSTATUS ff_wl_status (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_wl_status ");
+    ESP_LOGV("FUNC", "ff_wl_status ");
 
     return 0;
 }
 
 DRESULT ff_wl_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_wl_read ");
+    ESP_LOGV("FUNC", "ff_wl_read ");
 
     ESP_LOGV(TAG, "ff_wl_read - pdrv=%i, sector=%i, count=%i\n", (unsigned int)pdrv, (unsigned int)sector, (unsigned int)count);
     wl_handle_t wl_handle = ff_wl_handles[pdrv];
@@ -59,7 +59,7 @@ DRESULT ff_wl_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 
 DRESULT ff_wl_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_wl_write ");
+    ESP_LOGV("FUNC", "ff_wl_write ");
 
     ESP_LOGV(TAG, "ff_wl_write - pdrv=%i, sector=%i, count=%i\n", (unsigned int)pdrv, (unsigned int)sector, (unsigned int)count);
     wl_handle_t wl_handle = ff_wl_handles[pdrv];
@@ -79,7 +79,7 @@ DRESULT ff_wl_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 
 DRESULT ff_wl_ioctl (BYTE pdrv, BYTE cmd, void *buff)
 {
-    //ESP_LOGF("FUNC", "ff_wl_ioctl ");
+    ESP_LOGV("FUNC", "ff_wl_ioctl ");
 
     wl_handle_t wl_handle = ff_wl_handles[pdrv];
     ESP_LOGV(TAG, "ff_wl_ioctl: cmd=%i\n", cmd);
@@ -102,7 +102,7 @@ DRESULT ff_wl_ioctl (BYTE pdrv, BYTE cmd, void *buff)
 
 esp_err_t ff_diskio_register_wl_partition(BYTE pdrv, wl_handle_t flash_handle)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_register_wl_partition");
+    ESP_LOGV("FUNC", "ff_diskio_register_wl_partition");
 
     if (pdrv >= FF_VOLUMES) {
         return ESP_ERR_INVALID_ARG;
@@ -121,7 +121,7 @@ esp_err_t ff_diskio_register_wl_partition(BYTE pdrv, wl_handle_t flash_handle)
 
 BYTE ff_diskio_get_pdrv_wl(wl_handle_t flash_handle)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_get_pdrv_wl");
+    ESP_LOGV("FUNC", "ff_diskio_get_pdrv_wl");
 
     for (int i = 0; i < FF_VOLUMES; i++) {
         if (flash_handle == ff_wl_handles[i]) {
@@ -133,7 +133,7 @@ BYTE ff_diskio_get_pdrv_wl(wl_handle_t flash_handle)
 
 void ff_diskio_clear_pdrv_wl(wl_handle_t flash_handle)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_clear_pdrv_wl");
+    ESP_LOGV("FUNC", "ff_diskio_clear_pdrv_wl");
 
     for (int i = 0; i < FF_VOLUMES; i++) {
         if (flash_handle == ff_wl_handles[i]) {

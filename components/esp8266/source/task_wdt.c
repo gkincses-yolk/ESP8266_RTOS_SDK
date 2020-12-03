@@ -31,6 +31,8 @@ static const char *TAG = "wdt";
   */
 static void esp_task_wdt_isr(void *param)
 {
+    ESP_LOGV("FUNC", "esp_task_wdt_isr");
+
     extern void panicHandler(void *frame, int wdt);
     extern void *__wifi_task_top_sp(void);
 
@@ -54,6 +56,8 @@ static int s_nmi_wd_state;
 
 static void nmi_panic_wd(void)
 {
+    ESP_LOGV("FUNC", "nmi_panic_wd");
+
     extern uint32_t _chip_nmi_cnt;
     extern uint8_t _chip_nmi_stk[];
     extern void panicHandler(void *frame, int wdt);
@@ -70,6 +74,8 @@ static void nmi_panic_wd(void)
 
 static void IRAM_ATTR nmi_set_wd_time(uint32_t us)
 {
+    ESP_LOGV("FUNC", "nmi_set_wd_time");
+
     REG_WRITE(WDEVTSF0TIMER_ENA, REG_READ(WDEVTSF0TIMER_ENA) & (~WDEV_TSF0TIMER_ENA));
 
     REG_WRITE(WDEVTSFSW0_LO, 0);
@@ -86,6 +92,8 @@ static void IRAM_ATTR nmi_set_wd_time(uint32_t us)
 
 static void IRAM_ATTR nmi_check_wd(void)
 {
+    ESP_LOGV("FUNC", "nmi_check_wd");
+
     switch (s_nmi_wd_state) {
         case 0:
             s_nmi_wd_state = 1;
@@ -110,6 +118,8 @@ static void IRAM_ATTR nmi_check_wd(void)
   */
 esp_err_t esp_task_wdt_init(void)
 {
+    ESP_LOGV("FUNC", "esp_task_wdt_init");
+
     CLEAR_WDT_REG_MASK(WDT_CTL_ADDRESS, BIT0);
 
 #ifdef CONFIG_ESP_TASK_WDT_PANIC
@@ -159,6 +169,8 @@ esp_err_t esp_task_wdt_init(void)
   */
 void esp_task_wdt_reset(void)
 {
+    //ESP_LOGV("FUNC", "esp_task_wdt_reset");
+
     WDT_FEED();
 
 #ifdef CONFIG_ESP8266_NMI_WDT
@@ -171,6 +183,8 @@ void esp_task_wdt_reset(void)
   */
 void pp_soft_wdt_stop(void)
 {
+    ESP_LOGV("FUNC", "pp_soft_wdt_stop");
+
 
 }
 
@@ -179,5 +193,7 @@ void pp_soft_wdt_stop(void)
   */
 void pp_soft_wdt_restart(void)
 {
+    ESP_LOGV("FUNC", "pp_soft_wdt_restart");
+
 
 }

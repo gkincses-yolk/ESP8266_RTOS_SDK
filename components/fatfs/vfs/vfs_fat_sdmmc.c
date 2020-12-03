@@ -35,7 +35,7 @@ esp_err_t esp_vfs_fat_sdmmc_mount(const char* base_path,
     const esp_vfs_fat_mount_config_t* mount_config,
     sdmmc_card_t** out_card)
 {
-    //ESP_LOGF("FUNC", "esp_vfs_fat_sdmmc_mount");
+    ESP_LOGV("FUNC", "esp_vfs_fat_sdmmc_mount");
 
     const size_t workbuf_size = 4096;
     void* workbuf = NULL;
@@ -169,7 +169,7 @@ fail:
 
 esp_err_t esp_vfs_fat_sdmmc_unmount(void)
 {
-    //ESP_LOGF("FUNC", "esp_vfs_fat_sdmmc_unmount");
+    ESP_LOGV("FUNC", "esp_vfs_fat_sdmmc_unmount");
 
     if (s_card == NULL) {
         return ESP_ERR_INVALID_STATE;

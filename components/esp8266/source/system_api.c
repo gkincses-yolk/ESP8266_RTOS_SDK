@@ -41,6 +41,8 @@ const __attribute__((section(".SystemInfoVector.text"))) esp_sys_info_t g_esp_sy
 
 esp_err_t esp_base_mac_addr_set(uint8_t *mac)
 {
+    ESP_LOGV("FUNC", "esp_base_mac_addr_set");
+
     if (mac == NULL) {
         ESP_LOGE(TAG, "Base MAC address is NULL");
         return ESP_ERR_INVALID_ARG;
@@ -53,6 +55,8 @@ esp_err_t esp_base_mac_addr_set(uint8_t *mac)
 
 esp_err_t esp_base_mac_addr_get(uint8_t *mac)
 {
+    ESP_LOGV("FUNC", "esp_base_mac_addr_get");
+
     uint8_t null_mac[6] = {0};
 
     if (memcmp(base_mac_addr, null_mac, 6) == 0) {
@@ -67,6 +71,8 @@ esp_err_t esp_base_mac_addr_get(uint8_t *mac)
 
 esp_err_t esp_efuse_mac_get_default(uint8_t* mac)
 {
+    ESP_LOGV("FUNC", "esp_efuse_mac_get_default");
+
     uint32_t efuse[4];
 
     uint8_t efuse_crc = 0;
@@ -135,6 +141,8 @@ static const char *BACKUP_MAC_DATA_KEY = "backup_mac_data";
 
 static esp_err_t load_backup_mac_data(uint8_t *mac)
 {
+    ESP_LOGV("FUNC", "load_backup_mac_data");
+
     esp_err_t err;
     nvs_handle handle;
     uint32_t efuse[4];
@@ -220,6 +228,8 @@ static esp_err_t load_backup_mac_data(uint8_t *mac)
 
 static esp_err_t store_backup_mac_data()
 {
+    ESP_LOGV("FUNC", "store_backup_mac_data");
+
     esp_err_t err;
     nvs_handle handle;
     uint32_t efuse[4];
@@ -253,6 +263,8 @@ static esp_err_t store_backup_mac_data()
 
 esp_err_t esp_derive_mac(uint8_t* local_mac, const uint8_t* universal_mac)
 {
+    ESP_LOGV("FUNC", "esp_derive_mac");
+
     uint8_t idx;
 
     if (local_mac == NULL || universal_mac == NULL) {
@@ -275,6 +287,8 @@ esp_err_t esp_derive_mac(uint8_t* local_mac, const uint8_t* universal_mac)
 
 esp_err_t esp_read_mac(uint8_t* mac, esp_mac_type_t type)
 {
+    ESP_LOGV("FUNC", "esp_read_mac");
+
     uint8_t efuse_mac[6];
 
     if (mac == NULL) {
@@ -315,6 +329,8 @@ esp_err_t esp_read_mac(uint8_t* mac, esp_mac_type_t type)
 
 esp_err_t esp_mac_init(void)
 {
+    ESP_LOGV("FUNC", "esp_mac_init");
+
     esp_err_t ret;
     uint8_t efuse_mac[6];
 
@@ -346,6 +362,8 @@ esp_err_t esp_mac_init(void)
  */
 const char* esp_get_idf_version(void)
 {
+    ESP_LOGV("FUNC", "esp_get_idf_version");
+
     return IDF_VER;
 }
 
@@ -354,6 +372,8 @@ const char* esp_get_idf_version(void)
  */
 static void get_chip_info_esp8266(esp_chip_info_t* out_info)
 {
+    ESP_LOGV("FUNC", "get_chip_info_esp8266");
+
     memset(out_info, 0, sizeof(*out_info));
     
     out_info->model = CHIP_ESP8266;
@@ -367,6 +387,8 @@ static void get_chip_info_esp8266(esp_chip_info_t* out_info)
  */
 void esp_chip_info(esp_chip_info_t* out_info)
 {
+    ESP_LOGV("FUNC", "esp_chip_info");
+
     // Only ESP8266 is supported now, in the future call one of the
     // chip-specific functions based on sdkconfig choice
     return get_chip_info_esp8266(out_info);
@@ -377,6 +399,8 @@ void esp_chip_info(esp_chip_info_t* out_info)
   */
 uint32_t esp_get_free_heap_size(void)
 {
+    ESP_LOGV("FUNC", "esp_get_free_heap_size");
+
     return heap_caps_get_free_size(MALLOC_CAP_32BIT);
 }
 
@@ -385,6 +409,8 @@ uint32_t esp_get_free_heap_size(void)
   */
 uint32_t esp_get_minimum_free_heap_size(void)
 {
+    ESP_LOGV("FUNC", "esp_get_minimum_free_heap_size");
+
     return heap_caps_get_minimum_free_size(MALLOC_CAP_32BIT);
 }
 
@@ -393,11 +419,15 @@ uint32_t esp_get_minimum_free_heap_size(void)
  */
 uint32_t esp_get_old_sysconf_addr(void)
 {
+    ESP_LOGV("FUNC", "esp_get_old_sysconf_addr");
+
     return rtc_sys_info.old_sysconf_addr;
 }
 
 void os_update_cpu_frequency(uint32_t ticks_per_us)
 {
+    ESP_LOGV("FUNC", "os_update_cpu_frequency");
+
     extern uint32_t _xt_tick_divisor;
 
     if (REG_READ(DPORT_CTL_REG) & DPORT_CTL_DOUBLE_CLK) {

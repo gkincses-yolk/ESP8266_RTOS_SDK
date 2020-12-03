@@ -13,10 +13,21 @@
 // limitations under the License.
 #include "nvs_pagemanager.hpp"
 
+#ifdef ESP_PLATFORM
+// Uncomment this line to force output from this module
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+#else
+#define ESP_LOGD(...)
+#define ESP_LOGV(...)
+#endif
+
 namespace nvs
 {
 esp_err_t PageManager::load(uint32_t baseSector, uint32_t sectorCount)
 {
+    ESP_LOGV("FUNC", "PageManager::load");
+
     mBaseSector = baseSector;
     mPageCount = sectorCount;
     mPageList.clear();
@@ -120,6 +131,8 @@ esp_err_t PageManager::load(uint32_t baseSector, uint32_t sectorCount)
 
 esp_err_t PageManager::requestNewPage()
 {
+    ESP_LOGV("FUNC", "PageManager::requestNewPage");
+
     if (mFreePageList.empty()) {
         return ESP_ERR_NVS_INVALID_STATE;
     }
@@ -183,6 +196,8 @@ esp_err_t PageManager::requestNewPage()
 
 esp_err_t PageManager::activatePage()
 {
+    ESP_LOGV("FUNC", "PageManager::activatePage");
+
     if (mFreePageList.empty()) {
         return ESP_ERR_NVS_NOT_ENOUGH_SPACE;
     }

@@ -15,10 +15,21 @@
 
 #include <rom/crc.h>
 
+#ifdef ESP_PLATFORM
+// Uncomment this line to force output from this module
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+#else
+#define ESP_LOGD(...)
+#define ESP_LOGV(...)
+#endif
+
 namespace nvs
 {
 uint32_t Item::calculateCrc32() const
 {
+    ESP_LOGV("FUNC", "Item::calculateCrc32");
+
     uint32_t result = 0xffffffff;
     const uint8_t* p = reinterpret_cast<const uint8_t*>(this);
     result = crc32_le(result, p + offsetof(Item, nsIndex),
@@ -30,6 +41,8 @@ uint32_t Item::calculateCrc32() const
 
 uint32_t Item::calculateCrc32WithoutValue() const
 {
+    ESP_LOGV("FUNC", "Item::calculateCrc32WithoutValue");
+
     uint32_t result = 0xffffffff;
     const uint8_t* p = reinterpret_cast<const uint8_t*>(this);
     result = crc32_le(result, p + offsetof(Item, nsIndex),
@@ -40,6 +53,8 @@ uint32_t Item::calculateCrc32WithoutValue() const
 
 uint32_t Item::calculateCrc32(const uint8_t* data, size_t size)
 {
+    ESP_LOGV("FUNC", "Item::calculateCrc32");
+
     uint32_t result = 0xffffffff;
     result = crc32_le(result, data, size);
     return result;

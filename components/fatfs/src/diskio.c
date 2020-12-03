@@ -24,7 +24,7 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-    //ESP_LOGF("FUNC", "disk_status");
+    ESP_LOGV("FUNC", "disk_status");
 
 	DSTATUS stat;
 	int result;
@@ -64,7 +64,7 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-    //ESP_LOGF("FUNC", "disk_initialize");
+    ESP_LOGV("FUNC", "disk_initialize");
 
 	DSTATUS stat;
 	int result;
@@ -107,7 +107,7 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-    //ESP_LOGF("FUNC", "disk_read");
+    ESP_LOGV("FUNC", "disk_read");
 
 	DRESULT res;
 	int result;
@@ -159,7 +159,7 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-    //ESP_LOGF("FUNC", "disk_write");
+    ESP_LOGV("FUNC", "disk_write");
 
 	DRESULT res;
 	int result;
@@ -209,7 +209,7 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-    //ESP_LOGF("FUNC", "disk_ioctl");
+    ESP_LOGV("FUNC", "disk_ioctl");
 
 	DRESULT res;
 	int result;

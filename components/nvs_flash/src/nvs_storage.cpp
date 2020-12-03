@@ -18,16 +18,28 @@
 #include <sstream>
 #endif
 
+#ifdef ESP_PLATFORM
+// Uncomment this line to force output from this module
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+#else
+#define ESP_LOGD(...)
+#define ESP_LOGV(...)
+#endif
+
 namespace nvs
 {
 
 Storage::~Storage()
 {
+    ESP_LOGV("FUNC", "Storage::~Storage");
     clearNamespaces();
 }
 
 void Storage::clearNamespaces()
 {
+    ESP_LOGV("FUNC", "Storage::clearNamespaces");
+
     for (auto it = std::begin(mNamespaces); it != std::end(mNamespaces); ) {
         auto tmp = it;
         ++it;
@@ -38,6 +50,8 @@ void Storage::clearNamespaces()
 
 esp_err_t Storage::init(uint32_t baseSector, uint32_t sectorCount)
 {
+    ESP_LOGV("FUNC", "Storage::init");
+
     auto err = mPageManager.load(baseSector, sectorCount);
     if (err != ESP_OK) {
         mState = StorageState::INVALID;
@@ -71,11 +85,15 @@ esp_err_t Storage::init(uint32_t baseSector, uint32_t sectorCount)
 
 bool Storage::isValid() const
 {
+    ESP_LOGV("FUNC", "Storage::isValid");
+
     return mState == StorageState::ACTIVE;
 }
 
 esp_err_t Storage::findItem(uint8_t nsIndex, ItemType datatype, const char* key, Page* &page, Item& item)
 {
+    ESP_LOGV("FUNC", "Storage::findItem");
+
     for (auto it = std::begin(mPageManager); it != std::end(mPageManager); ++it) {
         size_t itemIndex = 0;
         auto err = it->findItem(nsIndex, datatype, key, itemIndex, item);
@@ -89,6 +107,8 @@ esp_err_t Storage::findItem(uint8_t nsIndex, ItemType datatype, const char* key,
 
 esp_err_t Storage::writeItem(uint8_t nsIndex, ItemType datatype, const char* key, const void* data, size_t dataSize)
 {
+    ESP_LOGV("FUNC", "Storage::writeItem");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -146,6 +166,8 @@ esp_err_t Storage::writeItem(uint8_t nsIndex, ItemType datatype, const char* key
 
 esp_err_t Storage::createOrOpenNamespace(const char* nsName, bool canCreate, uint8_t& nsIndex)
 {
+    ESP_LOGV("FUNC", "Storage::createOrOpenNamespace");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -189,6 +211,8 @@ esp_err_t Storage::createOrOpenNamespace(const char* nsName, bool canCreate, uin
 
 esp_err_t Storage::readItem(uint8_t nsIndex, ItemType datatype, const char* key, void* data, size_t dataSize)
 {
+    ESP_LOGV("FUNC", "Storage::readItem");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -205,6 +229,8 @@ esp_err_t Storage::readItem(uint8_t nsIndex, ItemType datatype, const char* key,
 
 esp_err_t Storage::eraseItem(uint8_t nsIndex, ItemType datatype, const char* key)
 {
+    ESP_LOGV("FUNC", "Storage::eraseItem");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -221,6 +247,8 @@ esp_err_t Storage::eraseItem(uint8_t nsIndex, ItemType datatype, const char* key
 
 esp_err_t Storage::eraseNamespace(uint8_t nsIndex)
 {
+    ESP_LOGV("FUNC", "Storage::eraseNamespace");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -242,6 +270,8 @@ esp_err_t Storage::eraseNamespace(uint8_t nsIndex)
 
 esp_err_t Storage::getItemDataSize(uint8_t nsIndex, ItemType datatype, const char* key, size_t& dataSize)
 {
+    ESP_LOGV("FUNC", "Storage::getItemDataSize");
+
     if (mState != StorageState::ACTIVE) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -259,6 +289,8 @@ esp_err_t Storage::getItemDataSize(uint8_t nsIndex, ItemType datatype, const cha
 
 void Storage::debugDump()
 {
+    ESP_LOGV("FUNC", "Storage::debugDump");
+
     for (auto p = mPageManager.begin(); p != mPageManager.end(); ++p) {
         p->debugDump();
     }
@@ -267,6 +299,8 @@ void Storage::debugDump()
 #ifndef ESP_PLATFORM
 void Storage::debugCheck()
 {
+    ESP_LOGV("FUNC", "Storage::debugCheck");
+
     std::map<std::string, Page*> keys;
     
     for (auto p = mPageManager.begin(); p != mPageManager.end(); ++p) {

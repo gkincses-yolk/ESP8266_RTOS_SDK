@@ -25,21 +25,21 @@ static const char* TAG = "diskio_sdmmc";
 
 DSTATUS ff_sdmmc_initialize (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_sdmmc_initialize ");
+    ESP_LOGV("FUNC", "ff_sdmmc_initialize ");
 
     return 0;
 }
 
 DSTATUS ff_sdmmc_status (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_sdmmc_status ");
+    ESP_LOGV("FUNC", "ff_sdmmc_status ");
 
     return 0;
 }
 
 DRESULT ff_sdmmc_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_sdmmc_read ");
+    ESP_LOGV("FUNC", "ff_sdmmc_read ");
 
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
@@ -53,7 +53,7 @@ DRESULT ff_sdmmc_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 
 DRESULT ff_sdmmc_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_sdmmc_write ");
+    ESP_LOGV("FUNC", "ff_sdmmc_write ");
 
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
@@ -67,7 +67,7 @@ DRESULT ff_sdmmc_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 
 DRESULT ff_sdmmc_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 {
-    //ESP_LOGF("FUNC", "ff_sdmmc_ioctl ");
+    ESP_LOGV("FUNC", "ff_sdmmc_ioctl ");
 
     sdmmc_card_t* card = s_cards[pdrv];
     assert(card);
@@ -88,7 +88,7 @@ DRESULT ff_sdmmc_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 
 void ff_diskio_register_sdmmc(BYTE pdrv, sdmmc_card_t* card)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_register_sdmmc");
+    ESP_LOGV("FUNC", "ff_diskio_register_sdmmc");
 
     static const ff_diskio_impl_t sdmmc_impl = {
         .init = &ff_sdmmc_initialize,

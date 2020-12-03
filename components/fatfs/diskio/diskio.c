@@ -16,6 +16,8 @@
 #include "ffconf.h"
 #include "ff.h"
 
+#include "esp_log.h"
+
 static ff_diskio_impl_t * s_impls[FF_VOLUMES] = { NULL };
 
 #if FF_MULTI_PARTITION		/* Multiple partition configuration */
@@ -27,9 +29,7 @@ PARTITION VolToPart[] = {
 
 esp_err_t ff_diskio_get_drive(BYTE* out_pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_get_drive");
-
-    //ESP_LOGF("FUNC", "ff_diskio_get_drive");
+    ESP_LOGV("FUNC", "ff_diskio_get_drive");
 
     BYTE i;
     for(i=0; i<FF_VOLUMES; i++) {
@@ -43,9 +43,7 @@ esp_err_t ff_diskio_get_drive(BYTE* out_pdrv)
 
 void ff_diskio_register(BYTE pdrv, const ff_diskio_impl_t* discio_impl)
 {
-    //ESP_LOGF("FUNC", "ff_diskio_register");
-
-    //ESP_LOGF("FUNC", "ff_diskio_register");
+    ESP_LOGV("FUNC", "ff_diskio_register");
 
     assert(pdrv < FF_VOLUMES);
 
@@ -67,38 +65,38 @@ void ff_diskio_register(BYTE pdrv, const ff_diskio_impl_t* discio_impl)
 
 DSTATUS ff_disk_initialize (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_disk_initialize ");
+    ESP_LOGV("FUNC", "ff_disk_initialize ");
 
     return s_impls[pdrv]->init(pdrv);
 }
 DSTATUS ff_disk_status (BYTE pdrv)
 {
-    //ESP_LOGF("FUNC", "ff_disk_status ");
+    ESP_LOGV("FUNC", "ff_disk_status ");
 
     return s_impls[pdrv]->status(pdrv);
 }
 DRESULT ff_disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_disk_read ");
+    ESP_LOGV("FUNC", "ff_disk_read ");
 
     return s_impls[pdrv]->read(pdrv, buff, sector, count);
 }
 DRESULT ff_disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
-    //ESP_LOGF("FUNC", "ff_disk_write ");
+    ESP_LOGV("FUNC", "ff_disk_write ");
 
     return s_impls[pdrv]->write(pdrv, buff, sector, count);
 }
 DRESULT ff_disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 {
-    //ESP_LOGF("FUNC", "ff_disk_ioctl ");
+    ESP_LOGV("FUNC", "ff_disk_ioctl ");
 
     return s_impls[pdrv]->ioctl(pdrv, cmd, buff);
 }
 
 DWORD get_fattime(void)
 {
-    //ESP_LOGF("FUNC", "get_fattime");
+    ESP_LOGV("FUNC", "get_fattime");
 
     time_t t = time(NULL);
     struct tm tmr;

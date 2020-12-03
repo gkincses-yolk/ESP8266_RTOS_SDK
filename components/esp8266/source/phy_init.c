@@ -37,6 +37,8 @@ static const char* TAG = "phy_init";
 
 static uint8_t phy_check_calibration_data(uint8_t* rf_cal_data)
 {
+    ESP_LOGV("FUNC", "phy_check_calibration_data");
+
 #define CHECK_NUM   26
 #define CHIP_ID_L   24
 #define CHIP_ID_H   25
@@ -69,6 +71,8 @@ uint32_t rx_gain_dc_table[125];
 esp_err_t esp_phy_rf_init(const esp_phy_init_data_t* init_data, esp_phy_calibration_mode_t mode,
                           esp_phy_calibration_data_t* calibration_data, phy_rf_module_t module)
 {
+    ESP_LOGV("FUNC", "esp_phy_rf_init");
+
     esp_err_t status = ESP_OK;
     uint8_t sta_mac[6];
     uint8_t *local_init_data = calloc(1, 256);
@@ -130,6 +134,8 @@ esp_err_t esp_phy_rf_init(const esp_phy_init_data_t* init_data, esp_phy_calibrat
 
 esp_err_t esp_phy_rf_deinit(phy_rf_module_t module)
 {
+    ESP_LOGV("FUNC", "esp_phy_rf_deinit");
+
     esp_err_t status = ESP_OK;
 
     return status;
@@ -141,6 +147,8 @@ esp_err_t esp_phy_rf_deinit(phy_rf_module_t module)
 
 const esp_phy_init_data_t* esp_phy_get_init_data()
 {
+    ESP_LOGV("FUNC", "esp_phy_get_init_data");
+
     const esp_partition_t* partition = esp_partition_find_first(
                                            ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_PHY, NULL);
 
@@ -179,6 +187,8 @@ const esp_phy_init_data_t* esp_phy_get_init_data()
 
 void esp_phy_release_init_data(const esp_phy_init_data_t* init_data)
 {
+    ESP_LOGV("FUNC", "esp_phy_release_init_data");
+
     free((uint8_t*) init_data - sizeof(phy_init_magic_pre));
 }
 
@@ -188,12 +198,16 @@ void esp_phy_release_init_data(const esp_phy_init_data_t* init_data)
 
 const esp_phy_init_data_t* esp_phy_get_init_data()
 {
+    ESP_LOGV("FUNC", "esp_phy_get_init_data");
+
     ESP_LOGD(TAG, "loading PHY init data from application binary");
     return &phy_init_data;
 }
 
 void esp_phy_release_init_data(const esp_phy_init_data_t* init_data)
 {
+    ESP_LOGV("FUNC", "esp_phy_release_init_data");
+
     // no-op
 }
 #endif // CONFIG_ESP_PHY_INIT_DATA_IN_PARTITION
@@ -212,6 +226,8 @@ static esp_err_t store_cal_data_to_nvs_handle(nvs_handle handle,
 
 esp_err_t esp_phy_load_cal_data_from_nvs(esp_phy_calibration_data_t* out_cal_data)
 {
+    ESP_LOGV("FUNC", "esp_phy_load_cal_data_from_nvs");
+
     nvs_handle handle;
     esp_err_t err = nvs_open(PHY_NAMESPACE, NVS_READONLY, &handle);
 
@@ -230,6 +246,8 @@ esp_err_t esp_phy_load_cal_data_from_nvs(esp_phy_calibration_data_t* out_cal_dat
 
 esp_err_t esp_phy_store_cal_data_to_nvs(const esp_phy_calibration_data_t* cal_data)
 {
+    ESP_LOGV("FUNC", "esp_phy_store_cal_data_to_nvs");
+
     nvs_handle handle;
     esp_err_t err = nvs_open(PHY_NAMESPACE, NVS_READWRITE, &handle);
 
@@ -246,6 +264,8 @@ esp_err_t esp_phy_store_cal_data_to_nvs(const esp_phy_calibration_data_t* cal_da
 static esp_err_t load_cal_data_from_nvs_handle(nvs_handle handle,
         esp_phy_calibration_data_t* out_cal_data)
 {
+    ESP_LOGV("FUNC", "load_cal_data_from_nvs_handle");
+
     esp_err_t err;
 
     size_t length = sizeof(out_cal_data->rf_cal_data);
@@ -281,6 +301,8 @@ static esp_err_t load_cal_data_from_nvs_handle(nvs_handle handle,
 static esp_err_t store_cal_data_to_nvs_handle(nvs_handle handle,
         const esp_phy_calibration_data_t* cal_data)
 {
+    ESP_LOGV("FUNC", "store_cal_data_to_nvs_handle");
+
     esp_err_t err;
 
     err = nvs_set_blob(handle, PHY_CAL_DATA_KEY, cal_data->rf_cal_data, sizeof(cal_data->rf_cal_data));
@@ -308,6 +330,8 @@ static esp_err_t store_cal_data_to_nvs_handle(nvs_handle handle,
 
 void esp_phy_load_cal_and_init(phy_rf_module_t module)
 {
+    ESP_LOGV("FUNC", "esp_phy_load_cal_and_init");
+
     esp_phy_calibration_data_t* cal_data =
         (esp_phy_calibration_data_t*) calloc(sizeof(esp_phy_calibration_data_t), 1);
 
@@ -356,6 +380,8 @@ void esp_phy_load_cal_and_init(phy_rf_module_t module)
 
 uint16_t esp_wifi_get_vdd33(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_get_vdd33");
+
     if (phy_init_data.params[107] != 0xFF) {
         ESP_LOGE(TAG, "Please set VDD33 const to 0xff");
         return 0xFFFF;
@@ -373,6 +399,8 @@ uint16_t esp_wifi_get_vdd33(void)
 
 void esp_wifi_set_max_tx_power_via_vdd33(uint16_t vdd33)
 {
+    ESP_LOGV("FUNC", "esp_wifi_set_max_tx_power_via_vdd33");
+
     extern void phy_vdd33_set_tpw(uint16_t vdd33);
     phy_vdd33_set_tpw(vdd33);
 }
@@ -387,6 +415,8 @@ int phy_printf(const char *fmt, ...)
 
 void esp_phy_init_clk(void)
 {
+    ESP_LOGV("FUNC", "esp_phy_init_clk");
+
     uint8_t buf[128];
     const esp_phy_init_data_t *init_data;
 #ifdef CONFIG_CONSOLE_UART_BAUDRATE

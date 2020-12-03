@@ -14,15 +14,27 @@
 
 #include "nvs_item_hash_list.hpp"
 
+#ifdef ESP_PLATFORM
+// Uncomment this line to force output from this module
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+#else
+#define ESP_LOGD(...)
+#define ESP_LOGV(...)
+#endif
+
 namespace nvs
 {
 
 HashList::HashList()
 {
+    ESP_LOGV("FUNC", "HashList::HashList");
 }
     
 void HashList::clear()
 {
+    ESP_LOGV("FUNC", "HashList::clear");
+
     for (auto it = mBlockList.begin(); it != mBlockList.end();) {
         auto tmp = it;
         ++it;
@@ -33,17 +45,21 @@ void HashList::clear()
     
 HashList::~HashList()
 {
+    ESP_LOGV("FUNC", "HashList::~HashList");
     clear();
 }
 
 HashList::HashListBlock::HashListBlock()
 {
+    ESP_LOGV("FUNC", "HashList::HashListBlock::HashListBlock");
     static_assert(sizeof(HashListBlock) == HashListBlock::BYTE_SIZE,
                   "cache block size calculation incorrect");
 }
 
 void HashList::insert(const Item& item, size_t index)
 {
+    ESP_LOGV("FUNC", "HashList::insert");
+
     const uint32_t hash_24 = item.calculateCrc32WithoutValue() & 0xffffff;
     // add entry to the end of last block if possible
     if (mBlockList.size()) {
@@ -62,6 +78,8 @@ void HashList::insert(const Item& item, size_t index)
 
 void HashList::erase(size_t index, bool itemShouldExist)
 {
+    ESP_LOGV("FUNC", "HashList::erase");
+
     for (auto it = mBlockList.begin(); it != mBlockList.end();) {
         bool haveEntries = false;
         for (size_t i = 0; i < it->mCount; ++i) {
@@ -89,6 +107,8 @@ void HashList::erase(size_t index, bool itemShouldExist)
 
 size_t HashList::find(size_t start, const Item& item)
 {
+    ESP_LOGV("FUNC", "HashList::find");
+
     const uint32_t hash_24 = item.calculateCrc32WithoutValue() & 0xffffff;
     for (auto it = mBlockList.begin(); it != mBlockList.end(); ++it) {
         for (size_t index = 0; index < it->mCount; ++index) {

@@ -16,11 +16,22 @@
 #include <cstdio>
 #include <cstring>
 
+#ifdef ESP_PLATFORM
+// Uncomment this line to force output from this module
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+#else
+#define ESP_LOGD(...)
+#define ESP_LOGV(...)
+#endif
+
 namespace nvs
 {
 
 uint32_t Page::Header::calculateCrc32()
 {
+    ESP_LOGV("FUNC", "Page::Header::calculateCrc32");
+
     return crc32_le(0xffffffff,
                     reinterpret_cast<uint8_t*>(this) + offsetof(Header, mSeqNumber),
                     offsetof(Header, mCrc32) - offsetof(Header, mSeqNumber));
@@ -28,6 +39,8 @@ uint32_t Page::Header::calculateCrc32()
 
 esp_err_t Page::load(uint32_t sectorNumber)
 {
+    ESP_LOGV("FUNC", "Page::load");
+
     mBaseAddress = sectorNumber * SEC_SIZE;
     mUsedEntryCount = 0;
     mErasedEntryCount = 0;
@@ -82,6 +95,8 @@ esp_err_t Page::load(uint32_t sectorNumber)
 
 esp_err_t Page::writeEntry(const Item& item)
 {
+    ESP_LOGV("FUNC", "Page::writeEntry");
+
     auto rc = spi_flash_write(getEntryAddress(mNextFreeEntry), &item, sizeof(item));
     if (rc != ESP_OK) {
         mState = PageState::INVALID;
@@ -105,6 +120,8 @@ esp_err_t Page::writeEntry(const Item& item)
     
 esp_err_t Page::writeEntryData(const uint8_t* data, size_t size)
 {
+    ESP_LOGV("FUNC", "Page::writeEntryData");
+
     assert(size % ENTRY_SIZE == 0);
     assert(mNextFreeEntry != INVALID_ENTRY);
     assert(mFirstUsedEntry != INVALID_ENTRY);
@@ -149,6 +166,8 @@ esp_err_t Page::writeEntryData(const uint8_t* data, size_t size)
 
 esp_err_t Page::writeItem(uint8_t nsIndex, ItemType datatype, const char* key, const void* data, size_t dataSize)
 {
+    ESP_LOGV("FUNC", "Page::writeItem");
+
     Item item;
     esp_err_t err;
     
@@ -239,6 +258,8 @@ esp_err_t Page::writeItem(uint8_t nsIndex, ItemType datatype, const char* key, c
 
 esp_err_t Page::readItem(uint8_t nsIndex, ItemType datatype, const char* key, void* data, size_t dataSize)
 {
+    ESP_LOGV("FUNC", "Page::readItem");
+
     size_t index = 0;
     Item item;
     
@@ -290,6 +311,8 @@ esp_err_t Page::readItem(uint8_t nsIndex, ItemType datatype, const char* key, vo
 
 esp_err_t Page::eraseItem(uint8_t nsIndex, ItemType datatype, const char* key)
 {
+    ESP_LOGV("FUNC", "Page::eraseItem");
+
     size_t index = 0;
     Item item;
     esp_err_t rc = findItem(nsIndex, datatype, key, index, item);
@@ -301,6 +324,8 @@ esp_err_t Page::eraseItem(uint8_t nsIndex, ItemType datatype, const char* key)
 
 esp_err_t Page::findItem(uint8_t nsIndex, ItemType datatype, const char* key)
 {
+    ESP_LOGV("FUNC", "Page::findItem");
+
     size_t index = 0;
     Item item;
     return findItem(nsIndex, datatype, key, index, item);
@@ -308,6 +333,8 @@ esp_err_t Page::findItem(uint8_t nsIndex, ItemType datatype, const char* key)
 
 esp_err_t Page::eraseEntryAndSpan(size_t index)
 {
+    ESP_LOGV("FUNC", "Page::eraseEntryAndSpan");
+
     auto state = mEntryTable.get(index);
     assert(state == EntryState::WRITTEN || state == EntryState::EMPTY);
 
@@ -364,6 +391,8 @@ esp_err_t Page::eraseEntryAndSpan(size_t index)
 
 void Page::updateFirstUsedEntry(size_t index, size_t span)
 {
+    ESP_LOGV("FUNC", "Page::updateFirstUsedEntry");
+
     assert(index == mFirstUsedEntry);
     mFirstUsedEntry = INVALID_ENTRY;
     size_t end = mNextFreeEntry;
@@ -380,6 +409,8 @@ void Page::updateFirstUsedEntry(size_t index, size_t span)
 
 esp_err_t Page::copyItems(Page& other)
 {
+    ESP_LOGV("FUNC", "Page::copyItems");
+
     if (mFirstUsedEntry == INVALID_ENTRY) {
         return ESP_ERR_NVS_NOT_FOUND;
     }
@@ -431,6 +462,8 @@ esp_err_t Page::copyItems(Page& other)
 
 esp_err_t Page::mLoadEntryTable()
 {
+    ESP_LOGV("FUNC", "Page::mLoadEntryTable");
+
     // for states where we actually care about data in the page, read entry state table
     if (mState == PageState::ACTIVE ||
             mState == PageState::FULL ||
@@ -617,6 +650,8 @@ esp_err_t Page::mLoadEntryTable()
 
 esp_err_t Page::initialize()
 {
+    ESP_LOGV("FUNC", "Page::initialize");
+
     assert(mState == PageState::UNINITIALIZED);
     mState = PageState::ACTIVE;
     Header header;
@@ -637,6 +672,8 @@ esp_err_t Page::initialize()
 
 esp_err_t Page::alterEntryState(size_t index, EntryState state)
 {
+    ESP_LOGV("FUNC", "Page::alterEntryState");
+
     assert(index < ENTRY_COUNT);
     mEntryTable.set(index, state);
     size_t wordToWrite = mEntryTable.getWordIndex(index);
@@ -652,6 +689,8 @@ esp_err_t Page::alterEntryState(size_t index, EntryState state)
 
 esp_err_t Page::alterEntryRangeState(size_t begin, size_t end, EntryState state)
 {
+    ESP_LOGV("FUNC", "Page::alterEntryRangeState");
+
     assert(end <= ENTRY_COUNT);
     assert(end > begin);
     size_t wordIndex = mEntryTable.getWordIndex(end - 1);
@@ -678,6 +717,8 @@ esp_err_t Page::alterEntryRangeState(size_t begin, size_t end, EntryState state)
 
 esp_err_t Page::alterPageState(PageState state)
 {
+    ESP_LOGV("FUNC", "Page::alterPageState");
+
     uint32_t state_val = static_cast<uint32_t>(state);
     auto rc = spi_flash_write(mBaseAddress, &state_val, sizeof(state));
     if (rc != ESP_OK) {
@@ -690,6 +731,8 @@ esp_err_t Page::alterPageState(PageState state)
 
 esp_err_t Page::readEntry(size_t index, Item& dst) const
 {
+    ESP_LOGV("FUNC", "Page::readEntry");
+
     auto rc = spi_flash_read(getEntryAddress(index), &dst, sizeof(dst));
     if (rc != ESP_OK) {
         return rc;
@@ -699,6 +742,8 @@ esp_err_t Page::readEntry(size_t index, Item& dst) const
 
 esp_err_t Page::findItem(uint8_t nsIndex, ItemType datatype, const char* key, size_t &itemIndex, Item& item)
 {
+    ESP_LOGV("FUNC", "Page::findItem");
+
     if (mState == PageState::CORRUPT || mState == PageState::INVALID || mState == PageState::UNINITIALIZED) {
         return ESP_ERR_NVS_NOT_FOUND;
     }
@@ -776,6 +821,8 @@ esp_err_t Page::findItem(uint8_t nsIndex, ItemType datatype, const char* key, si
 
 esp_err_t Page::getSeqNumber(uint32_t& seqNumber) const
 {
+    ESP_LOGV("FUNC", "Page::getSeqNumber");
+
     if (mState != PageState::UNINITIALIZED && mState != PageState::INVALID && mState != PageState::CORRUPT) {
         seqNumber = mSeqNumber;
         return ESP_OK;
@@ -786,6 +833,8 @@ esp_err_t Page::getSeqNumber(uint32_t& seqNumber) const
 
 esp_err_t Page::setSeqNumber(uint32_t seqNumber)
 {
+    ESP_LOGV("FUNC", "Page::setSeqNumber");
+
     if (mState != PageState::UNINITIALIZED) {
         return ESP_ERR_NVS_INVALID_STATE;
     }
@@ -795,6 +844,8 @@ esp_err_t Page::setSeqNumber(uint32_t seqNumber)
 
 esp_err_t Page::erase()
 {
+    ESP_LOGV("FUNC", "Page::erase");
+
     auto sector = mBaseAddress / SPI_FLASH_SEC_SIZE;
     auto rc = spi_flash_erase_sector(sector);
     if (rc != ESP_OK) {
@@ -812,6 +863,8 @@ esp_err_t Page::erase()
 
 esp_err_t Page::markFreeing()
 {
+    ESP_LOGV("FUNC", "Page::markFreeing");
+
     if (mState != PageState::FULL && mState != PageState::ACTIVE) {
         return ESP_ERR_NVS_INVALID_STATE;
     }
@@ -820,6 +873,8 @@ esp_err_t Page::markFreeing()
 
 esp_err_t Page::markFull()
 {
+    ESP_LOGV("FUNC", "Page::markFull");
+
     if (mState != PageState::ACTIVE) {
         return ESP_ERR_NVS_INVALID_STATE;
     }
@@ -828,6 +883,8 @@ esp_err_t Page::markFull()
     
 const char* Page::pageStateToName(PageState ps)
 {
+    ESP_LOGV("FUNC", "Page::pageStateToName");
+
     switch (ps) {
         case PageState::CORRUPT:
             return "CORRUPT";
@@ -855,6 +912,8 @@ const char* Page::pageStateToName(PageState ps)
 
 void Page::debugDump() const
 {
+    ESP_LOGV("FUNC", "Page::debugDump");
+
     printf("state=%x (%s) addr=%x seq=%d\nfirstUsed=%d nextFree=%d used=%d erased=%d\n", (uint32_t) mState, pageStateToName(mState), mBaseAddress, mSeqNumber, static_cast<int>(mFirstUsedEntry), static_cast<int>(mNextFreeEntry), mUsedEntryCount, mErasedEntryCount);
     size_t skip = 0;
     for (size_t i = 0; i < ENTRY_COUNT; ++i) {

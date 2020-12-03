@@ -36,11 +36,15 @@ static uint32_t s_reset_reason;
 
 static inline void esp_reset_reason_clear_hint()
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_clear_hint");
+
     rtc_sys_info.hint = 0;
 }
 
 static inline uint32_t esp_reset_reason_get_hint(uint32_t hw_reset)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_get_hint");
+
     if (hw_reset == POWERON_RESET && ((rtc_sys_info.hint != ESP_RST_SW) && (rtc_sys_info.hint != ESP_RST_FAST_SW)))
         rtc_sys_info.hint = 0;
 
@@ -49,18 +53,24 @@ static inline uint32_t esp_reset_reason_get_hint(uint32_t hw_reset)
 
 static inline uint32_t esp_rtc_get_reset_reason(void)
 {
+    ESP_LOGV("FUNC", "esp_rtc_get_reset_reason");
+
     return GET_PERI_REG_BITS(RTC_RESET_HW_CAUSE_REG, RTC_RESET_HW_CAUSE_MSB, RTC_RESET_HW_CAUSE_LSB);
 }
 
 #if CONFIG_RESET_REASON_CHECK_WAKEUP
 static inline uint32_t esp_rtc_get_wakeup_reason(void)
 {
+    ESP_LOGV("FUNC", "esp_rtc_get_wakeup_reason");
+
     return GET_PERI_REG_BITS(RTC_WAKEUP_HW_CAUSE_REG, RTC_WAKEUP_HW_CAUSE_MSB, RTC_WAKEUP_HW_CAUSE_LSB);
 }
 #endif
 
 static inline uint32_t get_reset_reason(uint32_t rtc_reset_reason, uint32_t reset_reason_hint)
 {
+    ESP_LOGV("FUNC", "get_reset_reason");
+
     switch (rtc_reset_reason) {
         case POWERON_RESET:
             if (reset_reason_hint == ESP_RST_SW ||
@@ -95,6 +105,8 @@ static inline uint32_t get_reset_reason(uint32_t rtc_reset_reason, uint32_t rese
  */
 static void __esp_reset_reason_init(int init)
 {
+    ESP_LOGV("FUNC", "__esp_reset_reason_init");
+
     const uint32_t hw_reset = esp_rtc_get_reset_reason();
 #if CONFIG_RESET_REASON_CHECK_WAKEUP
     const uint32_t hw_wakeup = esp_rtc_get_wakeup_reason();
@@ -117,6 +129,8 @@ static void __esp_reset_reason_init(int init)
  */
 void esp_reset_reason_init(void)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_init");
+
     __esp_reset_reason_init(1);
 }
 
@@ -127,6 +141,8 @@ void esp_reset_reason_init(void)
  */
 void esp_reset_reason_set_hint(esp_reset_reason_t hint)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_set_hint");
+
     rtc_sys_info.hint = hint;
 }
 
@@ -135,6 +151,8 @@ void esp_reset_reason_set_hint(esp_reset_reason_t hint)
  */
 esp_reset_reason_t esp_reset_reason(void)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason");
+
     return (esp_reset_reason_t)s_reset_reason;
 }
 
@@ -145,6 +163,8 @@ esp_reset_reason_t esp_reset_reason(void)
  */
 void esp_reset_reason_set_hint(esp_reset_reason_t hint)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_set_hint");
+
 
 }
 
@@ -155,6 +175,8 @@ void esp_reset_reason_set_hint(esp_reset_reason_t hint)
  */
 esp_reset_reason_t esp_reset_reason_early(void)
 {
+    ESP_LOGV("FUNC", "esp_reset_reason_early");
+
     __esp_reset_reason_init(0);
 
     return (esp_reset_reason_t)s_reset_reason;

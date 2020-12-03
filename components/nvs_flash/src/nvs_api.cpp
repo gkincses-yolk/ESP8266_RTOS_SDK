@@ -21,11 +21,12 @@
 
 #ifdef ESP_PLATFORM
 // Uncomment this line to force output from this module
-// #define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
 #include "esp_log.h"
 static const char* TAG = "nvs";
 #else
 #define ESP_LOGD(...)
+#define ESP_LOGV(...)
 #endif
 
 class HandleEntry : public intrusive_list_node<HandleEntry>
@@ -61,6 +62,8 @@ static intrusive_list<nvs::Storage> s_nvs_storage_list;
 
 static nvs::Storage* lookup_storage_from_name(const char *name)
 {
+    ESP_LOGV("FUNC", "lookup_storage_from_name");
+
     auto it = find_if(begin(s_nvs_storage_list), end(s_nvs_storage_list), [=](Storage& e) -> bool {
         return (strcmp(e.getPartName(), name) == 0);
     });
@@ -73,6 +76,8 @@ static nvs::Storage* lookup_storage_from_name(const char *name)
 
 extern "C" void nvs_dump(const char *partName)
 {
+    ESP_LOGV("FUNC", "nvs_dump");
+
     Lock lock;
     nvs::Storage* pStorage;
 
@@ -87,6 +92,8 @@ extern "C" void nvs_dump(const char *partName)
 
 extern "C" esp_err_t nvs_flash_init_custom(const char *partName, uint32_t baseSector, uint32_t sectorCount)
 {
+    ESP_LOGV("FUNC", "nvs_flash_init_custom");
+
     ESP_LOGD(TAG, "nvs_flash_init_custom partition=%s start=%d count=%d", partName, baseSector, sectorCount);
     nvs::Storage* new_storage = NULL;
     nvs::Storage* storage = lookup_storage_from_name(partName);
@@ -109,6 +116,8 @@ extern "C" esp_err_t nvs_flash_init_custom(const char *partName, uint32_t baseSe
 #ifdef ESP_PLATFORM
 extern "C" esp_err_t nvs_flash_init_partition(const char *part_name)
 {
+    ESP_LOGV("FUNC", "nvs_flash_init_partition");
+
     Lock::init();
     Lock lock;
     nvs::Storage* mStorage;
@@ -130,11 +139,15 @@ extern "C" esp_err_t nvs_flash_init_partition(const char *part_name)
 
 extern "C" esp_err_t nvs_flash_init(void)
 {
+    ESP_LOGV("FUNC", "nvs_flash_init");
+
     return nvs_flash_init_partition(NVS_DEFAULT_PART_NAME);
 }
 
 extern "C" esp_err_t nvs_flash_deinit_partition(const char* partition_name)
 {
+    ESP_LOGV("FUNC", "nvs_flash_deinit_partition");
+
     Lock::init();
     Lock lock;
 
@@ -166,11 +179,15 @@ extern "C" esp_err_t nvs_flash_deinit_partition(const char* partition_name)
 
 extern "C" esp_err_t nvs_flash_deinit(void)
 {
+    ESP_LOGV("FUNC", "nvs_flash_deinit");
+
     return nvs_flash_deinit_partition(NVS_DEFAULT_PART_NAME);
 }
 
 extern "C" esp_err_t nvs_flash_erase_partition(const char *part_name)
 {
+    ESP_LOGV("FUNC", "nvs_flash_erase_partition");
+
     const esp_partition_t* partition = esp_partition_find_first(
             ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS, part_name);
     if (partition == NULL) {
@@ -182,12 +199,16 @@ extern "C" esp_err_t nvs_flash_erase_partition(const char *part_name)
 
 extern "C" esp_err_t nvs_flash_erase()
 {
+    ESP_LOGV("FUNC", "nvs_flash_erase");
+
     return nvs_flash_erase_partition(NVS_DEFAULT_PART_NAME);
 }
 #endif
 
 static esp_err_t nvs_find_ns_handle(nvs_handle handle, HandleEntry& entry)
 {
+    ESP_LOGV("FUNC", "nvs_find_ns_handle");
+
     auto it = find_if(begin(s_nvs_handles), end(s_nvs_handles), [=](HandleEntry& e) -> bool {
         return e.mHandle == handle;
     });
@@ -200,6 +221,8 @@ static esp_err_t nvs_find_ns_handle(nvs_handle handle, HandleEntry& entry)
 
 extern "C" esp_err_t nvs_open_from_partition(const char *part_name, const char* name, nvs_open_mode open_mode, nvs_handle *out_handle)
 {
+    ESP_LOGV("FUNC", "nvs_open_from_partition");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s %d", __func__, name, open_mode);
     uint8_t nsIndex;
@@ -225,6 +248,8 @@ extern "C" esp_err_t nvs_open_from_partition(const char *part_name, const char* 
 
 extern "C" esp_err_t nvs_open(const char* name, nvs_open_mode open_mode, nvs_handle *out_handle)
 {
+    ESP_LOGV("FUNC", "nvs_open");
+
     if (s_nvs_storage_list.size() == 0) {
         return ESP_ERR_NVS_NOT_INITIALIZED;
     }
@@ -234,6 +259,8 @@ extern "C" esp_err_t nvs_open(const char* name, nvs_open_mode open_mode, nvs_han
 
 extern "C" void nvs_close(nvs_handle handle)
 {
+    ESP_LOGV("FUNC", "nvs_close");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %d", __func__, handle);
     auto it = find_if(begin(s_nvs_handles), end(s_nvs_handles), [=](HandleEntry& e) -> bool {
@@ -248,6 +275,8 @@ extern "C" void nvs_close(nvs_handle handle)
 
 extern "C" esp_err_t nvs_erase_key(nvs_handle handle, const char* key)
 {
+    ESP_LOGV("FUNC", "nvs_erase_key");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s\r\n", __func__, key);
     HandleEntry entry;
@@ -263,6 +292,8 @@ extern "C" esp_err_t nvs_erase_key(nvs_handle handle, const char* key)
 
 extern "C" esp_err_t nvs_erase_all(nvs_handle handle)
 {
+    ESP_LOGV("FUNC", "nvs_erase_all");
+
     Lock lock;
     ESP_LOGD(TAG, "%s\r\n", __func__);
     HandleEntry entry;
@@ -279,6 +310,8 @@ extern "C" esp_err_t nvs_erase_all(nvs_handle handle)
 template<typename T>
 static esp_err_t nvs_set(nvs_handle handle, const char* key, T value)
 {
+    ESP_LOGV("FUNC", "nvs_set");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s %d %d", __func__, key, sizeof(T), (uint32_t) value);
     HandleEntry entry;
@@ -294,46 +327,64 @@ static esp_err_t nvs_set(nvs_handle handle, const char* key, T value)
 
 extern "C" esp_err_t nvs_set_i8  (nvs_handle handle, const char* key, int8_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_i8");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_u8  (nvs_handle handle, const char* key, uint8_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_u8");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_i16 (nvs_handle handle, const char* key, int16_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_i16");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_u16 (nvs_handle handle, const char* key, uint16_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_u16");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_i32 (nvs_handle handle, const char* key, int32_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_i32");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_u32 (nvs_handle handle, const char* key, uint32_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_u32");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_i64 (nvs_handle handle, const char* key, int64_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_i64");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_set_u64 (nvs_handle handle, const char* key, uint64_t value)
 {
+    ESP_LOGV("FUNC", "nvs_set_u64");
+
     return nvs_set(handle, key, value);
 }
 
 extern "C" esp_err_t nvs_commit(nvs_handle handle)
 {
+    ESP_LOGV("FUNC", "nvs_commit");
+
     Lock lock;
     // no-op for now, to be used when intermediate cache is added
     HandleEntry entry;
@@ -342,6 +393,8 @@ extern "C" esp_err_t nvs_commit(nvs_handle handle)
 
 extern "C" esp_err_t nvs_set_str(nvs_handle handle, const char* key, const char* value)
 {
+    ESP_LOGV("FUNC", "nvs_set_str");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s %s", __func__, key, value);
     HandleEntry entry;
@@ -354,6 +407,8 @@ extern "C" esp_err_t nvs_set_str(nvs_handle handle, const char* key, const char*
 
 extern "C" esp_err_t nvs_set_blob(nvs_handle handle, const char* key, const void* value, size_t length)
 {
+    ESP_LOGV("FUNC", "nvs_set_blob");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s %d", __func__, key, length);
     HandleEntry entry;
@@ -368,6 +423,8 @@ extern "C" esp_err_t nvs_set_blob(nvs_handle handle, const char* key, const void
 template<typename T>
 static esp_err_t nvs_get(nvs_handle handle, const char* key, T* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s %d", __func__, key, sizeof(T));
     HandleEntry entry;
@@ -380,46 +437,64 @@ static esp_err_t nvs_get(nvs_handle handle, const char* key, T* out_value)
 
 extern "C" esp_err_t nvs_get_i8  (nvs_handle handle, const char* key, int8_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_i8");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_u8  (nvs_handle handle, const char* key, uint8_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_u8");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_i16 (nvs_handle handle, const char* key, int16_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_i16");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_u16 (nvs_handle handle, const char* key, uint16_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_u16");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_i32 (nvs_handle handle, const char* key, int32_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_i32");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_u32 (nvs_handle handle, const char* key, uint32_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_u32");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_i64 (nvs_handle handle, const char* key, int64_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_i64");
+
     return nvs_get(handle, key, out_value);
 }
 
 extern "C" esp_err_t nvs_get_u64 (nvs_handle handle, const char* key, uint64_t* out_value)
 {
+    ESP_LOGV("FUNC", "nvs_get_u64");
+
     return nvs_get(handle, key, out_value);
 }
 
 static esp_err_t nvs_get_str_or_blob(nvs_handle handle, nvs::ItemType type, const char* key, void* out_value, size_t* length)
 {
+    ESP_LOGV("FUNC", "nvs_get_str_or_blob");
+
     Lock lock;
     ESP_LOGD(TAG, "%s %s", __func__, key);
     HandleEntry entry;
@@ -450,11 +525,15 @@ static esp_err_t nvs_get_str_or_blob(nvs_handle handle, nvs::ItemType type, cons
 
 extern "C" esp_err_t nvs_get_str(nvs_handle handle, const char* key, char* out_value, size_t* length)
 {
+    ESP_LOGV("FUNC", "nvs_get_str");
+
     return nvs_get_str_or_blob(handle, nvs::ItemType::SZ, key, out_value, length);
 }
 
 extern "C" esp_err_t nvs_get_blob(nvs_handle handle, const char* key, void* out_value, size_t* length)
 {
+    ESP_LOGV("FUNC", "nvs_get_blob");
+
     return nvs_get_str_or_blob(handle, nvs::ItemType::BLOB, key, out_value, length);
 }
 
