@@ -92,25 +92,6 @@ int __must_check fips186_2_prf(const u8 *seed, size_t seed_len, u8 *x,
 			       size_t xlen);
 
 /**
- * sha256_vector - SHA256 hash for data vector
- * @num_elem: Number of elements in the data vector
- * @addr: Pointers to the data areas
- * @len: Lengths of the data blocks
- * @mac: Buffer for the hash
- * Returns: 0 on success, -1 on failure
- */
-int sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len,
-		  u8 *mac);
-
-/**
- * des_encrypt - Encrypt one block with DES
- * @clear: 8 octets (in)
- * @key: 7 octets (in) (no parity bits included)
- * @cypher: 8 octets (out)
- */
-void des_encrypt(const u8 *clear, const u8 *key, u8 *cypher);
-
-/**
  * aes_encrypt_init - Initialize AES for encryption
  * @key: Encryption key
  * @len: Key length in bytes (usually 16, i.e., 128 bits)
@@ -157,8 +138,7 @@ void aes_decrypt_deinit(void *ctx);
 
 enum crypto_hash_alg {
         CRYPTO_HASH_ALG_MD5, CRYPTO_HASH_ALG_SHA1,
-        CRYPTO_HASH_ALG_HMAC_MD5, CRYPTO_HASH_ALG_HMAC_SHA1,
-        CRYPTO_HASH_ALG_SHA256, CRYPTO_HASH_ALG_HMAC_SHA256
+        CRYPTO_HASH_ALG_HMAC_MD5, CRYPTO_HASH_ALG_HMAC_SHA1
 };
 
 struct crypto_hash;

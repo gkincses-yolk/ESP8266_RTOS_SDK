@@ -1442,22 +1442,6 @@ static int x509_sha1_oid(struct asn1_oid *oid)
 		oid->oid[5] == 26 /* id-sha1 */;
 }
 
-static int x509_sha256_oid(struct asn1_oid *oid)
-{
-    ESP_LOGV("FUNC", "x509_sha256_oid");
-
-	return oid->len == 9 &&
-		oid->oid[0] == 2 /* joint-iso-itu-t */ &&
-		oid->oid[1] == 16 /* country */ &&
-		oid->oid[2] == 840 /* us */ &&
-		oid->oid[3] == 1 /* organization */ &&
-		oid->oid[4] == 101 /* gov */ &&
-		oid->oid[5] == 3 /* csor */ &&
-		oid->oid[6] == 4 /* nistAlgorithm */ &&
-		oid->oid[7] == 2 /* hashAlgs */ &&
-		oid->oid[8] == 1 /* sha256 */;
-}
-
 
 /**
  * x509_certificate_parse - Parse a X.509 certificate in DER format
@@ -1686,19 +1670,6 @@ int x509_certificate_check_signature(struct x509_certificate *issuer,
 		goto skip_digest_oid;
 	}
 
-	if (x509_sha256_oid(&oid)) {
-		if (cert->signature.oid.oid[6] !=
-		    11 /* sha2561WithRSAEncryption */) {
-			wpa_printf(MSG_DEBUG, "X509: digestAlgorithm SHA256 "
-				   "does not match with certificate "
-				   "signatureAlgorithm (%lu)",
-				   cert->signature.oid.oid[6]);
-			os_free(data);
-			return -1;
-		}
-		goto skip_digest_oid;
-	}
-
 	if (!x509_digest_oid(&oid)) {
 		wpa_printf(MSG_DEBUG, "X509: Unrecognized digestAlgorithm");
 		os_free(data);
@@ -1758,12 +1729,6 @@ skip_digest_oid:
 			    hash, hash_len);
 		break;
 	case 11: /* sha256WithRSAEncryption */
-		sha256_vector(1, &cert->tbs_cert_start, &cert->tbs_cert_len,
-				                    hash);
-		hash_len = 32;
-		wpa_hexdump(MSG_MSGDUMP, "X509: Certificate hash (SHA256)",
-			    hash, hash_len);
-		break;
 	case 2: /* md2WithRSAEncryption */
 	case 12: /* sha384WithRSAEncryption */
 	case 13: /* sha512WithRSAEncryption */

@@ -132,8 +132,7 @@ struct rsn_pmksa_cache_entry * pmksa_cache_add(struct rsn_pmksa_cache *pmksa, co
     if (pmkid)
         os_memcpy(entry->pmkid, pmkid, PMKID_LEN);
     else
-        rsn_pmkid(pmk, pmk_len, aa, spa, entry->pmkid,
-                  wpa_key_mgmt_sha256(akmp));
+        ESP_LOGV("TROUBLE", "~=========== NO SHA256 ===========");
     entry->expiration = now_sec + dot11RSNAConfigPMKLifetime;
     entry->reauth_time = now_sec + dot11RSNAConfigPMKLifetime *
         dot11RSNAConfigPMKReauthThreshold / 100;

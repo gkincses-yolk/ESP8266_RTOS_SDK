@@ -10,7 +10,6 @@
 
 #include "utils/common.h"
 #include "crypto/sha1.h"
-#include "crypto/sha256.h"
 #include "tls/tls.h"
 #include "tls/x509v3.h"
 #include "tls/tlsv1_common.h"
@@ -56,15 +55,7 @@ static const struct tls_cipher_suite tls_cipher_suites[] = {
 	{ TLS_RSA_WITH_AES_256_CBC_SHA, TLS_KEY_X_RSA, TLS_CIPHER_AES_256_CBC,
 	  TLS_HASH_SHA },
 	{ TLS_DH_anon_WITH_AES_256_CBC_SHA, TLS_KEY_X_DH_anon,
-	  TLS_CIPHER_AES_256_CBC, TLS_HASH_SHA },
-	{ TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_KEY_X_RSA,
-	  TLS_CIPHER_AES_128_CBC, TLS_HASH_SHA256 },
-	{ TLS_RSA_WITH_AES_256_CBC_SHA256, TLS_KEY_X_RSA,
-	  TLS_CIPHER_AES_256_CBC, TLS_HASH_SHA256 },
-	{ TLS_DH_anon_WITH_AES_128_CBC_SHA256, TLS_KEY_X_DH_anon,
-	  TLS_CIPHER_AES_128_CBC, TLS_HASH_SHA256 },
-	{ TLS_DH_anon_WITH_AES_256_CBC_SHA256, TLS_KEY_X_DH_anon,
-	  TLS_CIPHER_AES_256_CBC, TLS_HASH_SHA256 }
+	  TLS_CIPHER_AES_256_CBC, TLS_HASH_SHA }
 };
 
 #define NUM_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
@@ -230,18 +221,6 @@ int tls_verify_hash_init(struct tls_verify_hash *verify)
 		tls_verify_hash_free(verify);
 		return -1;
 	}
-#ifdef CONFIG_TLSV12
-  verify->sha256_client = crypto_hash_init(CRYPTO_HASH_ALG_SHA256, NULL, 0);
-  verify->sha256_server = crypto_hash_init(CRYPTO_HASH_ALG_SHA256, NULL, 0);
-  verify->sha256_cert = crypto_hash_init(CRYPTO_HASH_ALG_SHA256, NULL, 0);
-	
-	if (verify->sha256_client == NULL ||
-		verify->sha256_server == NULL ||
-	    verify->sha256_cert == NULL) {
-		tls_verify_hash_free(verify);
-		return -1;
-	}
-#endif /* CONFIG_TLSV12 */
 	return 0;
 }
 
@@ -263,14 +242,6 @@ void tls_verify_hash_add(struct tls_verify_hash *verify, const u8 *buf,
 		crypto_hash_update(verify->md5_cert, buf, len);
 		crypto_hash_update(verify->sha1_cert, buf, len);
 	}
-#ifdef CONFIG_TLSV12
-	if (verify->sha256_client)
-	  crypto_hash_update(verify->sha256_client, buf, len);
-	if (verify->sha256_server)
-		crypto_hash_update(verify->sha256_server, buf, len);
-	if (verify->sha256_cert)
-		crypto_hash_update(verify->sha256_cert, buf, len);
-#endif /* CONFIG_TLSV12 */
 }
 
 
@@ -290,14 +261,6 @@ void tls_verify_hash_free(struct tls_verify_hash *verify)
 	verify->sha1_client = NULL;
 	verify->sha1_server = NULL;
 	verify->sha1_cert = NULL;
-#ifdef CONFIG_TLSV12
-	crypto_hash_finish(verify->sha256_client, NULL, NULL);
-	crypto_hash_finish(verify->sha256_server, NULL, NULL);
-	crypto_hash_finish(verify->sha256_cert, NULL, NULL);
-	verify->sha256_client = NULL;
-	verify->sha256_server = NULL;
-	verify->sha256_cert = NULL;
-#endif /* CONFIG_TLSV12 */
 }
 
 
@@ -311,10 +274,6 @@ int tls_version_ok(u16 ver)
 	if (ver == TLS_VERSION_1_1)
 		return 1;
 #endif /* CONFIG_TLSV11 */
-#ifdef CONFIG_TLSV12
-	if (ver == TLS_VERSION_1_2)
-		return 1;
-#endif /* CONFIG_TLSV12 */
 
 	return 0;
 }
@@ -341,14 +300,6 @@ int tls_prf(u16 ver, const u8 *secret, size_t secret_len, const char *label,
 	    const u8 *seed, size_t seed_len, u8 *out, size_t outlen)
 {
     ESP_LOGV("FUNC", "tls_prf");
-
-#ifdef CONFIG_TLSV12
-	if (ver >= TLS_VERSION_1_2) {
-		tls_prf_sha256(secret, secret_len, label, seed, seed_len,
-			       out, outlen);
-		return 0;
-	}
-#endif /* CONFIG_TLSV12 */
 
 	return tls_prf_sha1_md5(secret, secret_len, label, seed, seed_len, out,
 				outlen);

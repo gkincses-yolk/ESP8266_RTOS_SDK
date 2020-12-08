@@ -317,10 +317,10 @@ int wpa_compare_rsn_ie(int ft_initial_assoc,
 void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
 		    const u8 *addr1, const u8 *addr2,
 		    const u8 *nonce1, const u8 *nonce2,
-		    u8 *ptk, size_t ptk_len, int use_sha256);
+		    u8 *ptk, size_t ptk_len);
 
 void rsn_pmkid(const u8 *pmk, size_t pmk_len, const u8 *aa, const u8 *spa,
-	       u8 *pmkid, int use_sha256);
+	       u8 *pmkid);
 
 int wpa_cipher_key_len(int cipher);
 

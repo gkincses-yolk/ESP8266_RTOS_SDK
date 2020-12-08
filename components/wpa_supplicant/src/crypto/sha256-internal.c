@@ -30,9 +30,55 @@
 #include "utils/includes.h"
 
 #include "utils/common.h"
+#ifdef USE_MBEDTLS_CRYPTO
+#include "mbedtls/sha256.h"
+#else /* USE_MBEDTLS_CRYPTO */
 #include "sha256.h"
 #include "sha256_i.h"
 #include "crypto.h"
+#endif /* USE_MBEDTLS_CRYPTO */
+
+#ifdef USE_MBEDTLS_CRYPTO
+/**
+ * sha256_vector - SHA256 hash for data vector
+ * @num_elem: Number of elements in the data vector
+ * @addr: Pointers to the data areas
+ * @len: Lengths of the data blocks
+ * @mac: Buffer for the hash
+ * Returns: 0 on success, -1 of failure
+ */
+int
+sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len,
+		  u8 *mac)
+{
+    int ret = 0;
+    mbedtls_sha256_context ctx;
+
+    mbedtls_sha256_init(&ctx);
+
+    if (mbedtls_sha256_starts_ret(&ctx, 0) != 0) {
+        ret = -1;
+        goto out;
+    }
+
+    for(size_t index = 0; index < num_elem; index++) {
+        if (mbedtls_sha256_update_ret(&ctx, addr[index], len[index]) != 0) {
+            ret = -1;
+            goto out;
+        }
+    }
+
+    if (mbedtls_sha256_finish_ret(&ctx, mac) != 0) {
+        ret = -1;
+        goto out;
+    }
+
+out:
+    mbedtls_sha256_free(&ctx);
+
+    return ret;
+}
+#else /* USE_MBEDTLS_CRYPTO */
 
 /**
  * sha256_vector - SHA256 hash for data vector
@@ -45,8 +91,6 @@
 int sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len,
 		  u8 *mac)
 {
-    ESP_LOGV("FUNC", "sha256_vector");
-
 	struct sha256_state ctx;
 	size_t i;
 
@@ -244,5 +288,6 @@ int sha256_done(struct sha256_state *md, unsigned char *out)
 
 	return 0;
 }
+#endif /* USE_MBEDTLS_CRYPTO */
 
 /* ===== end - public domain SHA256 implementation ===== */
