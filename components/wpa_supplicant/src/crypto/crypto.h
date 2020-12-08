@@ -210,8 +210,8 @@ void crypto_hash_update(struct crypto_hash *ctx, const u8 *data, size_t len);
 int crypto_hash_finish(struct crypto_hash *ctx, u8 *hash, size_t *len);
 
 enum crypto_cipher_alg {
-	CRYPTO_CIPHER_NULL = 0, CRYPTO_CIPHER_ALG_AES, CRYPTO_CIPHER_ALG_3DES,
-	CRYPTO_CIPHER_ALG_DES, CRYPTO_CIPHER_ALG_RC2, CRYPTO_CIPHER_ALG_RC4
+	CRYPTO_CIPHER_NULL = 0, CRYPTO_CIPHER_ALG_AES, 
+	CRYPTO_CIPHER_ALG_RC2, CRYPTO_CIPHER_ALG_RC4
 };
 
 struct crypto_cipher;

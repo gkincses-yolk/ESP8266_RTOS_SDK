@@ -25,9 +25,6 @@
 #include "utils/includes.h"
 #include "crypto.h"
 #include "aes.h"
-#if defined(CONFIG_DES) || defined(CONFIG_DES3)
-#include "des_i.h"
-#endif
 
 struct crypto_cipher {
 	enum crypto_cipher_alg alg;
@@ -42,19 +39,6 @@ struct crypto_cipher {
 			void *ctx_enc;
 			void *ctx_dec;
 		} aes;
-#ifdef CONFIG_DES3
-		struct {
-			struct des3_key_s key;
-			u8 cbc[8];
-		} des3;
-#endif
-#ifdef CONFIG_DES
-		struct {
-			u32 ek[32];
-			u32 dk[32];
-			u8 cbc[8];
-		} des;
-#endif
 	} u;
 };
 
@@ -96,26 +80,6 @@ struct crypto_cipher *  crypto_cipher_init(enum crypto_cipher_alg alg,
 		}
 		os_memcpy(ctx->u.aes.cbc, iv, AES_BLOCK_SIZE);
 		break;
-#ifdef CONFIG_DES3
-	case CRYPTO_CIPHER_ALG_3DES:
-		if (key_len != 24) {
-			os_free(ctx);
-			return NULL;
-		}
-		des3_key_setup(key, &ctx->u.des3.key);
-		os_memcpy(ctx->u.des3.cbc, iv, 8);
-		break;
-#endif
-#ifdef CONFIG_DES
-	case CRYPTO_CIPHER_ALG_DES:
-		if (key_len != 8) {
-			os_free(ctx);
-			return NULL;
-		}
-		des_key_setup(key, ctx->u.des.ek, ctx->u.des.dk);
-		os_memcpy(ctx->u.des.cbc, iv, 8);
-		break;
-#endif
 	default:
 		os_free(ctx);
 		return NULL;
@@ -154,38 +118,6 @@ int  crypto_cipher_encrypt(struct crypto_cipher *ctx, const u8 *plain,
 			crypt += AES_BLOCK_SIZE;
 		}
 		break;
-#ifdef CONFIG_DES3
-	case CRYPTO_CIPHER_ALG_3DES:
-		if (len % 8)
-			return -1;
-		blocks = len / 8;
-		for (i = 0; i < blocks; i++) {
-			for (j = 0; j < 8; j++)
-				ctx->u.des3.cbc[j] ^= plain[j];
-			des3_encrypt(ctx->u.des3.cbc, &ctx->u.des3.key,
-				     ctx->u.des3.cbc);
-			os_memcpy(crypt, ctx->u.des3.cbc, 8);
-			plain += 8;
-			crypt += 8;
-		}
-		break;
-#endif
-#ifdef CONFIG_DES
-	case CRYPTO_CIPHER_ALG_DES:
-		if (len % 8)
-			return -1;
-		blocks = len / 8;
-		for (i = 0; i < blocks; i++) {
-			for (j = 0; j < 8; j++)
-				ctx->u.des3.cbc[j] ^= plain[j];
-			des_block_encrypt(ctx->u.des.cbc, ctx->u.des.ek,
-					  ctx->u.des.cbc);
-			os_memcpy(crypt, ctx->u.des.cbc, 8);
-			plain += 8;
-			crypt += 8;
-		}
-		break;
-#endif
 	default:
 		return -1;
 	}
@@ -224,38 +156,6 @@ int  crypto_cipher_decrypt(struct crypto_cipher *ctx, const u8 *crypt,
 			crypt += AES_BLOCK_SIZE;
 		}
 		break;
-#ifdef CONFIG_DES3
-	case CRYPTO_CIPHER_ALG_3DES:
-		if (len % 8)
-			return -1;
-		blocks = len / 8;
-		for (i = 0; i < blocks; i++) {
-			os_memcpy(tmp, crypt, 8);
-			des3_decrypt(crypt, &ctx->u.des3.key, plain);
-			for (j = 0; j < 8; j++)
-				plain[j] ^= ctx->u.des3.cbc[j];
-			os_memcpy(ctx->u.des3.cbc, tmp, 8);
-			plain += 8;
-			crypt += 8;
-		}
-		break;
-#endif
-#ifdef CONFIG_DES
-	case CRYPTO_CIPHER_ALG_DES:
-		if (len % 8)
-			return -1;
-		blocks = len / 8;
-		for (i = 0; i < blocks; i++) {
-			os_memcpy(tmp, crypt, 8);
-			des_block_decrypt(crypt, ctx->u.des.dk, plain);
-			for (j = 0; j < 8; j++)
-				plain[j] ^= ctx->u.des.cbc[j];
-			os_memcpy(ctx->u.des.cbc, tmp, 8);
-			plain += 8;
-			crypt += 8;
-		}
-		break;
-#endif
 	default:
 		return -1;
 	}
@@ -273,10 +173,6 @@ void  crypto_cipher_deinit(struct crypto_cipher *ctx)
 		aes_encrypt_deinit(ctx->u.aes.ctx_enc);
 		aes_decrypt_deinit(ctx->u.aes.ctx_dec);
 		break;
-#ifdef CONFIG_DES3
-	case CRYPTO_CIPHER_ALG_3DES:
-		break;
-#endif
 	default:
 		break;
 	}
