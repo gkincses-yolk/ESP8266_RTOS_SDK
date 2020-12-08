@@ -36,8 +36,7 @@ extern "C" {
  */
 typedef enum {
     ESP_CRYPTO_HASH_ALG_MD5, ESP_CRYPTO_HASH_ALG_SHA1,
-    ESP_CRYPTO_HASH_ALG_HMAC_MD5, ESP_CRYPTO_HASH_ALG_HMAC_SHA1,
-    ESP_CRYPTO_HASH_ALG_SHA256, ESP_CRYPTO_HASH_ALG_HMAC_SHA256
+    ESP_CRYPTO_HASH_ALG_HMAC_MD5, ESP_CRYPTO_HASH_ALG_HMAC_SHA1
 }esp_crypto_hash_alg_t;
 
 /*
@@ -186,60 +185,6 @@ typedef int (*esp_crypto_cipher_decrypt_t)(esp_crypto_cipher_t *ctx,
   *
   */
 typedef void (*esp_crypto_cipher_deinit_t)(esp_crypto_cipher_t *ctx);
-
-/**
-  * @brief The SHA256 callback function when do WPS connect. 
-  *
-  * @param key  Key for HMAC operations.
-  * @param key_len  Length of the key in bytes.
-  * @param data  Pointers to the data area.
-  * @param data_len  Length of the data area.
-  * @param mac  Buffer for the hash (20 bytes).
-  *
-  */
-typedef void (*esp_hmac_sha256_t)(const unsigned char *key, int key_len, const unsigned char *data,
-		                    int data_len, unsigned char *mac);
-
-/**
-  * @brief The SHA256 callback function when do WPS connect. 
-  *
-  * @param key  Key for HMAC operations.
-  * @param key_len  Length of the key in bytes.
-  * @param num_elem  Number of elements in the data vector.
-  * @param addr  Pointers to the data areas.
-  * @param len  Lengths of the data blocks.
-  * @param mac  Buffer for the hash (32 bytes).
-  *
-  */
-typedef void (*esp_hmac_sha256_vector_t)(const unsigned char *key, int key_len, int num_elem,
-			                   const unsigned char *addr[], const int *len, unsigned char *mac);
-
-/**
-  * @brief The AES callback function when do STA connect.
-  *
-  * @param key  Key for PRF.
-  * @param key_len  Length of the key in bytes.
-  * @param label  A unique label for each purpose of the PRF.
-  * @param data  Extra data to bind into the key.
-  * @param data_len  Length of the data.
-  * @param buf  Buffer for the generated pseudo-random key.  
-  * @param buf_len  Number of bytes of key to generate.
-  *
-  */
-typedef void (*esp_sha256_prf_t)(const unsigned char *key, int key_len, const char *label,
-	                           const unsigned char *data, int data_len, unsigned char *buf, int buf_len);
-
-/**
-  * @brief The SHA256 callback function when do WPS connect. 
-  *
-  * @param num_elem  Number of elements in the data vector.
-  * @param addr  Pointers to the data areas.
-  * @param len  Lengths of the data blocks.
-  * @paramac  Buffer for the hash.
-  *
-  */
-typedef int (*esp_sha256_vector_t)(int num_elem, const unsigned char *addr[], const int *len,
-		                     unsigned char *mac);
 
 /**
   * @brief The bignum calculate callback function used when do connect. 
@@ -744,8 +689,6 @@ typedef struct {
     uint32_t version;
     esp_aes_wrap_t aes_wrap;                         /**< station connect function used when send EAPOL frame */
     esp_aes_unwrap_t aes_unwrap;                     /**< station connect function used when decrypt key data */
-    esp_hmac_sha256_vector_t hmac_sha256_vector;     /**< station connect function used when check MIC */
-    esp_sha256_prf_t sha256_prf;                     /**< station connect function used when check MIC */
     esp_hmac_md5_t hmac_md5;
     esp_hmac_md5_vector_t hamc_md5_vector;
     esp_hmac_sha1_t hmac_sha1;
@@ -777,9 +720,6 @@ typedef struct{
     esp_aes_128_encrypt_t aes_128_encrypt;          /**< function used to process message when do WPS */
     esp_aes_128_decrypt_t aes_128_decrypt;          /**< function used to process message when do WPS */
     esp_crypto_mod_exp_t crypto_mod_exp;            /**< function used to calculate public key and private key */
-    esp_hmac_sha256_t hmac_sha256;                  /**< function used to get attribute */
-    esp_hmac_sha256_vector_t hmac_sha256_vector;    /**< function used to process message when do WPS */
-    esp_sha256_vector_t sha256_vector;              /**< function used to process message when do WPS */
     esp_uuid_gen_mac_addr_t uuid_gen_mac_addr;
     esp_dh5_free_t dh5_free;
     esp_wps_build_assoc_req_ie_t wps_build_assoc_req_ie;
@@ -810,7 +750,6 @@ typedef struct {
     esp_crypto_cipher_decrypt_t crypto_cipher_decrypt;        /**< function used to decrypt cipher when use TLSV1 */
     esp_crypto_cipher_deinit_t crypto_cipher_deinit;          /**< function used to free context when use TLSV1 */
     esp_crypto_mod_exp_t crypto_mod_exp;                      /**< function used to do key exchange when use TLSV1 */
-    esp_sha256_vector_t sha256_vector;                        /**< function used to do X.509v3 certificate parsing and processing */
     esp_tls_init_t tls_init;
     esp_tls_deinit_t tls_deinit;
     esp_eap_peer_blob_init_t eap_peer_blob_init;

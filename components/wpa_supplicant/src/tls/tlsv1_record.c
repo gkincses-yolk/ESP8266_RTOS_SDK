@@ -11,7 +11,6 @@
 #include "utils/common.h"
 #include "crypto/md5.h"
 #include "crypto/sha1.h"
-#include "crypto/sha256.h"
 #include "tls/tlsv1_common.h"
 #include "tls/tlsv1_record.h"
 
@@ -50,9 +49,6 @@ int tlsv1_record_set_cipher_suite(struct tlsv1_record_layer *rl,
 	} else if (suite->hash == TLS_HASH_SHA) {
 		rl->hash_alg = CRYPTO_HASH_ALG_HMAC_SHA1;
 		rl->hash_size = SHA1_MAC_LEN;
-	} else if (suite->hash == TLS_HASH_SHA256) {
-		rl->hash_alg = CRYPTO_HASH_ALG_HMAC_SHA256;
-		rl->hash_size = SHA256_MAC_LEN;
 	}
 
 	data = tls_get_cipher_data(suite->cipher);

@@ -20,7 +20,6 @@
 #include "common/wpa_common.h"
 #include "rsn_supp/wpa.h"
 #include "crypto/sha1.h"
-#include "crypto/sha256.h"
 #include "crypto/md5.h"
 #include "crypto/aes.h"
  
@@ -492,7 +491,6 @@ const char * wpa_cipher_txt(int cipher)
  * @nonce2: SNonce or ANonce
  * @ptk: Buffer for pairwise transient key
  * @ptk_len: Length of PTK
- * @use_sha256: Whether to use SHA256-based KDF
  *
  * IEEE Std 802.11i-2004 - 8.5.1.2 Pairwise key hierarchy
  * PTK = PRF-X(PMK, "Pairwise key expansion",
@@ -506,7 +504,7 @@ const char * wpa_cipher_txt(int cipher)
 void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
 		    const u8 *addr1, const u8 *addr2,
 		    const u8 *nonce1, const u8 *nonce2,
-		    u8 *ptk, size_t ptk_len, int use_sha256)
+		    u8 *ptk, size_t ptk_len)
 {
     ESP_LOGV("FUNC", "wpa_pmk_to_ptk");
 
@@ -530,14 +528,7 @@ void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
 			  WPA_NONCE_LEN);
 	}
 
-	if (use_sha256) {
-		sha256_prf(pmk, pmk_len, label, data, sizeof(data),
-			ptk, ptk_len);
-	}
-	else
-	{
-	    sha1_prf(pmk, pmk_len, label, data, sizeof(data), ptk, ptk_len);
-	}
+	sha1_prf(pmk, pmk_len, label, data, sizeof(data), ptk, ptk_len);
 	wpa_printf(MSG_DEBUG, "WPA: PTK derivation - A1=" MACSTR " A2=" MACSTR"\n",
 		   MAC2STR(addr1), MAC2STR(addr2));
 
@@ -552,32 +543,25 @@ void wpa_pmk_to_ptk(const u8 *pmk, size_t pmk_len, const char *label,
  * @aa: Authenticator address
  * @spa: Supplicant address
  * @pmkid: Buffer for PMKID
- * @use_sha256: Whether to use SHA256-based KDF
  *
  * IEEE Std 802.11i-2004 - 8.5.1.2 Pairwise key hierarchy
  * PMKID = HMAC-SHA1-128(PMK, "PMK Name" || AA || SPA)
  */
 void rsn_pmkid(const u8 *pmk, size_t pmk_len, const u8 *aa, const u8 *spa,
-	       u8 *pmkid, int use_sha256)
+	       u8 *pmkid)
 {
     ESP_LOGV("FUNC", "rsn_pmkid");
 
 	char title[9];
 	const u8 *addr[3];
 	const size_t len[3] = { 8, ETH_ALEN, ETH_ALEN };
-	unsigned char hash[SHA256_MAC_LEN];
+	unsigned char hash[SHA1_MAC_LEN];
 
     os_memcpy(title, "PMK Name", sizeof("PMK Name"));
 	addr[0] = (u8 *) title;
 	addr[1] = aa;
 	addr[2] = spa;
 
-#ifdef CONFIG_IEEE80211W
-	if (use_sha256) {
-		hmac_sha256_vector(pmk, pmk_len, 3, addr, len, hash);
-	}
-	else
-#endif /* CONFIG_IEEE80211W */
 	hmac_sha1_vector(pmk, pmk_len, 3, addr, len, hash);
 	memcpy(pmkid, hash, PMKID_LEN);
 }

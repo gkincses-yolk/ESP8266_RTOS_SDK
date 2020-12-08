@@ -22,7 +22,6 @@
 #include "crypto/aes_wrap.h"
 #include "crypto/crypto.h"
 #include "crypto/sha1.h"
-#include "crypto/sha256.h"
 #include "crypto/random.h"
 
 #include "esp_supplicant/esp_wifi_driver.h"
@@ -223,10 +222,6 @@ static int wpa_use_aes_cmac(struct wpa_state_machine *sm)
     if (wpa_key_mgmt_ft(sm->wpa_key_mgmt))
         ret = 1;
 #endif /* CONFIG_IEEE80211R */
-#ifdef CONFIG_IEEE80211W
-    if (wpa_key_mgmt_sha256(sm->wpa_key_mgmt))
-        ret = 1;
-#endif /* CONFIG_IEEE80211W */
     return ret;
 }
 
@@ -991,12 +986,8 @@ static int wpa_gmk_to_gtk(const u8 *gmk, const char *label, const u8 *addr,
     if (os_get_random(pos, 16) < 0)
         ret = -1;
 
-#ifdef CONFIG_IEEE80211W
-    sha256_prf(gmk, WPA_GMK_LEN, label, data, sizeof(data), gtk, gtk_len);
-#else /* CONFIG_IEEE80211W */
     if (sha1_prf(gmk, WPA_GMK_LEN, label, data, sizeof(data), gtk, gtk_len) < 0)
         ret = -1;
-#endif /* CONFIG_IEEE80211W */
 
     return ret;
 }
@@ -1583,15 +1574,7 @@ SM_STATE(WPA_PTK, PTKSTART)
         pmkid[1] = RSN_SELECTOR_LEN + PMKID_LEN;
         RSN_SELECTOR_PUT(&pmkid[2], RSN_KEY_DATA_PMKID);
 
-        {
-            /*
-             * Calculate PMKID since no PMKSA cache entry was
-             * available with pre-calculated PMKID.
-             */
-            rsn_pmkid(sm->PMK, PMK_LEN, sm->wpa_auth->addr,
-                  sm->addr, &pmkid[2 + RSN_SELECTOR_LEN],
-                  wpa_key_mgmt_sha256(sm->wpa_key_mgmt));
-        }
+        ESP_LOGV("TROUBLE", "=========== NO SHA256 ===========");
     }
     wpa_send_eapol(sm->wpa_auth, sm,
                WPA_KEY_INFO_ACK | WPA_KEY_INFO_KEY_TYPE, NULL,
@@ -1602,16 +1585,16 @@ SM_STATE(WPA_PTK, PTKSTART)
 static int wpa_derive_ptk(struct wpa_state_machine *sm, const u8 *pmk,
               struct wpa_ptk *ptk)
 {
-    size_t ptk_len = sm->pairwise != WPA_CIPHER_TKIP ? 48 : 64;
+    ESP_LOGV("FUNC", "wpa_derive_ptk");
+
 #ifdef CONFIG_IEEE80211R
     if (wpa_key_mgmt_ft(sm->wpa_key_mgmt))
         return wpa_auth_derive_ptk_ft(sm, pmk, ptk, ptk_len);
 #endif /* CONFIG_IEEE80211R */
 
-    wpa_pmk_to_ptk(pmk, PMK_LEN, "Pairwise key expansion",
-               sm->wpa_auth->addr, sm->addr, sm->ANonce, sm->SNonce,
-               (u8 *) ptk, ptk_len,
-               wpa_key_mgmt_sha256(sm->wpa_key_mgmt));
+    //size_t ptk_len = sm->pairwise != WPA_CIPHER_TKIP ? 48 : 64;
+
+    ESP_LOGV("TROUBLE", "=========== NO SHA256 ===========");
 
     return 0;
 }

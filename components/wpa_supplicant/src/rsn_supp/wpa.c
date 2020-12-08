@@ -260,7 +260,7 @@ void   wpa_sm_key_request(struct wpa_sm *sm, int error, int pairwise)
     int key_info, ver;
     u8 bssid[ETH_ALEN], *rbuf;
 
-    if (wpa_key_mgmt_ft(sm->key_mgmt) || wpa_key_mgmt_sha256(sm->key_mgmt))
+    if (wpa_key_mgmt_ft(sm->key_mgmt))
         ver = WPA_KEY_INFO_TYPE_AES_128_CMAC;
     else if (sm->pairwise_cipher == WPA_CIPHER_CCMP)
         ver = WPA_KEY_INFO_TYPE_HMAC_SHA1_AES;
@@ -571,8 +571,7 @@ int   wpa_derive_ptk(struct wpa_sm *sm, const unsigned char *src_addr,
 
     wpa_pmk_to_ptk(sm->pmk, sm->pmk_len, "Pairwise key expansion",
                sm->own_addr, sm->bssid, sm->snonce, key->key_nonce,
-               (u8 *) ptk, ptk_len,
-               wpa_key_mgmt_sha256(sm->key_mgmt));
+               (u8 *) ptk, ptk_len);
     return 0;
 }
 
@@ -1920,15 +1919,6 @@ int   wpa_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len)
         goto out;
     }
 
-#ifdef CONFIG_IEEE80211W
-    if (wpa_key_mgmt_sha256(sm->key_mgmt)) {
-        if (ver != WPA_KEY_INFO_TYPE_AES_128_CMAC &&
-	    sm->key_mgmt != WPA_KEY_MGMT_SAE) {
-            goto out;
-        }
-    } else
-#endif
-
     if (sm->pairwise_cipher == WPA_CIPHER_CCMP &&
         ver != WPA_KEY_INFO_TYPE_HMAC_SHA1_AES &&
         sm->key_mgmt != WPA_KEY_MGMT_SAE) {
@@ -2174,8 +2164,6 @@ void wpa_set_profile(u32 wpa_proto, u8 auth_mode)
     sm->proto = wpa_proto;
     if (auth_mode == WPA2_AUTH_ENT) {
         sm->key_mgmt = WPA_KEY_MGMT_IEEE8021X; /* for wpa2 enterprise */
-    } else if (auth_mode == WPA2_AUTH_PSK_SHA256) {
-        sm->key_mgmt = WPA_KEY_MGMT_PSK_SHA256;
     } else {
         sm->key_mgmt = WPA_KEY_MGMT_PSK;  /* fixed to PSK for now */
     }
