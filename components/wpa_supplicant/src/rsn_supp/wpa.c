@@ -1911,9 +1911,6 @@ int   wpa_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len)
     if (ver != WPA_KEY_INFO_TYPE_HMAC_MD5_RC4 &&
 #ifdef CONFIG_IEEE80211W
         ver != WPA_KEY_INFO_TYPE_AES_128_CMAC &&
-#ifdef CONFIG_WPA3_SAE
-        sm->key_mgmt != WPA_KEY_MGMT_SAE &&
-#endif
 #endif
         ver != WPA_KEY_INFO_TYPE_HMAC_SHA1_AES) {
 #ifdef DEBUG_PRINT    
@@ -2179,8 +2176,6 @@ void wpa_set_profile(u32 wpa_proto, u8 auth_mode)
         sm->key_mgmt = WPA_KEY_MGMT_IEEE8021X; /* for wpa2 enterprise */
     } else if (auth_mode == WPA2_AUTH_PSK_SHA256) {
         sm->key_mgmt = WPA_KEY_MGMT_PSK_SHA256;
-    } else if (auth_mode == WPA3_AUTH_PSK) {
-         sm->key_mgmt = WPA_KEY_MGMT_SAE; /* for WPA3 PSK */
     } else {
         sm->key_mgmt = WPA_KEY_MGMT_PSK;  /* fixed to PSK for now */
     }
