@@ -23,13 +23,7 @@
 /* Pre-partition table fixed flash offsets */
 #define ESP_BOOTLOADER_DIGEST_OFFSET 0x0
 
-#ifdef CONFIG_IDF_TARGET_ESP32
-#define ESP_BOOTLOADER_OFFSET 0x1000 /* Offset of bootloader image. Has matching value in bootloader KConfig.projbuild file. */
-#endif
-
-#ifdef CONFIG_IDF_TARGET_ESP8266
 #define ESP_BOOTLOADER_OFFSET 0x0000 /* Offset of bootloader image. Has matching value in bootloader KConfig.projbuild file. */
-#endif
 
 #define ESP_BOOTLOADER_SIZE   (ESP_PARTITION_TABLE_OFFSET - ESP_BOOTLOADER_OFFSET)
 #define ESP_PARTITION_TABLE_OFFSET CONFIG_PARTITION_TABLE_OFFSET /* Offset of partition table. Has matching value in partition_table Kconfig.projbuild file. */

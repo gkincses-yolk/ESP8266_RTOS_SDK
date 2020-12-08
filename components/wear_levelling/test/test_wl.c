@@ -9,15 +9,7 @@
 //#include "freertos/portable.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-#ifdef CONFIG_IDF_TARGET_ESP32
-#include "esp32/clk.h"
-#include "soc/cpu.h"
-#elif defined(CONFIG_IDF_TARGET_ESP32S2BETA)
-#include "esp32s2beta/clk.h"
-#include "soc/cpu.h"
-#elif CONFIG_IDF_TARGET_ESP8266
 #include "esp_clk.h"
-#endif
 
 #define xPortGetFreeHeapSize() esp_get_free_heap_size()
 #define RSR(_c, _t) _t = (uint32_t) esp_timer_get_time()

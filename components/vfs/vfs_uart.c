@@ -25,15 +25,7 @@
 #include "driver/uart.h"
 #include "sdkconfig.h"
 #include "driver/uart_select.h"
-#if CONFIG_IDF_TARGET_ESP32
-#include "esp32/rom/uart.h"
-#include "soc/uart_periph.h"
-#elif CONFIG_IDF_TARGET_ESP32S2BETA
-#include "esp32s2beta/rom/uart.h"
-#include "soc/uart_periph.h"
-#elif CONFIG_IDF_TARGET_ESP8266
 #include "rom/uart.h"
-#endif
 
 #define SOC_UART_NUM 2
 #define UART0 uart0
@@ -169,13 +161,7 @@ static void uart_tx_char(int fd, int c)
     while (uart->status.txfifo_cnt >= 127) {
         ;
     }
-#if CONFIG_IDF_TARGET_ESP32
     uart->fifo.rw_byte = c;
-#elif CONFIG_IDF_TARGET_ESP32S2BETA
-    uart->ahb_fifo.rw_byte = c;
-#elif CONFIG_IDF_TARGET_ESP8266
-    uart->fifo.rw_byte = c;
-#endif
 }
 
 static void uart_tx_char_via_driver(int fd, int c)
@@ -194,13 +180,7 @@ static int uart_rx_char(int fd)
     if (uart->status.rxfifo_cnt == 0) {
         return NONE;
     }
-#if CONFIG_IDF_TARGET_ESP32
     return uart->fifo.rw_byte;
-#elif CONFIG_IDF_TARGET_ESP32S2BETA
-    return READ_PERI_REG(UART_FIFO_AHB_REG(fd));
-#elif CONFIG_IDF_TARGET_ESP8266
-    return uart->fifo.rw_byte;
-#endif
 }
 
 static int uart_rx_char_via_driver(int fd)
