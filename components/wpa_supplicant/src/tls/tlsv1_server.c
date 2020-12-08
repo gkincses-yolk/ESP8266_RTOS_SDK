@@ -379,9 +379,6 @@ struct tlsv1_server * tlsv1_server_init(struct tlsv1_credentials *cred)
 	suites = conn->cipher_suites;
 	suites[count++] = TLS_RSA_WITH_AES_256_CBC_SHA;
 	suites[count++] = TLS_RSA_WITH_AES_128_CBC_SHA;
-#ifdef CONFIG_DES3
-	suites[count++] = TLS_RSA_WITH_3DES_EDE_CBC_SHA;
-#endif
 	suites[count++] = TLS_RSA_WITH_RC4_128_SHA;
 	suites[count++] = TLS_RSA_WITH_RC4_128_MD5;
 	conn->num_cipher_suites = count;
@@ -499,16 +496,6 @@ int tlsv1_server_get_cipher(struct tlsv1_server *conn, char *buf,
 	case TLS_RSA_WITH_RC4_128_SHA:
 		cipher = "RC4-SHA";
 		break;
-#ifdef CONFIG_DES
-	case TLS_RSA_WITH_DES_CBC_SHA:
-		cipher = "DES-CBC-SHA";
-		break;
-#endif
-#ifdef CONFIG_DES3
-	case TLS_RSA_WITH_3DES_EDE_CBC_SHA:
-		cipher = "DES-CBC3-SHA";
-		break;
-#endif
 	case TLS_DH_anon_WITH_AES_128_CBC_SHA:
 		cipher = "ADH-AES-128-SHA";
 		break;
@@ -537,12 +524,6 @@ int tlsv1_server_get_cipher(struct tlsv1_server *conn, char *buf,
 		    break;
         case TLS_RSA_WITH_RC4_128_SHA:
             strcpy(cipher, "RC4-SHA");
-            break;
-        case TLS_RSA_WITH_DES_CBC_SHA:
-            strcpy(cipher, "DES-CBC-SHA");
-            break;
-        case TLS_RSA_WITH_3DES_EDE_CBC_SHA:
-            strcpy(cipher, "DES-CBC3-SHA");
             break;
         case TLS_DH_anon_WITH_AES_128_CBC_SHA:
             strcpy(cipher, "ADH-AES-128-SHA");
@@ -663,14 +644,11 @@ int tlsv1_server_set_cipher_list(struct tlsv1_server *conn, u8 *ciphers)
 		suites = conn->cipher_suites;
 		suites[count++] = TLS_RSA_WITH_AES_256_CBC_SHA;
 		suites[count++] = TLS_RSA_WITH_AES_128_CBC_SHA;
-		suites[count++] = TLS_RSA_WITH_3DES_EDE_CBC_SHA;
 		suites[count++] = TLS_RSA_WITH_RC4_128_SHA;
 		suites[count++] = TLS_RSA_WITH_RC4_128_MD5;
 		suites[count++] = TLS_DH_anon_WITH_AES_256_CBC_SHA;
 		suites[count++] = TLS_DH_anon_WITH_AES_128_CBC_SHA;
-		suites[count++] = TLS_DH_anon_WITH_3DES_EDE_CBC_SHA;
 		suites[count++] = TLS_DH_anon_WITH_RC4_128_MD5;
-		suites[count++] = TLS_DH_anon_WITH_DES_CBC_SHA;
 		conn->num_cipher_suites = count;
 	}
 
