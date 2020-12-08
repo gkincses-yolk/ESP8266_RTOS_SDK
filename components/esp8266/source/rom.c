@@ -14,8 +14,12 @@
 
 #include "rom/uart.h"
 
+#include "esp_log.h"
+
 void uart_tx_wait_idle(uint8_t uart_no)
 {
+    //ESP_LOGV("FUNC", "uart_tx_wait_idle");
+
     uint32_t tx_bytes;
     uint32_t baudrate, byte_delay_us;
     uart_dev_t *const UART[2] = {&uart0, &uart1};
@@ -34,5 +38,7 @@ void uart_tx_wait_idle(uint8_t uart_no)
 
 void uart_disable_swap_io(void)
 {
+    //ESP_LOGV("FUNC", "uart_disable_swap_io");
+
    CLEAR_PERI_REG_MASK(UART_SWAP_REG, 0x4);
 }

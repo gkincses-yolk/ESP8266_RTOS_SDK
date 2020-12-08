@@ -45,6 +45,8 @@ adc_handle_t *adc_handle = NULL;
 
 esp_err_t adc_read(uint16_t *data)
 {
+    //ESP_LOGV("FUNC", "adc_read");
+
     ADC_CHECK(data, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
     ADC_CHECK(adc_handle, "ADC has not been initialized yet.", ESP_FAIL);
     uint16_t ret = 0;
@@ -78,6 +80,8 @@ esp_err_t adc_read(uint16_t *data)
 
 esp_err_t adc_read_fast(uint16_t *data, uint16_t len)
 {
+    //ESP_LOGV("FUNC", "adc_read_fast");
+
     ADC_CHECK(data && len > 0, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
     ADC_CHECK(adc_handle, "ADC has not been initialized yet.", ESP_FAIL);
     ADC_CHECK(adc_handle->config.mode == ADC_READ_TOUT_MODE, "adc_read_fast can only be used in ADC_READ_TOUT_MODE mode", ESP_ERR_INVALID_ARG);
@@ -110,6 +114,8 @@ esp_err_t adc_read_fast(uint16_t *data, uint16_t len)
 
 esp_err_t adc_deinit()
 {
+    //ESP_LOGV("FUNC", "adc_deinit");
+
     ADC_CHECK(adc_handle, "ADC has not been initialized yet.", ESP_FAIL);
 
     if (adc_handle->adc_mux) {
@@ -123,6 +129,8 @@ esp_err_t adc_deinit()
 
 esp_err_t adc_init(adc_config_t *config)
 {
+    //ESP_LOGV("FUNC", "adc_init");
+
     ADC_CHECK(config, "config error", ESP_ERR_INVALID_ARG);
     ADC_CHECK(NULL == adc_handle, "adc has been initialized", ESP_FAIL);
     uint8_t vdd33_const;

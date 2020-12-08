@@ -15,8 +15,12 @@
 #include <stdint.h>
 #include "esp8266/eagle_soc.h"
 
+#include "esp_log.h"
+
 static uint32_t prev_text_size(const uint32_t pc)
 {
+    //ESP_LOGV("FUNC", "prev_text_size");
+
     uint32_t size;
     extern uint32_t _text_start, _text_end;
 
@@ -35,11 +39,15 @@ static uint32_t prev_text_size(const uint32_t pc)
 
 int xt_pc_is_valid(const void *pc)
 {
+    //ESP_LOGV("FUNC", "xt_pc_is_valid");
+
     return prev_text_size((uint32_t)pc) ? 1 : 0;
 }
 
 int xt_retaddr_callee(const void *i_pc, const void *i_sp, const void *i_lr, void **o_pc, void **o_sp)
 {
+    //ESP_LOGV("FUNC", "xt_retaddr_callee");
+
     uint32_t lr = (uint32_t)i_lr;
     uint32_t pc = (uint32_t)i_pc;
     uint32_t sp = (uint32_t)i_sp;
@@ -102,6 +110,8 @@ int xt_retaddr_callee(const void *i_pc, const void *i_sp, const void *i_lr, void
 
 void *xt_return_address(int lvl)
 {
+    //ESP_LOGV("FUNC", "*xt_return_address");
+
     void *i_sp;
     void *i_lr = NULL;
     void *i_pc = (void *)((uint32_t)xt_return_address + 32);

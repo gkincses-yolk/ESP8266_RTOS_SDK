@@ -20,14 +20,20 @@
 #include "esp_system.h"
 #include "esp8266/eagle_soc.h"
 
+#include "esp_log.h"
+
 extern unsigned int adc_rand_noise;
 uint32_t esp_random(void)
 {
+    ESP_LOGV("FUNC", "esp_random");
+
     return (adc_rand_noise ^ REG_READ(WDEV_RAND));
 }
 
 void esp_fill_random(void *buf, size_t len)
 {
+    ESP_LOGV("FUNC", "esp_fill_random");
+
     assert(buf != NULL);
     uint8_t *buf_bytes = (uint8_t *)buf;
     while (len > 0) {

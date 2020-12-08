@@ -88,6 +88,8 @@ static DRAM_ATTR spi_dev_t *const SPI[SPI_NUM_MAX] = {&SPI0, &SPI1};
 
 esp_err_t spi_get_clk_div(spi_host_t host, spi_clk_div_t *clk_div)
 {
+    //ESP_LOGV("FUNC", "spi_get_clk_div");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(clk_div, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -102,6 +104,8 @@ esp_err_t spi_get_clk_div(spi_host_t host, spi_clk_div_t *clk_div)
 
 esp_err_t spi_set_clk_div(spi_host_t host, spi_clk_div_t *clk_div)
 {
+    //ESP_LOGV("FUNC", "spi_set_clk_div");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(clk_div, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -158,6 +162,8 @@ esp_err_t spi_set_clk_div(spi_host_t host, spi_clk_div_t *clk_div)
 
 esp_err_t spi_get_intr_enable(spi_host_t host, spi_intr_enable_t *intr_enable)
 {
+    //ESP_LOGV("FUNC", "spi_get_intr_enable");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(intr_enable, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -169,6 +175,8 @@ esp_err_t spi_get_intr_enable(spi_host_t host, spi_intr_enable_t *intr_enable)
 
 esp_err_t spi_set_intr_enable(spi_host_t host, spi_intr_enable_t *intr_enable)
 {
+    //ESP_LOGV("FUNC", "spi_set_intr_enable");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(intr_enable, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -194,6 +202,8 @@ esp_err_t spi_set_intr_enable(spi_host_t host, spi_intr_enable_t *intr_enable)
 
 esp_err_t spi_get_mode(spi_host_t host, spi_mode_t *mode)
 {
+    //ESP_LOGV("FUNC", "spi_get_mode");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(mode, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -205,6 +215,8 @@ esp_err_t spi_get_mode(spi_host_t host, spi_mode_t *mode)
 
 esp_err_t spi_set_mode(spi_host_t host, spi_mode_t *mode)
 {
+    //ESP_LOGV("FUNC", "spi_set_mode");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(mode, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -273,6 +285,8 @@ esp_err_t spi_set_mode(spi_host_t host, spi_mode_t *mode)
 
 esp_err_t spi_get_interface(spi_host_t host, spi_interface_t *interface)
 {
+    //ESP_LOGV("FUNC", "spi_get_interface");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(interface, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -284,6 +298,8 @@ esp_err_t spi_get_interface(spi_host_t host, spi_interface_t *interface)
 
 esp_err_t spi_set_interface(spi_host_t host, spi_interface_t *interface)
 {
+    //ESP_LOGV("FUNC", "spi_set_interface");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(interface, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -359,6 +375,8 @@ esp_err_t spi_set_interface(spi_host_t host, spi_interface_t *interface)
 
 esp_err_t spi_get_dummy(spi_host_t host, uint16_t *bitlen)
 {
+    //ESP_LOGV("FUNC", "spi_get_dummy");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(bitlen, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -374,6 +392,8 @@ esp_err_t spi_get_dummy(spi_host_t host, uint16_t *bitlen)
 
 esp_err_t spi_set_dummy(spi_host_t host, uint16_t *bitlen)
 {
+    //ESP_LOGV("FUNC", "spi_set_dummy");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(bitlen, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -395,6 +415,8 @@ esp_err_t spi_set_dummy(spi_host_t host, uint16_t *bitlen)
 
 esp_err_t spi_get_event_callback(spi_host_t host, spi_event_callback_t *event_cb)
 {
+    //ESP_LOGV("FUNC", "spi_get_event_callback");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(event_cb, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -406,6 +428,8 @@ esp_err_t spi_get_event_callback(spi_host_t host, spi_event_callback_t *event_cb
 
 esp_err_t spi_set_event_callback(spi_host_t host, spi_event_callback_t *event_cb)
 {
+    //ESP_LOGV("FUNC", "spi_set_event_callback");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(event_cb, "parameter pointer is empty", ESP_ERR_INVALID_ARG);
@@ -417,6 +441,8 @@ esp_err_t spi_set_event_callback(spi_host_t host, spi_event_callback_t *event_cb
 
 esp_err_t spi_slave_get_status(spi_host_t host, uint32_t *status)
 {
+    //ESP_LOGV("FUNC", "spi_slave_get_status");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK(SPI_SLAVE_MODE == spi_object[host]->mode, "this function must used by spi slave mode", ESP_FAIL);
@@ -433,6 +459,8 @@ esp_err_t spi_slave_get_status(spi_host_t host, uint32_t *status)
 
 esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_set_status(spi_host_t host, uint32_t *status)
 {
+    //ESP_LOGV("FUNC", "spi_slave_set_status");
+
     SPI_CHECK_HIGH_THROUGHPUT(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK_HIGH_THROUGHPUT(SPI_SLAVE_MODE == spi_object[host]->mode, "this function must used by spi slave mode", ESP_FAIL);
@@ -449,6 +477,8 @@ esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_set_status(spi_host_t host, uint32_
 
 static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_master_trans(spi_host_t host, spi_trans_t *trans)
 {
+    //ESP_LOGV("FUNC", "spi_master_trans");
+
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.cmd <= 16, "spi cmd must be shorter than 16 bits", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.addr <= 32, "spi addr must be shorter than 32 bits", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.mosi <= 512, "spi mosi must be shorter than 512 bits", ESP_ERR_INVALID_ARG);
@@ -545,6 +575,8 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_master_trans(spi_host_t host, spi_
 
 static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_trans(spi_host_t host, spi_trans_t *trans)
 {
+    //ESP_LOGV("FUNC", "spi_slave_trans");
+
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.cmd >= 3 && trans->bits.cmd <= 16, "spi cmd must be longer than 3 bits and shorter than 16 bits", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.addr >= 1 && trans->bits.addr <= 32, "spi addr must be longer than 1 bits and shorter than 32 bits", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.miso <= 512, "spi miso must be shorter than 512 bits", ESP_ERR_INVALID_ARG);
@@ -610,6 +642,8 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_trans(spi_host_t host, spi_t
 
 static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_trans_static(spi_host_t host, spi_trans_t *trans)
 {
+    //ESP_LOGV("FUNC", "spi_trans_static");
+
     int ret;
     if (SPI_MASTER_MODE == spi_object[host]->mode) {
         ret = spi_master_trans(host, trans);
@@ -622,6 +656,8 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_trans_static(spi_host_t host, spi_
 
 esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_trans(spi_host_t host, spi_trans_t *trans)
 {
+    //ESP_LOGV("FUNC", "spi_trans");
+
     SPI_CHECK_HIGH_THROUGHPUT(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK_HIGH_THROUGHPUT(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
     SPI_CHECK_HIGH_THROUGHPUT(trans->bits.val, "trans bits is empty", ESP_ERR_INVALID_ARG);
@@ -649,6 +685,8 @@ esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_trans(spi_host_t host, spi_trans_t *trans
 
 static IRAM_ATTR void spi_intr(void *arg)
 {
+    //ESP_LOGV("FUNC", "spi_intr");
+
     spi_host_t host;
     uint32_t trans_done;
     uint32_t cnt = 0;
@@ -685,6 +723,8 @@ static IRAM_ATTR void spi_intr(void *arg)
 
 esp_err_t spi_deinit(spi_host_t host)
 {
+    //ESP_LOGV("FUNC", "spi_deinit");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(spi_object[host], "spi has not been initialized yet", ESP_FAIL);
 
@@ -726,6 +766,8 @@ esp_err_t spi_deinit(spi_host_t host)
 
 esp_err_t spi_init(spi_host_t host, spi_config_t *config)
 {
+    //ESP_LOGV("FUNC", "spi_init");
+
     SPI_CHECK(host < SPI_NUM_MAX, "host num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(host > CSPI_HOST, "CSPI_HOST can't support now", ESP_FAIL);
     SPI_CHECK(NULL == spi_object[host], "spi has been initialized", ESP_FAIL);

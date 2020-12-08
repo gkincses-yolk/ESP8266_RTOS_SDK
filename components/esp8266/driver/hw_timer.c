@@ -56,6 +56,8 @@ hw_timer_obj_t *hw_timer_obj = NULL;
 
 esp_err_t hw_timer_set_clkdiv(hw_timer_clkdiv_t clkdiv)
 {
+    //ESP_LOGV("FUNC", "hw_timer_set_clkdiv");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
     HW_TIMER_CHECK(clkdiv >= TIMER_CLKDIV_1 && clkdiv <= TIMER_CLKDIV_256, "clkdiv is out of range.", ESP_ERR_INVALID_ARG);
 
@@ -68,11 +70,15 @@ esp_err_t hw_timer_set_clkdiv(hw_timer_clkdiv_t clkdiv)
 
 uint32_t hw_timer_get_clkdiv()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_clkdiv");
+
     return frc1.ctrl.div;
 }
 
 esp_err_t hw_timer_set_intr_type(hw_timer_intr_type_t intr_type)
 {
+    //ESP_LOGV("FUNC", "hw_timer_set_intr_type");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
     HW_TIMER_CHECK(intr_type >= TIMER_EDGE_INT && intr_type <= TIMER_LEVEL_INT, "intr_type is out of range.", ESP_ERR_INVALID_ARG);
 
@@ -85,11 +91,15 @@ esp_err_t hw_timer_set_intr_type(hw_timer_intr_type_t intr_type)
 
 uint32_t hw_timer_get_intr_type()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_intr_type");
+
     return frc1.ctrl.intr_type;
 }
 
 esp_err_t hw_timer_set_reload(bool reload)
 {
+    //ESP_LOGV("FUNC", "hw_timer_set_reload");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
 
     ENTER_CRITICAL();
@@ -106,6 +116,8 @@ esp_err_t hw_timer_set_reload(bool reload)
 
 bool hw_timer_get_reload()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_reload");
+
     if (frc1.ctrl.reload) {
         return true;
     } else {
@@ -115,6 +127,8 @@ bool hw_timer_get_reload()
 
 esp_err_t hw_timer_enable(bool en)
 {
+    //ESP_LOGV("FUNC", "hw_timer_enable");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
 
     ENTER_CRITICAL();
@@ -130,6 +144,8 @@ esp_err_t hw_timer_enable(bool en)
 
 bool hw_timer_get_enable()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_enable");
+
     if (frc1.ctrl.en) {
         return true;
     } else {
@@ -139,6 +155,8 @@ bool hw_timer_get_enable()
 
 esp_err_t hw_timer_set_load_data(uint32_t load_data)
 {
+    //ESP_LOGV("FUNC", "hw_timer_set_load_data");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
     HW_TIMER_CHECK(load_data < 0x1000000, "load_data is out of range.", ESP_ERR_INVALID_ARG);
 
@@ -151,16 +169,22 @@ esp_err_t hw_timer_set_load_data(uint32_t load_data)
 
 uint32_t hw_timer_get_load_data()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_load_data");
+
     return frc1.load.data;
 }
 
 uint32_t hw_timer_get_count_data()
 {
+    //ESP_LOGV("FUNC", "hw_timer_get_count_data");
+
     return frc1.count.data;
 }
 
 static void IRAM_ATTR hw_timer_isr_cb(void* arg)
 {
+    //ESP_LOGV("FUNC", "hw_timer_isr_cb");
+
     if (!frc1.ctrl.reload) {
         frc1.ctrl.en = 0;
     }
@@ -171,6 +195,8 @@ static void IRAM_ATTR hw_timer_isr_cb(void* arg)
 
 esp_err_t hw_timer_disarm(void)
 {
+    //ESP_LOGV("FUNC", "hw_timer_disarm");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
 
     frc1.ctrl.val = 0;
@@ -180,6 +206,8 @@ esp_err_t hw_timer_disarm(void)
 
 esp_err_t hw_timer_alarm_us(uint32_t value, bool reload)
 {
+    //ESP_LOGV("FUNC", "hw_timer_alarm_us");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
     HW_TIMER_CHECK( (reload ? ((value > 50) ? 1 : 0) : ((value > 10) ? 1 : 0)) && (value <= 0x199999), "value is out of range.", ESP_ERR_INVALID_ARG);
     
@@ -194,6 +222,8 @@ esp_err_t hw_timer_alarm_us(uint32_t value, bool reload)
 
 static void hw_timer_obj_delete(void)
 {
+    //ESP_LOGV("FUNC", "hw_timer_obj_delete");
+
     if (NULL == hw_timer_obj) {
         return;
     }
@@ -204,6 +234,8 @@ static void hw_timer_obj_delete(void)
 
 static esp_err_t hw_timer_obj_create(void)
 {
+    //ESP_LOGV("FUNC", "hw_timer_obj_create");
+
     hw_timer_obj = (hw_timer_obj_t *)heap_caps_malloc(sizeof(hw_timer_obj_t), MALLOC_CAP_8BIT);
 
     if (NULL == hw_timer_obj) {
@@ -217,6 +249,8 @@ static esp_err_t hw_timer_obj_create(void)
 
 esp_err_t hw_timer_deinit(void)
 {
+    //ESP_LOGV("FUNC", "hw_timer_deinit");
+
     HW_TIMER_CHECK(hw_timer_obj, "hw_timer has not been initialized yet", ESP_FAIL);
 
     hw_timer_disarm();
@@ -230,6 +264,8 @@ esp_err_t hw_timer_deinit(void)
 
 esp_err_t hw_timer_init(hw_timer_callback_t callback, void *arg)
 {
+    //ESP_LOGV("FUNC", "hw_timer_init");
+
     HW_TIMER_CHECK(hw_timer_obj == NULL, "hw_timer has been initialized", ESP_FAIL);
     HW_TIMER_CHECK(callback != NULL, "callback pointer NULL", ESP_ERR_INVALID_ARG);
 

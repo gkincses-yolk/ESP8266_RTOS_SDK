@@ -77,6 +77,8 @@ static uint32_t s_sleep_duration;
 
 static inline uint32_t save_local_wdev(void)
 {
+    //ESP_LOGV("FUNC", "save_local_wdev");
+
     extern uint32_t WDEV_INTEREST_EVENT;
 
     uint32_t reg = WDEV_INTEREST_EVENT;
@@ -88,21 +90,29 @@ static inline uint32_t save_local_wdev(void)
 
 static inline void restore_local_wdev(uint32_t reg)
 {
+    //ESP_LOGV("FUNC", "restore_local_wdev");
+
     REG_WRITE(INT_ENA_WDEV, reg);
 }
 
 uint32_t rtc_clk_to_us(uint32_t rtc_cycles, uint32_t period)
 {
+    //ESP_LOGV("FUNC", "rtc_clk_to_us");
+
     return (uint64_t)rtc_cycles * period / 4096;
 }
 
 uint32_t rtc_us_to_clk(uint32_t us, uint32_t period)
 {
+    //ESP_LOGV("FUNC", "rtc_us_to_clk");
+
     return (uint64_t)us * 4096 / period;
 }
 
 static inline void save_soc_clk(pm_soc_clk_t *clk)
 {
+    //ESP_LOGV("FUNC", "save_soc_clk");
+
     clk->rtc_val = REG_READ(RTC_SLP_CNT_VAL);
 
     clk->ccount = soc_get_ccount();
@@ -116,6 +126,8 @@ static inline void save_soc_clk(pm_soc_clk_t *clk)
 
 static inline uint32_t min_sleep_us(pm_soc_clk_t *clk)
 {
+    //ESP_LOGV("FUNC", "min_sleep_us");
+
     const uint32_t os_idle_ticks = prvGetExpectedIdleTime();
     const int32_t os_sleep_us = ((int32_t)soc_get_ccompare() - (int32_t)clk->ccount) / g_esp_ticks_per_us +
                                         (os_idle_ticks ? os_idle_ticks - 1 : 0) * portTICK_RATE_MS * 1000;
@@ -135,6 +147,8 @@ static inline uint32_t min_sleep_us(pm_soc_clk_t *clk)
 
 static inline uint32_t sleep_rtc_ticks(pm_soc_clk_t *clk)
 {
+    //ESP_LOGV("FUNC", "sleep_rtc_ticks");
+
     uint32_t rtc_ticks;
 
     clk->cal_period = pm_rtc_clock_cali_proc();
@@ -146,6 +160,8 @@ static inline uint32_t sleep_rtc_ticks(pm_soc_clk_t *clk)
 
 static inline void update_soc_clk(pm_soc_clk_t *clk)
 {
+    //ESP_LOGV("FUNC", "update_soc_clk");
+
     extern uint64_t WdevTimOffSet;
 
     uint32_t slept_us;
@@ -192,11 +208,15 @@ static inline void update_soc_clk(pm_soc_clk_t *clk)
 
 static int cpu_is_wait_mode(void)
 {
+    //ESP_LOGV("FUNC", "cpu_is_wait_mode");
+
     return (s_sleep_mode == ESP_CPU_WAIT) || s_lock_cnt;
 }
 
 static int cpu_reject_sleep(void)
 {
+    //ESP_LOGV("FUNC", "cpu_reject_sleep");
+
     int ret = 0;
 
     if (s_sleep_wakup_triggers & RTC_GPIO_TRIG_EN) {
@@ -223,6 +243,8 @@ static int cpu_reject_sleep(void)
 
 rtc_cpu_freq_t rtc_clk_cpu_freq_get(void)
 {
+    //ESP_LOGV("FUNC", "rtc_clk_cpu_freq_get");
+
     rtc_cpu_freq_t freq;
     uint32_t reg = REG_READ(DPORT_CTL_REG);
 
@@ -236,6 +258,8 @@ rtc_cpu_freq_t rtc_clk_cpu_freq_get(void)
 
 void rtc_clk_cpu_freq_set(rtc_cpu_freq_t cpu_freq)
 {
+    //ESP_LOGV("FUNC", "rtc_clk_cpu_freq_set");
+
     if (RTC_CPU_FREQ_80M == cpu_freq)
         REG_CLR_BIT(DPORT_CTL_REG, DPORT_CTL_DOUBLE_CLK);
     else
@@ -244,6 +268,8 @@ void rtc_clk_cpu_freq_set(rtc_cpu_freq_t cpu_freq)
 
 esp_err_t esp_sleep_enable_timer_wakeup(uint32_t time_in_us)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_enable_timer_wakeup");
+
     if (time_in_us <= MIN_SLEEP_US)
         return ESP_ERR_INVALID_ARG;
 
@@ -255,6 +281,8 @@ esp_err_t esp_sleep_enable_timer_wakeup(uint32_t time_in_us)
 
 esp_err_t esp_sleep_enable_gpio_wakeup(void)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_enable_gpio_wakeup");
+
     s_sleep_wakup_triggers |= RTC_GPIO_TRIG_EN;
 
     return ESP_OK;
@@ -262,6 +290,8 @@ esp_err_t esp_sleep_enable_gpio_wakeup(void)
 
 esp_err_t esp_sleep_disable_wakeup_source(esp_sleep_source_t source)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_disable_wakeup_source");
+
     // For most of sources it is enough to set trigger mask in local
     // configuration structure. The actual RTC wake up options
     // will be updated by esp_sleep_start().
@@ -282,6 +312,8 @@ esp_err_t esp_sleep_disable_wakeup_source(esp_sleep_source_t source)
 
 static int esp_light_sleep_internal(const sleep_proc_t *proc)
 {
+    //ESP_LOGV("FUNC", "esp_light_sleep_internal");
+
     pm_soc_clk_t clk;
     esp_irqflag_t irqflag;
     uint32_t wdevflag;
@@ -368,6 +400,8 @@ exit:
 
 esp_err_t esp_light_sleep_start(void)
 {
+    //ESP_LOGV("FUNC", "esp_light_sleep_start");
+
     const sleep_proc_t proc = {
         .sleep_us = s_sleep_duration,
         .wait_int = 0,
@@ -384,6 +418,8 @@ esp_err_t esp_light_sleep_start(void)
 
 void esp_sleep_lock(void)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_lock");
+
     const esp_irqflag_t irqflag = soc_save_local_irq();
     s_lock_cnt++;
     soc_restore_local_irq(irqflag);
@@ -391,6 +427,8 @@ void esp_sleep_lock(void)
 
 void esp_sleep_unlock(void)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_unlock");
+
     const esp_irqflag_t irqflag = soc_save_local_irq();
     s_lock_cnt--;
     soc_restore_local_irq(irqflag);
@@ -398,11 +436,15 @@ void esp_sleep_unlock(void)
 
 void esp_sleep_set_mode(esp_sleep_mode_t mode)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_set_mode");
+
     s_sleep_mode = mode;
 }
 
 void esp_sleep_start(void)
 {
+    //ESP_LOGV("FUNC", "esp_sleep_start");
+
     const sleep_proc_t proc = {
         .sleep_us = 0,
         .wait_int = 1,
@@ -415,6 +457,8 @@ void esp_sleep_start(void)
 
 esp_err_t esp_pm_configure(const void* vconfig)
 {
+    //ESP_LOGV("FUNC", "esp_pm_configure");
+
 #ifndef CONFIG_PM_ENABLE
     return ESP_ERR_NOT_SUPPORTED;
 #endif
@@ -430,5 +474,7 @@ esp_err_t esp_pm_configure(const void* vconfig)
 
 uint32_t rtc_time_get(void)
 {
+    //ESP_LOGV("FUNC", "rtc_time_get");
+
     return REG_READ(RTC_SLP_CNT_VAL);
 }

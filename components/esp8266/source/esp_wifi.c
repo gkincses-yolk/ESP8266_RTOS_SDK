@@ -43,6 +43,8 @@ ESP_EVENT_DEFINE_BASE(WIFI_EVENT);
 
 static void esp_wifi_set_debug_log()
 {
+    ESP_LOGV("FUNC", "esp_wifi_set_debug_log");
+
     /* set WiFi log level and module */
 #if CONFIG_ESP8266_WIFI_DEBUG_LOG_ENABLE
     uint32_t wifi_log_level = WIFI_LOG_ERROR;
@@ -117,6 +119,8 @@ static void esp_wifi_set_debug_log()
 
 esp_err_t esp_wifi_deinit(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_deinit");
+
     esp_err_t err = ESP_OK;
 
     esp_supplicant_deinit();
@@ -149,6 +153,8 @@ esp_err_t esp_wifi_deinit(void)
   */
 esp_err_t esp_wifi_init(const wifi_init_config_t *config)
 {
+    ESP_LOGV("FUNC", "esp_wifi_init");
+
     mac_init();
 
     esp_wifi_set_rx_pbuf_mem_type(WIFI_RX_PBUF_DRAM);
@@ -178,11 +184,15 @@ esp_err_t esp_wifi_init(const wifi_init_config_t *config)
 
 void esp_deep_sleep_set_rf_option(uint8_t option)
 {
+    ESP_LOGV("FUNC", "esp_deep_sleep_set_rf_option");
+
     phy_afterwake_set_rfoption(option);
 }
 
 size_t __attribute__((weak)) esp_wifi_scan_get_ap_num_max(void)
 {
+    ESP_LOGV("FUNC", "esp_wifi_scan_get_ap_num_max");
+
     return CONFIG_SCAN_AP_MAX;
 }
 
@@ -201,6 +211,8 @@ bool IRAM_ATTR esp_wifi_try_rate_from_high(void) {
 
 int wifi_internal_send_cb(esp_aio_t* aio)
 {
+    ESP_LOGV("FUNC", "wifi_internal_send_cb");
+
     char* pb = (char*)aio->arg;
 
     if (pb) {
@@ -213,6 +225,8 @@ int wifi_internal_send_cb(esp_aio_t* aio)
 
 int esp_wifi_internal_tx(wifi_interface_t wifi_if, void *buffer, uint16_t len)
 {
+    ESP_LOGV("FUNC", "esp_wifi_internal_tx");
+
     esp_aio_t aio;
     esp_err_t ret = ESP_OK;
     uint8_t *dram_buffer = (uint8_t *)heap_caps_malloc(len + EP_OFFSET, MALLOC_CAP_8BIT);

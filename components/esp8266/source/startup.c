@@ -43,6 +43,8 @@ extern int base_gpio_init(void);
 
 static inline int should_load(uint32_t load_addr)
 {
+    //ESP_LOGV("FUNC", "should_load");
+
     if (IS_USR_RTC(load_addr)) {
         if (esp_reset_reason_early() == ESP_RST_DEEPSLEEP)
             return 0;
@@ -56,6 +58,8 @@ static inline int should_load(uint32_t load_addr)
 
 static void user_init_entry(void *param)
 {
+    //ESP_LOGV("FUNC", "user_init_entry");
+
     void (**func)(void);
 
     extern void (*__init_array_start)(void);
@@ -100,6 +104,8 @@ static void user_init_entry(void *param)
 
 void call_start_cpu(size_t start_addr)
 {
+    //ESP_LOGV("FUNC", "call_start_cpu");
+
     int i;
     int *p;
 

@@ -85,6 +85,8 @@ static gpio_isr_func_t *gpio_isr_func = NULL;
 
 esp_err_t gpio_pullup_en(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_pullup_en");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -100,6 +102,8 @@ esp_err_t gpio_pullup_en(gpio_num_t gpio_num)
 
 esp_err_t gpio_pullup_dis(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_pullup_dis");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -115,6 +119,8 @@ esp_err_t gpio_pullup_dis(gpio_num_t gpio_num)
 
 esp_err_t gpio_pulldown_en(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_pulldown_en");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (!RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -130,6 +136,8 @@ esp_err_t gpio_pulldown_en(gpio_num_t gpio_num)
 
 esp_err_t gpio_pulldown_dis(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_pulldown_dis");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (!RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -145,6 +153,8 @@ esp_err_t gpio_pulldown_dis(gpio_num_t gpio_num)
 
 esp_err_t gpio_set_intr_type(gpio_num_t gpio_num, gpio_int_type_t intr_type)
 {
+    //ESP_LOGV("FUNC", "gpio_set_intr_type");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(!RTC_GPIO_IS_VALID_GPIO(gpio_num), "GPIO is RTC GPIO", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(intr_type < GPIO_INTR_MAX, "GPIO interrupt type error", ESP_ERR_INVALID_ARG);
@@ -155,6 +165,8 @@ esp_err_t gpio_set_intr_type(gpio_num_t gpio_num, gpio_int_type_t intr_type)
 
 static esp_err_t gpio_output_disable(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_output_disable");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -170,6 +182,8 @@ static esp_err_t gpio_output_disable(gpio_num_t gpio_num)
 
 static esp_err_t gpio_output_enable(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_output_enable");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -185,6 +199,8 @@ static esp_err_t gpio_output_enable(gpio_num_t gpio_num)
 
 esp_err_t gpio_set_level(gpio_num_t gpio_num, uint32_t level)
 {
+    //ESP_LOGV("FUNC", "gpio_set_level");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -206,6 +222,8 @@ esp_err_t gpio_set_level(gpio_num_t gpio_num, uint32_t level)
 
 int gpio_get_level(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_get_level");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
@@ -217,6 +235,8 @@ int gpio_get_level(gpio_num_t gpio_num)
 
 esp_err_t gpio_set_pull_mode(gpio_num_t gpio_num, gpio_pull_mode_t pull)
 {
+    //ESP_LOGV("FUNC", "gpio_set_pull_mode");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(pull <= GPIO_FLOATING, "GPIO pull mode error", ESP_ERR_INVALID_ARG);
 
@@ -249,6 +269,8 @@ esp_err_t gpio_set_pull_mode(gpio_num_t gpio_num, gpio_pull_mode_t pull)
 
 esp_err_t gpio_set_direction(gpio_num_t gpio_num, gpio_mode_t mode)
 {
+    //ESP_LOGV("FUNC", "gpio_set_direction");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     // esp8266 input is always connected
@@ -269,6 +291,8 @@ esp_err_t gpio_set_direction(gpio_num_t gpio_num, gpio_mode_t mode)
 
 esp_err_t gpio_config(const gpio_config_t *gpio_cfg)
 {
+    //ESP_LOGV("FUNC", "gpio_config");
+
     uint32_t gpio_pin_mask = (gpio_cfg->pin_bit_mask);
     uint32_t io_reg = 0;
     uint32_t io_num = 0;
@@ -352,6 +376,8 @@ esp_err_t gpio_config(const gpio_config_t *gpio_cfg)
 
 void IRAM_ATTR gpio_intr_service(void *arg)
 {
+    //ESP_LOGV("FUNC", "gpio_intr_service");
+
     //GPIO intr process
     uint32_t gpio_num = 0;
     //read status to get interrupt status for GPIO0-15
@@ -375,6 +401,8 @@ void IRAM_ATTR gpio_intr_service(void *arg)
 
 esp_err_t gpio_isr_handler_add(gpio_num_t gpio_num, gpio_isr_t isr_handler, void *args)
 {
+    //ESP_LOGV("FUNC", "gpio_isr_handler_add");
+
     GPIO_CHECK(gpio_isr_func != NULL, "GPIO isr service is not installed, call gpio_install_isr_service() first", ESP_ERR_INVALID_STATE);
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(!RTC_GPIO_IS_VALID_GPIO(gpio_num), "GPIO is RTC GPIO", ESP_ERR_INVALID_ARG);
@@ -394,6 +422,8 @@ esp_err_t gpio_isr_handler_add(gpio_num_t gpio_num, gpio_isr_t isr_handler, void
 
 esp_err_t gpio_isr_handler_remove(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_isr_handler_remove");
+
     GPIO_CHECK(gpio_isr_func != NULL, "GPIO isr service is not installed, call gpio_install_isr_service() first", ESP_ERR_INVALID_STATE);
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(!RTC_GPIO_IS_VALID_GPIO(gpio_num), "GPIO is RTC GPIO", ESP_ERR_INVALID_ARG);
@@ -413,6 +443,8 @@ esp_err_t gpio_isr_handler_remove(gpio_num_t gpio_num)
 
 esp_err_t gpio_isr_register(void (*fn)(void *), void *arg, int no_use, gpio_isr_handle_t *handle_no_use)
 {
+    //ESP_LOGV("FUNC", "gpio_isr_register");
+
     GPIO_CHECK(fn, "GPIO ISR null", ESP_ERR_INVALID_ARG);
 
     _xt_isr_attach(ETS_GPIO_INUM, fn, arg);
@@ -421,6 +453,8 @@ esp_err_t gpio_isr_register(void (*fn)(void *), void *arg, int no_use, gpio_isr_
 
 esp_err_t gpio_install_isr_service(int no_use)
 {
+    //ESP_LOGV("FUNC", "gpio_install_isr_service");
+
     GPIO_CHECK(gpio_isr_func == NULL, "GPIO isr service already installed", ESP_FAIL);
 
     esp_err_t ret;
@@ -439,6 +473,8 @@ esp_err_t gpio_install_isr_service(int no_use)
 
 void gpio_uninstall_isr_service()
 {
+    //ESP_LOGV("FUNC", "gpio_uninstall_isr_service");
+
     if (gpio_isr_func == NULL) {
         return;
     }
@@ -455,6 +491,8 @@ void gpio_uninstall_isr_service()
 /*only level interrupt can be used for wake-up function*/
 esp_err_t gpio_wakeup_enable(gpio_num_t gpio_num, gpio_int_type_t intr_type)
 {
+    //ESP_LOGV("FUNC", "gpio_wakeup_enable");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(!RTC_GPIO_IS_VALID_GPIO(gpio_num), "RTC IO can not use the wakeup function", ESP_ERR_INVALID_ARG);
 
@@ -472,6 +510,8 @@ esp_err_t gpio_wakeup_enable(gpio_num_t gpio_num, gpio_int_type_t intr_type)
 
 esp_err_t gpio_wakeup_disable(gpio_num_t gpio_num)
 {
+    //ESP_LOGV("FUNC", "gpio_wakeup_disable");
+
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
     GPIO_CHECK(!RTC_GPIO_IS_VALID_GPIO(gpio_num), "RTC IO can not use the wakeup function", ESP_ERR_INVALID_ARG);
 

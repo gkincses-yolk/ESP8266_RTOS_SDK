@@ -22,6 +22,8 @@
  */
 void chip_boot(void)
 {
+    //ESP_LOGV("FUNC", "chip_boot");
+
     extern void esp_spi_flash_init(uint32_t spi_speed, uint32_t spi_mode);
 
     esp_spi_flash_init(CONFIG_SPI_FLASH_FREQ, CONFIG_SPI_FLASH_MODE);

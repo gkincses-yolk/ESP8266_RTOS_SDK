@@ -106,6 +106,8 @@ static esp_err_t i2s_destroy_dma_queue(i2s_port_t i2s_num, i2s_dma_t *dma);
 
 static esp_err_t i2s_reset_fifo(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_reset_fifo");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_ENTER_CRITICAL();
     I2S[i2s_num]->conf.rx_fifo_reset = 1;
@@ -118,6 +120,8 @@ static esp_err_t i2s_reset_fifo(i2s_port_t i2s_num)
 
 esp_err_t i2s_clear_intr_status(i2s_port_t i2s_num, uint32_t clr_mask)
 {
+    //ESP_LOGV("FUNC", "i2s_clear_intr_status");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     p_i2s_obj[i2s_num]->dma->int_clr.val = clr_mask;
@@ -126,6 +130,8 @@ esp_err_t i2s_clear_intr_status(i2s_port_t i2s_num, uint32_t clr_mask)
 
 esp_err_t i2s_enable_rx_intr(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_enable_rx_intr");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_ENTER_CRITICAL();
@@ -137,6 +143,8 @@ esp_err_t i2s_enable_rx_intr(i2s_port_t i2s_num)
 
 esp_err_t i2s_disable_rx_intr(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_disable_rx_intr");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_ENTER_CRITICAL();
@@ -148,6 +156,8 @@ esp_err_t i2s_disable_rx_intr(i2s_port_t i2s_num)
 
 esp_err_t i2s_disable_tx_intr(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_disable_tx_intr");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_ENTER_CRITICAL();
@@ -159,6 +169,8 @@ esp_err_t i2s_disable_tx_intr(i2s_port_t i2s_num)
 
 esp_err_t i2s_enable_tx_intr(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_enable_tx_intr");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_ENTER_CRITICAL();
@@ -170,6 +182,8 @@ esp_err_t i2s_enable_tx_intr(i2s_port_t i2s_num)
 
 static void IRAM_ATTR i2s_intr_handler_default(void *arg)
 {
+    //ESP_LOGV("FUNC", "i2s_intr_handler_default");
+
     i2s_obj_t *p_i2s = (i2s_obj_t *) arg;
     slc_struct_t *dma_reg = p_i2s->dma;
     i2s_event_t i2s_event;
@@ -252,6 +266,8 @@ static void IRAM_ATTR i2s_intr_handler_default(void *arg)
 
 static esp_err_t i2s_destroy_dma_queue(i2s_port_t i2s_num, i2s_dma_t *dma)
 {
+    //ESP_LOGV("FUNC", "i2s_destroy_dma_queue");
+
     int bux_idx;
 
     if (p_i2s_obj[i2s_num] == NULL) {
@@ -290,6 +306,8 @@ static esp_err_t i2s_destroy_dma_queue(i2s_port_t i2s_num, i2s_dma_t *dma)
 
 static i2s_dma_t *i2s_create_dma_queue(i2s_port_t i2s_num, int dma_buf_count, int dma_buf_len)
 {
+    //ESP_LOGV("FUNC", "*i2s_create_dma_queue");
+
     int bux_idx;
     int sample_size = p_i2s_obj[i2s_num]->bytes_per_sample * p_i2s_obj[i2s_num]->channel_num;
     i2s_dma_t *dma = (i2s_dma_t *)heap_caps_zalloc(sizeof(i2s_dma_t), MALLOC_CAP_8BIT);
@@ -360,6 +378,8 @@ static i2s_dma_t *i2s_create_dma_queue(i2s_port_t i2s_num, int dma_buf_count, in
 
 esp_err_t i2s_start(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_start");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     // start DMA link
@@ -400,6 +420,8 @@ esp_err_t i2s_start(i2s_port_t i2s_num)
 
 esp_err_t i2s_stop(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_stop");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_ENTER_CRITICAL();
@@ -423,6 +445,8 @@ esp_err_t i2s_stop(i2s_port_t i2s_num)
 
 esp_err_t i2s_set_pin(i2s_port_t i2s_num, const i2s_pin_config_t *pin)
 {
+    //ESP_LOGV("FUNC", "i2s_set_pin");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(pin, "param null", ESP_ERR_INVALID_ARG);
 
@@ -455,6 +479,8 @@ esp_err_t i2s_set_pin(i2s_port_t i2s_num, const i2s_pin_config_t *pin)
 
 static esp_err_t i2s_set_rate(i2s_port_t i2s_num, uint32_t rate)
 {
+    //ESP_LOGV("FUNC", "i2s_set_rate");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     uint8_t bck_div = 1;
@@ -487,6 +513,8 @@ static esp_err_t i2s_set_rate(i2s_port_t i2s_num, uint32_t rate)
 
 esp_err_t i2s_set_clk(i2s_port_t i2s_num, uint32_t rate, i2s_bits_per_sample_t bits, i2s_channel_t ch)
 {
+    //ESP_LOGV("FUNC", "i2s_set_clk");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
 
@@ -606,6 +634,8 @@ esp_err_t i2s_set_clk(i2s_port_t i2s_num, uint32_t rate, i2s_bits_per_sample_t b
 
 esp_err_t i2s_set_sample_rates(i2s_port_t i2s_num, uint32_t rate)
 {
+    //ESP_LOGV("FUNC", "i2s_set_sample_rates");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK((p_i2s_obj[i2s_num]->bytes_per_sample > 0), "bits_per_sample not set", ESP_ERR_INVALID_ARG);
     return i2s_set_clk(i2s_num, rate, p_i2s_obj[i2s_num]->bits_per_sample, p_i2s_obj[i2s_num]->channel_num);
@@ -613,6 +643,8 @@ esp_err_t i2s_set_sample_rates(i2s_port_t i2s_num, uint32_t rate)
 
 static esp_err_t i2s_param_config(i2s_port_t i2s_num, const i2s_config_t *i2s_config)
 {
+    //ESP_LOGV("FUNC", "i2s_param_config");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
     I2S_CHECK((i2s_config), "param null", ESP_ERR_INVALID_ARG);
@@ -707,6 +739,8 @@ static esp_err_t i2s_param_config(i2s_port_t i2s_num, const i2s_config_t *i2s_co
 
 esp_err_t i2s_zero_dma_buffer(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_zero_dma_buffer");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "i2s not installed yet", ESP_FAIL);
 
@@ -735,6 +769,8 @@ esp_err_t i2s_zero_dma_buffer(i2s_port_t i2s_num)
 
 esp_err_t i2s_write(i2s_port_t i2s_num, const void *src, size_t size, size_t *bytes_written, TickType_t ticks_to_wait)
 {
+    //ESP_LOGV("FUNC", "i2s_write");
+
     char *data_ptr, *src_byte;
     int bytes_can_write;
     *bytes_written = 0;
@@ -776,6 +812,8 @@ esp_err_t i2s_write(i2s_port_t i2s_num, const void *src, size_t size, size_t *by
 
 esp_err_t i2s_read(i2s_port_t i2s_num, void *dest, size_t size, size_t *bytes_read, TickType_t ticks_to_wait)
 {
+    //ESP_LOGV("FUNC", "i2s_read");
+
     char *data_ptr, *dest_byte;
     int bytes_can_read;
     *bytes_read = 0;
@@ -815,6 +853,8 @@ esp_err_t i2s_read(i2s_port_t i2s_num, void *dest, size_t size, size_t *bytes_re
 
 esp_err_t i2s_driver_uninstall(i2s_port_t i2s_num)
 {
+    //ESP_LOGV("FUNC", "i2s_driver_uninstall");
+
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK(p_i2s_obj[i2s_num], "already uninstalled", ESP_FAIL);
 
@@ -844,6 +884,8 @@ esp_err_t i2s_driver_uninstall(i2s_port_t i2s_num)
 
 esp_err_t i2s_driver_install(i2s_port_t i2s_num, const i2s_config_t *i2s_config, int queue_size, void *i2s_queue)
 {
+    //ESP_LOGV("FUNC", "i2s_driver_install");
+
     esp_err_t err;
     I2S_CHECK((i2s_num < I2S_NUM_MAX), "i2s_num error", ESP_ERR_INVALID_ARG);
     I2S_CHECK((i2s_config != NULL), "I2S configuration must not NULL", ESP_ERR_INVALID_ARG);

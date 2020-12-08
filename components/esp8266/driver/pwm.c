@@ -108,6 +108,8 @@ int wDev_MacTimSetFunc(void (*handle)(void));
 
 static void pwm_phase_init(void)
 {
+    //ESP_LOGV("FUNC", "pwm_phase_init");
+
     int32_t time_delay;
     uint8_t i;
 
@@ -130,6 +132,8 @@ static void pwm_phase_init(void)
 
 static void pwm_insert_sort(void)
 {
+    //ESP_LOGV("FUNC", "pwm_insert_sort");
+
     uint8_t i;
     pwm_param_t tmp;
 
@@ -151,6 +155,8 @@ static void pwm_insert_sort(void)
 
 esp_err_t pwm_set_period(uint32_t period)
 {
+    //ESP_LOGV("FUNC", "pwm_set_period");
+
     PWM_CHECK(period >= 10, "period setting is too short", ESP_ERR_INVALID_ARG);
 
     pwm_obj->depth = period;    // For ease of conversion, let the depth equal the period
@@ -161,6 +167,8 @@ esp_err_t pwm_set_period(uint32_t period)
 
 esp_err_t pwm_get_period(uint32_t *period_p)
 {
+    //ESP_LOGV("FUNC", "pwm_get_period");
+
     PWM_CHECK(NULL != period_p, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
     *period_p = pwm_obj->period;
@@ -170,6 +178,8 @@ esp_err_t pwm_get_period(uint32_t *period_p)
 
 esp_err_t pwm_set_channel_invert(uint16_t channel_mask)
 {
+    //ESP_LOGV("FUNC", "pwm_set_channel_invert");
+
     PWM_CHECK((channel_mask  >> pwm_obj->channel_num) == 0, "invalid channel_mask", ESP_ERR_INVALID_ARG);
 
     pwm_obj->channel_invert_bitmap = channel_mask;
@@ -178,6 +188,8 @@ esp_err_t pwm_set_channel_invert(uint16_t channel_mask)
 
 esp_err_t pwm_clear_channel_invert(uint16_t channel_mask)
 {
+    //ESP_LOGV("FUNC", "pwm_clear_channel_invert");
+
     PWM_CHECK((channel_mask  >> pwm_obj->channel_num) == 0, "invalid channel_mask", ESP_ERR_INVALID_ARG);
 
     pwm_obj->channel_invert_bitmap = pwm_obj->channel_invert_bitmap & (~channel_mask);
@@ -186,6 +198,8 @@ esp_err_t pwm_clear_channel_invert(uint16_t channel_mask)
 
 esp_err_t pwm_set_duty(uint8_t channel_num, uint32_t duty)
 {
+    //ESP_LOGV("FUNC", "pwm_set_duty");
+
     PWM_CHECK(channel_num < pwm_obj->channel_num, "Channel num error", ESP_ERR_INVALID_ARG);
 
     pwm_obj->pwm_info[channel_num].duty = duty;
@@ -194,6 +208,8 @@ esp_err_t pwm_set_duty(uint8_t channel_num, uint32_t duty)
 
 esp_err_t pwm_set_duties(uint32_t *duties)
 {
+    //ESP_LOGV("FUNC", "pwm_set_duties");
+
     uint8_t i;
     PWM_CHECK(NULL != duties, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
@@ -206,6 +222,8 @@ esp_err_t pwm_set_duties(uint32_t *duties)
 
 esp_err_t pwm_get_duty(uint8_t channel_num, uint32_t *duty_p)
 {
+    //ESP_LOGV("FUNC", "pwm_get_duty");
+
     PWM_CHECK(channel_num < pwm_obj->channel_num, "Channel num error", ESP_ERR_INVALID_ARG);
     PWM_CHECK(NULL != duty_p, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
@@ -216,6 +234,8 @@ esp_err_t pwm_get_duty(uint8_t channel_num, uint32_t *duty_p)
 
 esp_err_t pwm_set_period_duties(uint32_t period, uint32_t *duties)
 {
+    //ESP_LOGV("FUNC", "pwm_set_period_duties");
+
     PWM_CHECK(NULL != duties, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
     pwm_set_period(period);
@@ -226,6 +246,8 @@ esp_err_t pwm_set_period_duties(uint32_t period, uint32_t *duties)
 
 esp_err_t pwm_set_phase(uint8_t channel_num, float phase)
 {
+    //ESP_LOGV("FUNC", "pwm_set_phase");
+
     PWM_CHECK(channel_num < pwm_obj->channel_num, "Channel num error", ESP_ERR_INVALID_ARG);
 
     pwm_obj->pwm_info[channel_num].phase = phase;
@@ -235,6 +257,8 @@ esp_err_t pwm_set_phase(uint8_t channel_num, float phase)
 
 esp_err_t pwm_set_phases(float *phases)
 {
+    //ESP_LOGV("FUNC", "pwm_set_phases");
+
     uint8_t i;
     PWM_CHECK(NULL != phases, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
@@ -248,6 +272,8 @@ esp_err_t pwm_set_phases(float *phases)
 
 esp_err_t pwm_get_phase(uint8_t channel_num, float *phase_p)
 {
+    //ESP_LOGV("FUNC", "pwm_get_phase");
+
     PWM_CHECK(channel_num < pwm_obj->channel_num, "Channel num error", ESP_ERR_INVALID_ARG);
     PWM_CHECK(NULL != phase_p, "Pointer is empty", ESP_ERR_INVALID_ARG);
 
@@ -258,6 +284,8 @@ esp_err_t pwm_get_phase(uint8_t channel_num, float *phase_p)
 
 static void pwm_timer_enable(uint8_t enable)
 {
+    //ESP_LOGV("FUNC", "pwm_timer_enable");
+
     if (0 == enable) {
         REG_WRITE(WDEVTSF0TIMER_ENA, REG_READ(WDEVTSF0TIMER_ENA) & (~WDEV_TSF0TIMER_ENA));
     } else {
@@ -267,6 +295,8 @@ static void pwm_timer_enable(uint8_t enable)
 
 static void IRAM_ATTR pwm_timer_intr_handler(void)
 {
+    //ESP_LOGV("FUNC", "pwm_timer_intr_handler");
+
     //process continous event
     uint32_t mask = REG_READ(PERIPHS_GPIO_BASEADDR + GPIO_OUT_ADDRESS);
 
@@ -319,6 +349,8 @@ static void IRAM_ATTR pwm_timer_intr_handler(void)
 
 static void pwm_timer_start(uint32_t period)
 {
+    //ESP_LOGV("FUNC", "pwm_timer_start");
+
     ENTER_CRITICAL();
     REG_WRITE(WDEVSLEEP0_CONF, REG_READ(WDEVSLEEP0_CONF)  & (~WDEV_TSFUP0_ENA));
     REG_WRITE(WDEVTSF0TIMER_ENA, REG_READ(WDEVTSF0TIMER_ENA) & (~WDEV_TSF0TIMER_ENA));
@@ -347,11 +379,15 @@ static void pwm_timer_start(uint32_t period)
 
 static void pwm_timer_register(void (*handle)(void))
 {
+    //ESP_LOGV("FUNC", "(*handle)");
+
     wDev_MacTimSetFunc(handle);
 }
 
 esp_err_t pwm_start(void)
 {
+    //ESP_LOGV("FUNC", "pwm_start");
+
     uint8_t i, j;
     PWM_CHECK((pwm_obj != NULL), "PWM has not been initialized yet.", ESP_FAIL);
 
@@ -486,6 +522,8 @@ esp_err_t pwm_start(void)
 
 static esp_err_t pwm_obj_free(void)
 {
+    //ESP_LOGV("FUNC", "pwm_obj_free");
+
     PWM_CHECK((pwm_obj != NULL), "PWM has not been initialized yet.", ESP_FAIL);
 
     if (pwm_obj->run_pwm[1].run_pwm_param) {
@@ -516,6 +554,8 @@ static esp_err_t pwm_obj_free(void)
 
 static esp_err_t pwm_obj_malloc(uint8_t channel_num)
 {
+    //ESP_LOGV("FUNC", "pwm_obj_malloc");
+
     pwm_obj = (pwm_obj_t *)heap_caps_malloc(sizeof(pwm_obj_t), MALLOC_CAP_8BIT);
 
     if (NULL == pwm_obj) {
@@ -541,6 +581,8 @@ static esp_err_t pwm_obj_malloc(uint8_t channel_num)
 
 esp_err_t pwm_init(uint32_t period, uint32_t *duties, uint8_t channel_num, const uint32_t *pin_num)
 {
+    //ESP_LOGV("FUNC", "pwm_init");
+
     PWM_CHECK(pwm_obj == NULL, "pwm has been initialized", ESP_FAIL);
     PWM_CHECK(channel_num <= MAX_PWM_CHANNEL, "Channel num out of range", ESP_ERR_INVALID_ARG);
     PWM_CHECK(NULL != duties, "duties pointer is empty", ESP_ERR_INVALID_ARG);
@@ -578,6 +620,8 @@ esp_err_t pwm_init(uint32_t period, uint32_t *duties, uint8_t channel_num, const
 
 esp_err_t pwm_stop(uint32_t stop_level_mask)
 {
+    //ESP_LOGV("FUNC", "pwm_stop");
+
     int16_t i = 0;
 
     ENTER_CRITICAL();
@@ -601,6 +645,8 @@ esp_err_t pwm_stop(uint32_t stop_level_mask)
 
 esp_err_t pwm_deinit(void)
 {
+    //ESP_LOGV("FUNC", "pwm_deinit");
+
     PWM_CHECK((pwm_obj != NULL), "PWM has not been initialized yet.", ESP_FAIL);
     PWM_CHECK((pwm_obj->init_flag), "PWM has been deleted.", ESP_FAIL);
 

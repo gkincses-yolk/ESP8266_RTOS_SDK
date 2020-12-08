@@ -54,6 +54,8 @@ typedef enum {
  */
 static void IRAM_ATTR ir_rx_intr_handler(void *arg)
 {
+    //ESP_LOGV("FUNC", "ir_rx_intr_handler");
+
     static int ir_state  =  IR_RX_IDLE;
     static int ir_repeat =  0;
     static ir_rx_nec_data_t ir_data = {0};
@@ -135,6 +137,8 @@ reset_status:
 
 esp_err_t ir_rx_disable()
 {
+    //ESP_LOGV("FUNC", "ir_rx_disable");
+
     IR_RX_CHECK(ir_rx_obj, "ir rx not been initialized yet", ESP_FAIL);
     gpio_isr_handler_remove(ir_rx_obj->io_num);
 
@@ -143,6 +147,8 @@ esp_err_t ir_rx_disable()
 
 esp_err_t ir_rx_enable()
 {
+    //ESP_LOGV("FUNC", "ir_rx_enable");
+
     IR_RX_CHECK(ir_rx_obj, "ir rx not been initialized yet", ESP_FAIL);
     gpio_isr_handler_add(ir_rx_obj->io_num, ir_rx_intr_handler, (void *) ir_rx_obj->io_num);
 
@@ -151,6 +157,8 @@ esp_err_t ir_rx_enable()
 
 int ir_rx_recv_data(ir_rx_nec_data_t *data, size_t len, uint32_t timeout_ticks)
 {
+    //ESP_LOGV("FUNC", "ir_rx_recv_data");
+
     IR_RX_CHECK(ir_rx_obj, "ir rx not been initialized yet", ESP_FAIL);
     int ret;
     ir_rx_nec_data_t *buf = NULL;
@@ -213,6 +221,8 @@ int ir_rx_recv_data(ir_rx_nec_data_t *data, size_t len, uint32_t timeout_ticks)
 
 static esp_err_t ir_rx_gpio_init(uint32_t io_num)
 {
+    //ESP_LOGV("FUNC", "ir_rx_gpio_init");
+
     gpio_config_t io_conf;
     io_conf.intr_type = GPIO_INTR_NEGEDGE;
     io_conf.pin_bit_mask = 1ULL << io_num;
@@ -226,6 +236,8 @@ static esp_err_t ir_rx_gpio_init(uint32_t io_num)
 
 esp_err_t ir_rx_deinit()
 {
+    //ESP_LOGV("FUNC", "ir_rx_deinit");
+
     IR_RX_CHECK(ir_rx_obj, "ir rx has not been initialized yet.", ESP_FAIL);
 
     ir_rx_disable();
@@ -247,6 +259,8 @@ esp_err_t ir_rx_deinit()
 
 esp_err_t ir_rx_init(ir_rx_config_t *config)
 {
+    //ESP_LOGV("FUNC", "ir_rx_init");
+
     IR_RX_CHECK(config, "config error", ESP_ERR_INVALID_ARG);
     IR_RX_CHECK(NULL == ir_rx_obj, "ir rx has been initialized", ESP_FAIL);
 

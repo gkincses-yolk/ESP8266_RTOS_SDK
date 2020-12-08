@@ -73,6 +73,7 @@ esp_err_t esp_efuse_mac_get_default(uint8_t* mac)
 {
     ESP_LOGV("FUNC", "esp_efuse_mac_get_default");
 
+
     uint32_t efuse[4];
 
     uint8_t efuse_crc = 0;

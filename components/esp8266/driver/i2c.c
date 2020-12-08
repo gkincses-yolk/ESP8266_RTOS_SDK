@@ -111,6 +111,8 @@ static i2c_last_state_t *i2c_last_state[I2C_NUM_MAX] = {NULL};
 
 static inline void i2c_master_set_dc(i2c_port_t i2c_num, uint8_t sda, uint8_t scl)
 {
+    //ESP_LOGV("FUNC", "i2c_master_set_dc");
+
     uint32_t i = 0;
     uint32_t clk_stretch_tick = i2c_config[i2c_num]->clk_stretch_tick;
     gpio_set_level(i2c_config[i2c_num]->sda_io_num, sda & 0x1);
@@ -125,6 +127,8 @@ static inline void i2c_master_set_dc(i2c_port_t i2c_num, uint8_t sda, uint8_t sc
 
 static inline uint8_t i2c_master_get_dc(i2c_port_t i2c_num)
 {
+    //ESP_LOGV("FUNC", "i2c_master_get_dc");
+
     uint8_t sda_out;
     sda_out = gpio_get_level(i2c_config[i2c_num]->sda_io_num);
     return sda_out;
@@ -137,6 +141,8 @@ we should free or modify the source data only after the i2c_master_cmd_begin fun
 */
 esp_err_t i2c_driver_install(i2c_port_t i2c_num, i2c_mode_t mode)
 {
+    //ESP_LOGV("FUNC", "i2c_driver_install");
+
     I2C_CHECK((i2c_num >= 0) && (i2c_num < I2C_NUM_MAX), I2C_NUM_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(mode < I2C_MODE_MAX, I2C_MODE_ERR_STR, ESP_ERR_INVALID_ARG);
 
@@ -199,6 +205,8 @@ esp_err_t i2c_driver_install(i2c_port_t i2c_num, i2c_mode_t mode)
 
 esp_err_t i2c_driver_delete(i2c_port_t i2c_num)
 {
+    //ESP_LOGV("FUNC", "i2c_driver_delete");
+
     I2C_CHECK((i2c_num >= 0) && (i2c_num < I2C_NUM_MAX), I2C_NUM_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(i2c_last_state[i2c_num] != NULL, I2C_DRIVER_ERR_STR, ESP_FAIL);
     I2C_CHECK(i2c_config[i2c_num] != NULL, I2C_DRIVER_ERR_STR, ESP_FAIL);
@@ -216,6 +224,8 @@ esp_err_t i2c_driver_delete(i2c_port_t i2c_num)
 
 esp_err_t i2c_set_pin(i2c_port_t i2c_num, int sda_io_num, int scl_io_num, gpio_pullup_t sda_pullup_en, gpio_pullup_t scl_pullup_en, i2c_mode_t mode)
 {
+    //ESP_LOGV("FUNC", "i2c_set_pin");
+
     I2C_CHECK((i2c_num >= 0) && (i2c_num < I2C_NUM_MAX), I2C_NUM_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(mode < I2C_MODE_MAX, I2C_MODE_ERR_STR, ESP_ERR_INVALID_ARG);
 
@@ -258,6 +268,8 @@ esp_err_t i2c_set_pin(i2c_port_t i2c_num, int sda_io_num, int scl_io_num, gpio_p
 
 esp_err_t i2c_param_config(i2c_port_t i2c_num, const i2c_config_t *i2c_conf)
 {
+    //ESP_LOGV("FUNC", "i2c_param_config");
+
     I2C_CHECK((i2c_num >= 0) && (i2c_num < I2C_NUM_MAX), I2C_NUM_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(i2c_conf != NULL, I2C_ADDR_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(i2c_conf->mode < I2C_MODE_MAX, I2C_MODE_ERR_STR, ESP_ERR_INVALID_ARG);
@@ -275,12 +287,16 @@ esp_err_t i2c_param_config(i2c_port_t i2c_num, const i2c_config_t *i2c_conf)
 
 i2c_cmd_handle_t i2c_cmd_link_create()
 {
+    //ESP_LOGV("FUNC", "i2c_cmd_link_create");
+
     i2c_cmd_desc_t *cmd_desc = (i2c_cmd_desc_t *) heap_caps_calloc(1, sizeof(i2c_cmd_desc_t), MALLOC_CAP_8BIT);
     return (i2c_cmd_handle_t) cmd_desc;
 }
 
 void i2c_cmd_link_delete(i2c_cmd_handle_t cmd_handle)
 {
+    //ESP_LOGV("FUNC", "i2c_cmd_link_delete");
+
     if (cmd_handle == NULL) {
         return;
     }
@@ -302,6 +318,8 @@ void i2c_cmd_link_delete(i2c_cmd_handle_t cmd_handle)
 
 static esp_err_t i2c_cmd_link_append(i2c_cmd_handle_t cmd_handle, i2c_cmd_t *cmd)
 {
+    //ESP_LOGV("FUNC", "i2c_cmd_link_append");
+
     i2c_cmd_desc_t *cmd_desc = (i2c_cmd_desc_t *) cmd_handle;
 
     if (cmd_desc->head == NULL) {
@@ -335,6 +353,8 @@ err:
 
 esp_err_t i2c_master_start(i2c_cmd_handle_t cmd_handle)
 {
+    //ESP_LOGV("FUNC", "i2c_master_start");
+
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
     i2c_cmd_t cmd;
     cmd.ack.en = 0;
@@ -348,6 +368,8 @@ esp_err_t i2c_master_start(i2c_cmd_handle_t cmd_handle)
 
 esp_err_t i2c_master_stop(i2c_cmd_handle_t cmd_handle)
 {
+    //ESP_LOGV("FUNC", "i2c_master_stop");
+
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
     i2c_cmd_t cmd;
     cmd.ack.en = 0;
@@ -361,6 +383,8 @@ esp_err_t i2c_master_stop(i2c_cmd_handle_t cmd_handle)
 
 esp_err_t i2c_master_write_byte(i2c_cmd_handle_t cmd_handle, uint8_t data, bool ack_en)
 {
+    //ESP_LOGV("FUNC", "i2c_master_write_byte");
+
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
     i2c_cmd_t cmd;
     cmd.ack.en = ack_en;
@@ -375,6 +399,8 @@ esp_err_t i2c_master_write_byte(i2c_cmd_handle_t cmd_handle, uint8_t data, bool 
 
 esp_err_t i2c_master_write(i2c_cmd_handle_t cmd_handle, uint8_t *data, size_t data_len, bool ack_en)
 {
+    //ESP_LOGV("FUNC", "i2c_master_write");
+
     I2C_CHECK((data != NULL), I2C_ADDR_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
 
@@ -405,6 +431,8 @@ esp_err_t i2c_master_write(i2c_cmd_handle_t cmd_handle, uint8_t *data, size_t da
 
 static esp_err_t i2c_master_read_static(i2c_cmd_handle_t cmd_handle, uint8_t *data, size_t data_len, i2c_ack_type_t ack)
 {
+    //ESP_LOGV("FUNC", "i2c_master_read_static");
+
     int len_tmp;
     int data_offset = 0;
     esp_err_t ret;
@@ -432,6 +460,8 @@ static esp_err_t i2c_master_read_static(i2c_cmd_handle_t cmd_handle, uint8_t *da
 
 esp_err_t i2c_master_read_byte(i2c_cmd_handle_t cmd_handle, uint8_t *data, i2c_ack_type_t ack)
 {
+    //ESP_LOGV("FUNC", "i2c_master_read_byte");
+
     I2C_CHECK((data != NULL), I2C_ADDR_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(ack < I2C_MASTER_ACK_MAX, I2C_ACK_TYPE_ERR_STR, ESP_ERR_INVALID_ARG);
@@ -448,6 +478,8 @@ esp_err_t i2c_master_read_byte(i2c_cmd_handle_t cmd_handle, uint8_t *data, i2c_a
 
 esp_err_t i2c_master_read(i2c_cmd_handle_t cmd_handle, uint8_t *data, size_t data_len, i2c_ack_type_t ack)
 {
+    //ESP_LOGV("FUNC", "i2c_master_read");
+
     I2C_CHECK((data != NULL), I2C_ADDR_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(cmd_handle != NULL, I2C_CMD_LINK_INIT_ERR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(ack < I2C_MASTER_ACK_MAX, I2C_ACK_TYPE_ERR_STR, ESP_ERR_INVALID_ARG);
@@ -473,6 +505,8 @@ esp_err_t i2c_master_read(i2c_cmd_handle_t cmd_handle, uint8_t *data, size_t dat
 
 static void i2c_master_cmd_begin_static(i2c_port_t i2c_num)
 {
+    //ESP_LOGV("FUNC", "i2c_master_cmd_begin_static");
+
     i2c_obj_t *p_i2c = p_i2c_obj[i2c_num];
     i2c_cmd_t *cmd;
     uint8_t dat;
@@ -599,6 +633,8 @@ static void i2c_master_cmd_begin_static(i2c_port_t i2c_num)
 
 esp_err_t i2c_master_cmd_begin(i2c_port_t i2c_num, i2c_cmd_handle_t cmd_handle, TickType_t ticks_to_wait)
 {
+    //ESP_LOGV("FUNC", "i2c_master_cmd_begin");
+
     I2C_CHECK((i2c_num >= 0) && (i2c_num < I2C_NUM_MAX), I2C_NUM_ERROR_STR, ESP_ERR_INVALID_ARG);
     I2C_CHECK(p_i2c_obj[i2c_num] != NULL, I2C_DRIVER_NOT_INSTALL_ERR_STR, ESP_ERR_INVALID_STATE);
     I2C_CHECK(p_i2c_obj[i2c_num]->mode == I2C_MODE_MASTER, I2C_MASTER_MODE_ERR_STR, ESP_ERR_INVALID_STATE);

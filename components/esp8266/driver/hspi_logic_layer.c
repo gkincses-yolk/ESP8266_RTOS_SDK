@@ -45,6 +45,8 @@ static spi_logic_device_t * spi_logic_device;
 
 static void IRAM_ATTR hspi_slave_event_callback(int event, void *arg)
 {
+    //ESP_LOGV("FUNC", "hspi_slave_event_callback");
+
     int x;
     BaseType_t xHigherPriorityTaskWoken;
     uint32_t status;
@@ -168,6 +170,8 @@ static void IRAM_ATTR hspi_slave_event_callback(int event, void *arg)
 
 uint32_t hspi_slave_logic_read_data(uint8_t*data, uint32_t len, TickType_t xTicksToWait)
 {
+    //ESP_LOGV("FUNC", "hspi_slave_logic_read_data");
+
     uint32_t ret = 0;
 
     ret = xStreamBufferReceive(spi_logic_device->rx_buffer, data, len, xTicksToWait);
@@ -183,6 +187,8 @@ uint32_t hspi_slave_logic_read_data(uint8_t*data, uint32_t len, TickType_t xTick
 
 uint32_t hspi_slave_logic_write_data(uint8_t*data, uint32_t len, TickType_t xTicksToWait)
 {
+    //ESP_LOGV("FUNC", "hspi_slave_logic_write_data");
+
     uint32_t ret = 0;
     uint32_t avail_spaces = 0;
 
@@ -209,6 +215,8 @@ uint32_t hspi_slave_logic_write_data(uint8_t*data, uint32_t len, TickType_t xTic
 
 esp_err_t hspi_slave_logic_device_create(gpio_num_t trigger_pin, uint32_t trigger_level,uint32_t tx_buffer_size, uint32_t rx_buffer_size)
 {
+    //ESP_LOGV("FUNC", "hspi_slave_logic_device_create");
+
     SPI_CHECK(GPIO_IS_VALID_GPIO(trigger_pin), "gpio num error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(tx_buffer_size != 0, "tx buffer error", ESP_ERR_INVALID_ARG);
     SPI_CHECK(rx_buffer_size != 0, "rx buffer error", ESP_ERR_INVALID_ARG);
@@ -261,6 +269,8 @@ esp_err_t hspi_slave_logic_device_create(gpio_num_t trigger_pin, uint32_t trigge
 
 esp_err_t hspi_slave_logic_device_delete(void)
 {
+    //ESP_LOGV("FUNC", "hspi_slave_logic_device_delete");
+
     if (spi_logic_device == NULL) {
         return ESP_ERR_INVALID_STATE;
     }

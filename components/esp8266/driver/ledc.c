@@ -84,6 +84,8 @@ static esp_err_t ledc_fade_up(ledc_channel_t channel, uint8_t* flag);
 
 esp_err_t ledc_timer_config(const ledc_timer_config_t* timer_conf)
 {
+    //ESP_LOGV("FUNC", "ledc_timer_config");
+
     // Just freq_hz is useful
     // Hz to period
     LEDC_CHECK(timer_conf != NULL, "time_conf error", ESP_ERR_INVALID_ARG);
@@ -96,6 +98,8 @@ esp_err_t ledc_timer_config(const ledc_timer_config_t* timer_conf)
 // The difference between the current duty cycle and the target duty cycle
 esp_err_t ledc_set_duty(ledc_mode_t speed_mode, ledc_channel_t ledc_channel, uint32_t ledc_duty)
 {
+    //ESP_LOGV("FUNC", "ledc_set_duty");
+
     LEDC_CHECK(ledc_channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
     LEDC_CHECK(ledc_period * ledc_duty / LEDC_MAX_DUTY <= ledc_period, "ledc_duty error", ESP_ERR_INVALID_ARG);
     
@@ -114,6 +118,8 @@ esp_err_t ledc_set_duty(ledc_mode_t speed_mode, ledc_channel_t ledc_channel, uin
 
 esp_err_t ledc_update_duty(ledc_mode_t speed_mode, ledc_channel_t ledc_channel)
 {
+    //ESP_LOGV("FUNC", "ledc_update_duty");
+
     // send the queue
     LEDC_CHECK(ledc_channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
 
@@ -128,6 +134,8 @@ esp_err_t ledc_update_duty(ledc_mode_t speed_mode, ledc_channel_t ledc_channel)
 
 esp_err_t ledc_set_fade_with_time(ledc_mode_t speed_mode, ledc_channel_t ledc_channel, uint32_t ledc_duty, int ledc_fade_time)
 {
+    //ESP_LOGV("FUNC", "ledc_set_fade_with_time");
+
     //  For porting, speed_mode is not used
     LEDC_CHECK(ledc_channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
     LEDC_CHECK(ledc_period * ledc_duty / LEDC_MAX_DUTY <= ledc_period, "ledc_duty error", ESP_ERR_INVALID_ARG);
@@ -152,6 +160,8 @@ esp_err_t ledc_set_fade_with_time(ledc_mode_t speed_mode, ledc_channel_t ledc_ch
 
 esp_err_t ledc_fade_start(ledc_mode_t speed_mode, ledc_channel_t ledc_channel, ledc_fade_mode_t fade_mode)
 {
+    //ESP_LOGV("FUNC", "ledc_fade_start");
+
     LEDC_CHECK(ledc_channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
 
     esp_err_t ret;
@@ -168,6 +178,8 @@ esp_err_t ledc_fade_start(ledc_mode_t speed_mode, ledc_channel_t ledc_channel, l
 
 esp_err_t ledc_channel_config(const ledc_channel_config_t* ledc_conf)
 {
+    //ESP_LOGV("FUNC", "ledc_channel_config");
+
     LEDC_CHECK(ledc_conf != NULL, "ledc_conf error", ESP_ERR_INVALID_ARG);
     LEDC_CHECK( ledc_conf->duty <= ledc_period, "ledc_duty error", ESP_ERR_INVALID_ARG);
 
@@ -187,6 +199,8 @@ esp_err_t ledc_channel_config(const ledc_channel_config_t* ledc_conf)
 
 esp_err_t ledc_fade_up(ledc_channel_t channel, uint8_t* flag)
 {
+    //ESP_LOGV("FUNC", "ledc_fade_up");
+
     LEDC_CHECK(flag != NULL, "flag error", ESP_ERR_INVALID_ARG);
     LEDC_CHECK(channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
 
@@ -217,6 +231,8 @@ esp_err_t ledc_fade_up(ledc_channel_t channel, uint8_t* flag)
 
 esp_err_t ledc_fade_down(ledc_channel_t channel, uint8_t* flag)
 {
+    //ESP_LOGV("FUNC", "ledc_fade_down");
+
     LEDC_CHECK(flag != NULL, "flag error", ESP_ERR_INVALID_ARG);
     LEDC_CHECK(channel < LEDC_CHANNEL_MAX, "ledc_channel error", ESP_ERR_INVALID_ARG);
 
@@ -249,6 +265,8 @@ esp_err_t ledc_fade_down(ledc_channel_t channel, uint8_t* flag)
 // Complete message queue reception while changing duty cycle
 static void ledc_task(void* pvParameters)
 {
+    //ESP_LOGV("FUNC", "ledc_task");
+
     ledc_channel_t channel;
     uint8_t i;
     uint8_t flag[LEDC_CHANNEL_MAX] = { 0 };
@@ -277,6 +295,8 @@ static void ledc_task(void* pvParameters)
 
 esp_err_t ledc_fade_func_install(int intr_alloc_flags)
 {
+    //ESP_LOGV("FUNC", "ledc_fade_func_install");
+
     float ledc_phase[LEDC_CHANNEL_MAX] = {0};
     uint32_t ledc_duty[LEDC_CHANNEL_MAX] = {0};
     uint32_t ledc_gpio_num[LEDC_CHANNEL_MAX] = {0};
@@ -307,6 +327,8 @@ esp_err_t ledc_fade_func_install(int intr_alloc_flags)
 
 esp_err_t ledc_fade_func_uninstall(void)
 {
+    //ESP_LOGV("FUNC", "ledc_fade_func_uninstall");
+
     for (int i = 0; i < ledc_usr_channel_max; i++){
         free(p_ledc_obj[i]);
         p_ledc_obj[i] = NULL;
@@ -316,6 +338,8 @@ esp_err_t ledc_fade_func_uninstall(void)
 
 esp_err_t ledc_stop(ledc_mode_t speed_mode, ledc_channel_t channel, uint32_t idle_level)
 {
+    //ESP_LOGV("FUNC", "ledc_stop");
+
     LEDC_CHECK(idle_level == 0 || idle_level == 1, "idle_level error", ESP_ERR_INVALID_ARG);
 
     static uint32_t stop_level_mask = 0x0;
@@ -333,5 +357,7 @@ esp_err_t ledc_stop(ledc_mode_t speed_mode, ledc_channel_t channel, uint32_t idl
 
 int periph_module_enable(int none)
 {
+    //ESP_LOGV("FUNC", "periph_module_enable");
+
     return ESP_OK;
 }

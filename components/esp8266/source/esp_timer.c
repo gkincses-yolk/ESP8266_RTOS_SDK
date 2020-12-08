@@ -44,6 +44,8 @@ static const char *TAG = "esp_timer";
 
 static esp_err_t delete_timer(esp_timer_handle_t timer)
 {
+    //ESP_LOGV("FUNC", "delete_timer");
+
     BaseType_t ret = xTimerDelete(timer->os_timer, portMAX_DELAY);
     if (ret == pdPASS)
         heap_caps_free(timer);
@@ -56,6 +58,8 @@ static esp_err_t delete_timer(esp_timer_handle_t timer)
  */
 static void esp_timer_callback(TimerHandle_t xTimer)
 {
+    //ESP_LOGV("FUNC", "esp_timer_callback");
+
     struct esp_timer *timer = (struct esp_timer *)pvTimerGetTimerID(xTimer);
 
     timer->cb(timer->arg);
@@ -103,6 +107,8 @@ static void esp_timer_callback(TimerHandle_t xTimer)
  */
 esp_err_t esp_timer_init(void)
 {
+    //ESP_LOGV("FUNC", "esp_timer_init");
+
     return ESP_OK;
 }
 
@@ -111,6 +117,8 @@ esp_err_t esp_timer_init(void)
  */
 esp_err_t esp_timer_deinit(void)
 {
+    //ESP_LOGV("FUNC", "esp_timer_deinit");
+
     return ESP_OK;
 }
 
@@ -120,6 +128,8 @@ esp_err_t esp_timer_deinit(void)
 esp_err_t esp_timer_create(const esp_timer_create_args_t* create_args,
                            esp_timer_handle_t* out_handle)
 {
+    //ESP_LOGV("FUNC", "esp_timer_create");
+
     assert(create_args);
     assert(out_handle);
 
@@ -154,6 +164,8 @@ esp_err_t esp_timer_create(const esp_timer_create_args_t* create_args,
  */
 esp_err_t esp_timer_start_once(esp_timer_handle_t timer, uint64_t timeout_us)
 {
+    //ESP_LOGV("FUNC", "esp_timer_start_once");
+
     assert(timer);
 
     TimerHandle_t os_timer = timer->os_timer;
@@ -179,6 +191,8 @@ esp_err_t esp_timer_start_once(esp_timer_handle_t timer, uint64_t timeout_us)
  */
 esp_err_t esp_timer_start_periodic(esp_timer_handle_t timer, uint64_t period)
 {
+    //ESP_LOGV("FUNC", "esp_timer_start_periodic");
+
     assert(timer);
 
     TimerHandle_t os_timer = timer->os_timer;
@@ -204,6 +218,8 @@ esp_err_t esp_timer_start_periodic(esp_timer_handle_t timer, uint64_t period)
  */
 esp_err_t esp_timer_stop(esp_timer_handle_t timer)
 {
+    //ESP_LOGV("FUNC", "esp_timer_stop");
+
     assert(timer);
 
     TimerHandle_t os_timer = timer->os_timer;
@@ -221,6 +237,8 @@ esp_err_t esp_timer_stop(esp_timer_handle_t timer)
  */
 esp_err_t esp_timer_delete(esp_timer_handle_t timer)
 {
+    //ESP_LOGV("FUNC", "esp_timer_delete");
+
     esp_err_t ret;
 
     assert(timer);
@@ -246,6 +264,8 @@ esp_err_t esp_timer_delete(esp_timer_handle_t timer)
 
 int64_t esp_timer_get_time(void)
 {
+    //ESP_LOGV("FUNC", "esp_timer_get_time");
+
     extern uint64_t g_esp_os_us;
 
     return (int64_t)(g_esp_os_us + soc_get_ccount() / g_esp_ticks_per_us);

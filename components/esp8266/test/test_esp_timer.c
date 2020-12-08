@@ -33,6 +33,8 @@
 
 static void test_timer_cb(void *p)
 {
+    //ESP_LOGV("FUNC", "test_timer_cb");
+
     SemaphoreHandle_t sem = (SemaphoreHandle_t)p;
 
     xSemaphoreGive(sem);
@@ -40,6 +42,8 @@ static void test_timer_cb(void *p)
 
 TEST_CASE("Test esp_timer create and delete once mode", "[log]")
 {
+    //ESP_LOGV("FUNC", "TEST_CASE");
+
     SemaphoreHandle_t sem;
     esp_timer_handle_t timer[ESP_NUM_MAX];
 
@@ -78,6 +82,8 @@ TEST_CASE("Test esp_timer create and delete once mode", "[log]")
 
 TEST_CASE("Test esp_timer create and delete once mode", "[log]")
 {
+    //ESP_LOGV("FUNC", "TEST_CASE");
+
     SemaphoreHandle_t sem;
     esp_timer_handle_t timer[ESP_NUM_MAX];
 

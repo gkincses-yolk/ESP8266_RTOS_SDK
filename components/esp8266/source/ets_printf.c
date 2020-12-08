@@ -24,6 +24,8 @@
 #include "esp8266/uart_register.h"
 #include "esp8266/rom_functions.h"
 
+#include "esp_log.h"
+
 #ifdef CONFIG_ETS_PRINTF_EXIT_WHEN_FLASH_RW
 #define ETS_PRINTF_ATTR IRAM_ATTR
 #else
@@ -33,6 +35,8 @@
 #ifndef CONFIG_ESP_CONSOLE_UART_NONE
 static void uart_putc(int c)
 {
+    //ESP_LOGV("FUNC", "uart_putc");
+
     while (1) {
         uint32_t fifo_cnt = READ_PERI_REG(UART_STATUS(CONFIG_ESP_CONSOLE_UART_NUM)) & (UART_TXFIFO_CNT << UART_TXFIFO_CNT_S);
 
@@ -48,6 +52,8 @@ static void uart_putc(int c)
 
 int __attribute__ ((weak)) ets_putc(int c)
 {
+    //ESP_LOGV("FUNC", "ets_putc");
+
 #ifdef CONFIG_NEWLIB_STDOUT_LINE_ENDING_CRLF
     if (c == '\n')
         uart_putc('\r');
@@ -97,18 +103,24 @@ typedef struct _val_attr {
 
 static inline void ets_printf_ch_mutlti(uint32_t c, uint32_t len)
 {
+    //ESP_LOGV("FUNC", "ets_printf_ch_mutlti");
+
     while (len--)
         ets_putc(c);
 }
 
 static inline void ets_printf_buf(const char *s, uint32_t len)
 {
+    //ESP_LOGV("FUNC", "ets_printf_buf");
+
     while (len--)
         ets_putc(*s++);
 }
 
 static int ets_printf_str(const val_attr_t * const attr)
 {
+    //ESP_LOGV("FUNC", "ets_printf_str");
+
     const char *s = attr->value.valcp;
     s = s == NULL ? "<null>" : s;
 
@@ -140,6 +152,8 @@ static int ets_printf_str(const val_attr_t * const attr)
 
 static int ets_printf_int(val_attr_t * const attr, uint8_t hex)
 {
+    //ESP_LOGV("FUNC", "ets_printf_int");
+
     char buf[VINT_STR_MAX];
     unsigned char offset = VINT_STR_MAX;
 
@@ -178,6 +192,8 @@ static int ets_printf_int(val_attr_t * const attr, uint8_t hex)
 
 int ets_vprintf(const char *fmt, va_list va)
 {
+    //ESP_LOGV("FUNC", "ets_vprintf");
+
     for (; ;) {
         const char *ps = fmt;
         val_attr_t attr;
@@ -276,6 +292,8 @@ int ets_vprintf(const char *fmt, va_list va)
 
 int ets_vprintf(const char *fmt, va_list ap)
 {
+    //ESP_LOGV("FUNC", "ets_vprintf");
+
     return ets_io_vprintf(ets_putc, fmt, ap);
 }
 
@@ -293,6 +311,8 @@ int ets_vprintf(const char *fmt, va_list ap)
  */
 int ETS_PRINTF_ATTR ets_printf(const char *fmt, ...)
 {
+    //ESP_LOGV("FUNC", "ets_printf");
+
     va_list ap;
     int ret;
 

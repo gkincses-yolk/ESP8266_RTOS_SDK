@@ -17,6 +17,8 @@
 #include "rom/crc.h"
 #include "ibus_data.h"
 
+#include "esp_log.h"
+
 static const uint32_t crc32_le_table[256] = {
     0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L, 0x706af48fL, 0xe963a535L, 0x9e6495a3L,
     0x0edb8832L, 0x79dcb8a4L, 0xe0d5e91eL, 0x97d2d988L, 0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L, 0x90bf1d91L,
@@ -109,6 +111,8 @@ static const uint8_t crc8_le_table[] ESP_IBUS_ATTR = {
 
 uint16_t crc16_le(uint16_t crc, const uint8_t* buf, uint32_t len)
 {
+    //ESP_LOGV("FUNC", "crc16_le");
+
     uint32_t i;
 
     crc = ~crc;
@@ -122,6 +126,8 @@ uint16_t crc16_le(uint16_t crc, const uint8_t* buf, uint32_t len)
 
 uint32_t crc32_le(uint32_t crc, const uint8_t* buf, uint32_t len)
 {
+    //ESP_LOGV("FUNC", "crc32_le");
+
     uint32_t i;
 
     crc = ~crc;
@@ -135,6 +141,8 @@ uint32_t crc32_le(uint32_t crc, const uint8_t* buf, uint32_t len)
 
 uint8_t esp_crc8(uint8_t const* p, uint32_t len)
 {
+    //ESP_LOGV("FUNC", "esp_crc8");
+
     uint8_t  crc = 0x00;
 
     while (len--) {

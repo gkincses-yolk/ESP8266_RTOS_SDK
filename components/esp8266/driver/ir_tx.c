@@ -72,6 +72,8 @@ static ir_tx_state_t ir_tx_state = IR_TX_IDLE;
 
 static void inline ir_tx_clear_carrier()
 {
+    //ESP_LOGV("FUNC", "ir_tx_clear_carrier");
+
     switch (ir_tx_obj->io_num) {
         case 2: {
             GPIO.out_w1tc |= 0x4; // GPIO 2
@@ -89,6 +91,8 @@ static void inline ir_tx_clear_carrier()
 
 static void inline ir_tx_gen_carrier()
 {
+    //ESP_LOGV("FUNC", "ir_tx_gen_carrier");
+
     switch (ir_tx_obj->io_num) {
         case 2: {
             GPIO.out_w1ts |= 0x4; // GPIO 2
@@ -106,6 +110,8 @@ static void inline ir_tx_gen_carrier()
 
 static void inline ir_tx_timer_alarm(uint32_t val)
 {
+    //ESP_LOGV("FUNC", "ir_tx_timer_alarm");
+
     if (ir_tx_obj->timer == IR_TX_WDEV_TIMER) {
         REG_WRITE(WDEVTSFSW0_LO, 0);
         REG_WRITE(WDEVTSFSW0_HI, 0);
@@ -121,6 +127,8 @@ static void inline ir_tx_timer_alarm(uint32_t val)
 
 void IRAM_ATTR ir_tx_handler()
 {
+    //ESP_LOGV("FUNC", "ir_tx_handler");
+
     uint32_t t_expire = 0;
     static uint32_t rep_expire_us = IR_TX_NEC_REP_CYCLE; //for nec 32bit mode
     static uint16_t data_tmp = 0;
@@ -255,6 +263,8 @@ void IRAM_ATTR ir_tx_handler()
 
 static esp_err_t ir_tx_trans(ir_tx_nec_data_t data, uint8_t repeat, uint32_t *timeout_ticks)
 {
+    //ESP_LOGV("FUNC", "ir_tx_trans");
+
     int ret;
     uint32_t ticks_escape = 0, ticks_last = 0;
     struct timeval now;
@@ -297,6 +307,8 @@ static esp_err_t ir_tx_trans(ir_tx_nec_data_t data, uint8_t repeat, uint32_t *ti
 
 int ir_tx_send_data(ir_tx_nec_data_t *data, size_t len, uint32_t timeout_ticks)
 {
+    //ESP_LOGV("FUNC", "ir_tx_send_data");
+
     IR_TX_CHECK(ir_tx_obj, "ir tx has not been initialized yet.", ESP_FAIL);
     int ret;
     int x, y;
@@ -354,6 +366,8 @@ int ir_tx_send_data(ir_tx_nec_data_t *data, size_t len, uint32_t timeout_ticks)
 
 esp_err_t ir_tx_deinit()
 {
+    //ESP_LOGV("FUNC", "ir_tx_deinit");
+
     IR_TX_CHECK(ir_tx_obj, "ir tx has not been initialized yet.", ESP_FAIL);
 
     if (ir_tx_obj->done_sem) {
@@ -382,6 +396,8 @@ esp_err_t ir_tx_deinit()
 
 esp_err_t ir_tx_init(ir_tx_config_t *config)
 {
+    //ESP_LOGV("FUNC", "ir_tx_init");
+
     IR_TX_CHECK(config, "config error", ESP_ERR_INVALID_ARG);
     IR_TX_CHECK((config->io_num == 2) || (config->io_num == 14), "Only supports io2 and io14 as carrier outputs", ESP_ERR_INVALID_ARG);
     IR_TX_CHECK(NULL == ir_tx_obj, "ir tx has been initialized", ESP_FAIL);
