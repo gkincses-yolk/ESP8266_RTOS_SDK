@@ -226,18 +226,6 @@ coap_socket_bind_udp(coap_socket_t *sock,
                "coap_socket_bind_udp: setsockopt IP_PKTINFO: %s\n",
                 coap_socket_strerror());
     break;
-  case AF_INET6:
-    /* Configure the socket as dual-stacked */
-    if (setsockopt(sock->fd, IPPROTO_IPV6, IPV6_V6ONLY, OPTVAL_T(&off), sizeof(off)) == COAP_SOCKET_ERROR)
-      coap_log(LOG_ALERT,
-               "coap_socket_bind_udp: setsockopt IPV6_V6ONLY: %s\n",
-                coap_socket_strerror());
-    if (setsockopt(sock->fd, IPPROTO_IPV6, GEN_IPV6_PKTINFO, OPTVAL_T(&on), sizeof(on)) == COAP_SOCKET_ERROR)
-      coap_log(LOG_ALERT,
-               "coap_socket_bind_udp: setsockopt IPV6_PKTINFO: %s\n",
-                coap_socket_strerror());
-    setsockopt(sock->fd, IPPROTO_IP, GEN_IP_PKTINFO, OPTVAL_T(&on), sizeof(on)); /* ignore error, because the likely cause is that IPv4 is disabled at the os level */
-    break;
   default:
     coap_log(LOG_ALERT, "coap_socket_bind_udp: unsupported sa_family\n");
     break;
@@ -302,15 +290,6 @@ coap_socket_connect_tcp1(coap_socket_t *sock,
   case AF_INET:
     if (connect_addr.addr.sin.sin_port == 0)
       connect_addr.addr.sin.sin_port = htons(default_port);
-    break;
-  case AF_INET6:
-    if (connect_addr.addr.sin6.sin6_port == 0)
-      connect_addr.addr.sin6.sin6_port = htons(default_port);
-    /* Configure the socket as dual-stacked */
-    if (setsockopt(sock->fd, IPPROTO_IPV6, IPV6_V6ONLY, OPTVAL_T(&off), sizeof(off)) == COAP_SOCKET_ERROR)
-      coap_log(LOG_WARNING,
-               "coap_socket_connect_tcp1: setsockopt IPV6_V6ONLY: %s\n",
-               coap_socket_strerror());
     break;
   default:
     coap_log(LOG_ALERT, "coap_socket_connect_tcp1: unsupported sa_family\n");
@@ -449,13 +428,6 @@ coap_socket_bind_tcp(coap_socket_t *sock,
   switch (listen_addr->addr.sa.sa_family) {
   case AF_INET:
     break;
-  case AF_INET6:
-    /* Configure the socket as dual-stacked */
-    if (setsockopt(sock->fd, IPPROTO_IPV6, IPV6_V6ONLY, OPTVAL_T(&off), sizeof(off)) == COAP_SOCKET_ERROR)
-      coap_log(LOG_ALERT,
-               "coap_socket_bind_tcp: setsockopt IPV6_V6ONLY: %s\n",
-               coap_socket_strerror());
-    break;
   default:
     coap_log(LOG_ALERT, "coap_socket_bind_tcp: unsupported sa_family\n");
   }
@@ -560,15 +532,6 @@ coap_socket_connect_udp(coap_socket_t *sock,
   case AF_INET:
     if (connect_addr.addr.sin.sin_port == 0)
       connect_addr.addr.sin.sin_port = htons(default_port);
-    break;
-  case AF_INET6:
-    if (connect_addr.addr.sin6.sin6_port == 0)
-      connect_addr.addr.sin6.sin6_port = htons(default_port);
-    /* Configure the socket as dual-stacked */
-    if (setsockopt(sock->fd, IPPROTO_IPV6, IPV6_V6ONLY, OPTVAL_T(&off), sizeof(off)) == COAP_SOCKET_ERROR)
-      coap_log(LOG_WARNING,
-               "coap_socket_connect_udp: setsockopt IPV6_V6ONLY: %s\n",
-               coap_socket_strerror());
     break;
   default:
     coap_log(LOG_ALERT, "coap_socket_connect_udp: unsupported sa_family\n");
@@ -791,53 +754,6 @@ coap_network_send(coap_socket_t *sock, const coap_session_t *session, const uint
     mhdr.msg_iovlen = 1;
 
     if (!coap_address_isany(&session->local_addr) && !coap_is_mcast(&session->local_addr)) switch (session->local_addr.addr.sa.sa_family) {
-    case AF_INET6:
-    {
-      struct cmsghdr *cmsg;
-
-      if (IN6_IS_ADDR_V4MAPPED(&session->local_addr.addr.sin6.sin6_addr)) {
-#if defined(IP_PKTINFO)
-        struct in_pktinfo *pktinfo;
-        mhdr.msg_control = buf;
-        mhdr.msg_controllen = CMSG_SPACE(sizeof(struct in_pktinfo));
-
-        cmsg = CMSG_FIRSTHDR(&mhdr);
-        cmsg->cmsg_level = SOL_IP;
-        cmsg->cmsg_type = IP_PKTINFO;
-        cmsg->cmsg_len = CMSG_LEN(sizeof(struct in_pktinfo));
-
-        pktinfo = (struct in_pktinfo *)CMSG_DATA(cmsg);
-
-        pktinfo->ipi_ifindex = session->ifindex;
-        memcpy(&pktinfo->ipi_spec_dst, session->local_addr.addr.sin6.sin6_addr.s6_addr + 12, sizeof(pktinfo->ipi_spec_dst));
-#elif defined(IP_SENDSRCADDR)
-        mhdr.msg_control = buf;
-        mhdr.msg_controllen = CMSG_SPACE(sizeof(struct in_addr));
-
-        cmsg = CMSG_FIRSTHDR(&mhdr);
-        cmsg->cmsg_level = IPPROTO_IP;
-        cmsg->cmsg_type = IP_SENDSRCADDR;
-        cmsg->cmsg_len = CMSG_LEN(sizeof(struct in_addr));
-
-        memcpy(CMSG_DATA(cmsg), session->local_addr.addr.sin6.sin6_addr.s6_addr + 12, sizeof(struct in_addr));
-#endif /* IP_PKTINFO */
-      } else {
-        struct in6_pktinfo *pktinfo;
-        mhdr.msg_control = buf;
-        mhdr.msg_controllen = CMSG_SPACE(sizeof(struct in6_pktinfo));
-
-        cmsg = CMSG_FIRSTHDR(&mhdr);
-        cmsg->cmsg_level = IPPROTO_IPV6;
-        cmsg->cmsg_type = IPV6_PKTINFO;
-        cmsg->cmsg_len = CMSG_LEN(sizeof(struct in6_pktinfo));
-
-        pktinfo = (struct in6_pktinfo *)CMSG_DATA(cmsg);
-
-        pktinfo->ipi6_ifindex = session->ifindex;
-        memcpy(&pktinfo->ipi6_addr, &session->local_addr.addr.sin6.sin6_addr, sizeof(pktinfo->ipi6_addr));
-      }
-      break;
-    }
     case AF_INET:
     {
 #if defined(IP_PKTINFO)
@@ -1026,18 +942,6 @@ coap_network_read(coap_socket_t *sock, coap_packet_t *packet) {
        * is found where the data was received. */
       for (cmsg = CMSG_FIRSTHDR(&mhdr); cmsg; cmsg = CMSG_NXTHDR(&mhdr, cmsg)) {
 
-        /* get the local interface for IPv6 */
-        if (cmsg->cmsg_level == IPPROTO_IPV6 && cmsg->cmsg_type == IPV6_PKTINFO) {
-          union {
-            uint8_t *c;
-            struct in6_pktinfo *p;
-          } u;
-          u.c = CMSG_DATA(cmsg);
-          packet->ifindex = (int)(u.p->ipi6_ifindex);
-          memcpy(&packet->dst.addr.sin6.sin6_addr, &u.p->ipi6_addr, sizeof(struct in6_addr));
-          break;
-        }
-
         /* local interface for IPv4 */
 #if defined(IP_PKTINFO)
         if (cmsg->cmsg_level == SOL_IP && cmsg->cmsg_type == IP_PKTINFO) {
@@ -1047,14 +951,7 @@ coap_network_read(coap_socket_t *sock, coap_packet_t *packet) {
           } u;
           u.c = CMSG_DATA(cmsg);
           packet->ifindex = u.p->ipi_ifindex;
-          if (packet->dst.addr.sa.sa_family == AF_INET6) {
-            memset(packet->dst.addr.sin6.sin6_addr.s6_addr, 0, 10);
-            packet->dst.addr.sin6.sin6_addr.s6_addr[10] = 0xff;
-            packet->dst.addr.sin6.sin6_addr.s6_addr[11] = 0xff;
-            memcpy(packet->dst.addr.sin6.sin6_addr.s6_addr + 12, &u.p->ipi_addr, sizeof(struct in_addr));
-          } else {
-            memcpy(&packet->dst.addr.sin.sin_addr, &u.p->ipi_addr, sizeof(struct in_addr));
-          }
+          memcpy(&packet->dst.addr.sin.sin_addr, &u.p->ipi_addr, sizeof(struct in_addr));
           break;
         }
 #elif defined(IP_RECVDSTADDR)
