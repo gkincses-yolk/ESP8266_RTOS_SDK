@@ -33,7 +33,6 @@
 
 #include "esp_wifi_driver.h"
 #include "esp_private/wifi.h"
-#include "esp_wpa3_i.h"
 #include "esp_common_i.h"
 
 void  wpa_install_key(enum wpa_alg alg, u8 *addr, int key_idx, int set_tx,
@@ -87,7 +86,7 @@ void  wpa_config_profile(void)
 
     if (esp_wifi_sta_prof_is_wpa_internal()) {
         wpa_set_profile(WPA_PROTO_WPA, esp_wifi_sta_get_prof_authmode_internal());
-    } else if (esp_wifi_sta_prof_is_wpa2_internal() || esp_wifi_sta_prof_is_wpa3_internal()) {
+    } else if (esp_wifi_sta_prof_is_wpa2_internal()) {
         wpa_set_profile(WPA_PROTO_RSN, esp_wifi_sta_get_prof_authmode_internal());
     } else {
         WPA_ASSERT(0);
@@ -223,7 +222,6 @@ static void wpa_sta_disconnected_cb(uint8_t reason_code)
         case WIFI_REASON_ASSOC_FAIL:
         case WIFI_REASON_CONNECTION_FAIL:
         case WIFI_REASON_HANDSHAKE_TIMEOUT:
-            esp_wpa3_free_sae_data();
             wpa_sta_clear_curr_pmksa();
             break;
         default:
@@ -269,7 +267,6 @@ int esp_supplicant_init(void)
     wpa_cb->wpa_parse_wpa_ie  = wpa_parse_wpa_ie_wrapper;
     wpa_cb->wpa_config_bss = NULL;//wpa_config_bss;
     wpa_cb->wpa_michael_mic_failure = wpa_michael_mic_failure;
-    esp_wifi_register_wpa3_cb(wpa_cb);
     esp_supplicant_common_init(wpa_cb);
 
     esp_wifi_register_wpa_cb_internal(wpa_cb);

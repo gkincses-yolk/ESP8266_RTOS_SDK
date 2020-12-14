@@ -106,8 +106,6 @@ struct wpa_funcs {
     int (*wpa_parse_wpa_ie)(const u8 *wpa_ie, size_t wpa_ie_len, wifi_wpa_ie_t *data);
     int (*wpa_config_bss)(u8 *bssid);
     int (*wpa_michael_mic_failure)(u16 is_unicast);
-    uint8_t *(*wpa3_build_sae_msg)(uint8_t *bssid, uint32_t type, size_t *len);
-    int (*wpa3_parse_sae_msg)(uint8_t *buf, size_t len, uint32_t type, uint16_t status);
     int (*esp_sta_rx_mgmt)(u8 type, u8 *frame, size_t len, u8 *sender, u32 rssi, u8 channel, u64 current_tsf);
 };
 
@@ -196,7 +194,6 @@ int  esp_wifi_get_sta_key_internal(uint8_t *ifx, int *alg, u8 *addr, int *key_id
 uint8_t esp_wifi_sta_get_prof_authmode_internal(void);
 bool esp_wifi_sta_prof_is_wpa_internal(void);
 bool esp_wifi_sta_prof_is_wpa2_internal(void);
-bool esp_wifi_sta_prof_is_wpa3_internal(void);
 void esp_wifi_deauthenticate_internal(u8 reason_code);
 uint8_t esp_wifi_sta_get_pairwise_cipher_internal(void);
 uint8_t esp_wifi_sta_get_group_cipher_internal(void);
