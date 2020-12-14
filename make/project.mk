@@ -369,7 +369,7 @@ export PROJECT_NAME
 export PROJECT_VER
 
 # Warnings-related flags relevant both for C and C++
-COMMON_WARNING_FLAGS = -Wall -Werror=all \
+COMMON_WARNING_FLAGS = -Wall \
 	-Wno-error=unused-function \
 	-Wno-error=unused-but-set-variable \
 	-Wno-error=unused-variable \
