@@ -33,7 +33,9 @@
 
 #include "esp_wifi_driver.h"
 #include "esp_private/wifi.h"
+#ifdef CONFIG_WPA3_SAE
 #include "esp_wpa3_i.h"
+#endif
 #include "esp_common_i.h"
 
 void  wpa_install_key(enum wpa_alg alg, u8 *addr, int key_idx, int set_tx,
@@ -193,7 +195,9 @@ static void wpa_sta_disconnected_cb(uint8_t reason_code)
         case WIFI_REASON_ASSOC_FAIL:
         case WIFI_REASON_CONNECTION_FAIL:
         case WIFI_REASON_HANDSHAKE_TIMEOUT:
+#ifdef CONFIG_WPA3_SAE
             esp_wpa3_free_sae_data();
+#endif
             wpa_sta_clear_curr_pmksa();
             break;
         default:
@@ -235,7 +239,9 @@ int esp_supplicant_init(void)
     wpa_cb->wpa_parse_wpa_ie  = wpa_parse_wpa_ie_wrapper;
     wpa_cb->wpa_config_bss = NULL;//wpa_config_bss;
     wpa_cb->wpa_michael_mic_failure = wpa_michael_mic_failure;
+#ifdef CONFIG_WPA3_SAE
     esp_wifi_register_wpa3_cb(wpa_cb);
+#endif
     esp_supplicant_common_init(wpa_cb);
 
     esp_wifi_register_wpa_cb_internal(wpa_cb);
